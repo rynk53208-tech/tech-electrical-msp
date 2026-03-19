@@ -1,0 +1,50 @@
+# Value Proposition — Auto Repair Shops (Temecula)
+
+## The Problem
+Most auto repair shops operate with:
+- Consumer-grade WiFi (easily hacked)
+- No dedicated IT support
+- Outdated or manual processes
+- Vulnerable customer data & payment systems
+
+This isn't just an IT issue — it's a business risk. Data breaches, downtime, and inefficient operations cost money and trust.
+
+---
+
+## Our Solution
+
+### 🔒 Network Security
+- Secure business-grade WiFi infrastructure
+- Firewall & endpoint protection
+- Customer data encryption
+- Compliance-ready setups
+
+### 💳 POS Support
+- Reliable payment processing setup
+- Integration with shop management software
+- Hardware procurement & maintenance
+- Troubleshooting & upgrades
+
+### 📊 Shop Management Software
+- Digital work orders & invoices
+- Customer database management
+- Inventory tracking
+- Appointment scheduling
+
+---
+
+## Why Us?
+- Northrop Grumman cyber & DevOps background — enterprise-grade security, local pricing
+- IT + electrical combo — rare skill set for hardware issues
+- Board-level repair capability — we can fix what others replace
+- Local to Temecula — responsive, on-site when needed
+
+---
+
+## Target Message
+"Most shops run on consumer-grade WiFi and have no IT support. I can help protect your customer data and streamline operations."
+
+---
+
+## Quick Pitch (30 seconds)
+"We help auto repair shops in Temecula protect their customer data, set up reliable POS systems, and implement shop management software. Unlike big MSPs, we understand the unique needs of local shops — and we can actually show up when you need us."

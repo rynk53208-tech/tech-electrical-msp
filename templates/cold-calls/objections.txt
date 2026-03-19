@@ -1,0 +1,5 @@
+Objections Handling (common objections):
+- Price: Emphasize ROI and risk reduction; offer a pilot or phased plan.
+- No time: Propose a short 30-min discovery or a quick audit with a fixed scope.
+- Internal priorities: Align with their quarterly goals and show a simple path to quick wins.
+- Already using a competitor: Highlight Northrop-grade credibility and integrated DevSecOps benefits.

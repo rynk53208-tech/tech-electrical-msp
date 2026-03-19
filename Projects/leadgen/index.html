@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech & Electrical Services | IT Solutions in Temecula</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+    .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 20px 0; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; }
+    .logo span { color: #00d9ff; }
+    .nav a { color: white; text-decoration: none; margin-left: 20px; }
+    .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 60px 0; text-align: center; }
+    .hero h1 { font-size: 48px; margin-bottom: 20px; }
+    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 30px; }
+    .cta { background: #00d9ff; color: #1a1a2e; padding: 15px 40px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+    .services { padding: 60px 0; background: #f8f9fa; }
+    .services h2 { text-align: center; margin-bottom: 40px; font-size: 32px; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+    .service-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .service-card h3 { color: #00d9ff; margin-bottom: 15px; }
+    .contact { padding: 60px 0; }
+    .contact h2 { text-align: center; margin-bottom: 40px; font-size: 32px; }
+    .contact form { max-width: 500px; margin: 0 auto; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+    .form-group textarea { min-height: 100px; }
+    .footer { background: #1a1a2e; color: white; text-align: center; padding: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container header-content">
+      <div class="logo">⚡ Tech & <span>Electrical</span></div>
+      <nav class="nav">
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+  
+  <section class="hero">
+    <div class="container">
+      <h1>Enterprise IT. Local Service.</h1>
+      <p>Cybersecurity, IT support, and electrical services for Temecula businesses. Northrop Grumman-level security at SMB prices.</p>
+      <button class="cta" onclick="document.getElementById('contact').scrollIntoView()">Get Free Quote</button>
+    </div>
+  </section>
+  
+  <section class="services" id="services">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <h3>🛡️ Cybersecurity</h3>
+          <p>Vulnerability assessments, network hardening, 24/7 monitoring, and employee security training.</p>
+        </div>
+        <div class="service-card">
+          <h3>💻 IT Support</h3>
+          <p>Managed IT services, help desk support, hardware repair, and network infrastructure.</p>
+        </div>
+        <div class="service-card">
+          <h3>🔌 Electrical</h3>
+          <p>Commercial electrical, panel upgrades, wiring, and electrical repairs.</p>
+        </div>
+        <div class="service-card">
+          <h3>🏢 MSP Services</h3>
+          <p>Monthly maintenance, server management, cloud solutions, and remote monitoring.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2>Get A Free Quote</h2>
+      <form id="quoteForm">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Company</label>
+          <input type="text" name="company">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" name="phone">
+        </div>
+        <div class="form-group">
+          <label>Service Needed</label>
+          <select name="service">
+            <option value="">Select a service...</option>
+            <option value="cybersecurity">Cybersecurity Assessment</option>
+            <option value="msp">Managed IT Services</option>
+            <option value="support">IT Support</option>
+            <option value="electrical">Electrical Services</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" placeholder="Tell us about your needs..."></textarea>
+        </div>
+        <button type="submit" class="cta">Submit Request</button>
+      </form>
+    </div>
+  </section>
+  
+  <div class="footer">
+    <div class="container">
+      <p>⚡ Tech & Electrical Services LLC | Temecula, CA | (951) 000-0000</p>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('quoteForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! We will contact you within 24 hours.');
+    });
+  </script>
+</body>
+</html>

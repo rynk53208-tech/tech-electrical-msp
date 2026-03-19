@@ -1,0 +1,26 @@
+[
+  {
+    "id": "c1",
+    "company": "Barney's Tire Shop",
+    "contact": "Barney Rubble",
+    "email": "barney@tireshop.com",
+    "phone": "(951) 555-0101",
+    "plan": "Standard",
+    "users": 8,
+    "address": "1234 Main St, Temecula, CA",
+    "status": "active",
+    "since": "2026-01-01"
+  },
+  {
+    "id": "c2",
+    "company": "Desert Dental Group",
+    "contact": "Dr. Sarah Lee",
+    "email": "slee@desertdental.com",
+    "phone": "(951) 555-0202",
+    "plan": "Premium",
+    "users": 15,
+    "address": "555 Vine St, Murrieta, CA",
+    "status": "active",
+    "since": "2026-02-15"
+  }
+]

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remote Support Launcher</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2333;
+      --surface3: #21262d;
+      --border:   #30363d;
+      --accent:   #00d4ff;
+      --green:    #3fb950;
+      --yellow:   #d29922;
+      --red:      #f85149;
+      --blue:     #388bfd;
+      --purple:   #a371f7;
+      --orange:   #db6d28;
+      --text:     #e6edf3;
+      --muted:    #7d8590;
+      --radius:   10px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.1rem; font-weight: 700;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #00d4ff, #388bfd);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .header-right {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--green);
+    }
+    .header-time { font-size: .85rem; color: var(--muted); }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Quick Launch Cards ── */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      cursor: pointer;
+      transition: border-color .18s, transform .15s, box-shadow .18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color, var(--accent));
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .app-card:hover {
+      border-color: var(--card-color, var(--accent));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    }
+    .app-card:hover::before { opacity: 1; }
+
+    .card-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 14px;
+    }
+    .app-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .app-name { font-size: 1.1rem; font-weight: 700; }
+    .app-desc { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+
+    .card-body { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+
+    .card-actions {
+      display: flex; gap: 8px;
+      margin-top: 16px;
+    }
+    .btn {
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: none;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { opacity: .85; transform: scale(.97); }
+    .btn-primary {
+      background: var(--card-color, var(--accent));
+      color: #000;
+    }
+    .btn-ghost {
+      background: var(--surface3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 20px;
+      font-size: .72rem; font-weight: 600;
+      background: var(--surface3);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .badge.installed { color: var(--green); border-color: var(--green); background: rgba(63,185,80,.08); }
+    .badge.not-installed { color: var(--yellow); border-color: var(--yellow); background: rgba(210,153,34,.08); }
+
+    /* ── Session Launcher (RDP/VNC) ── */
+    .session-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .panel-title {
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .panel-sub {
+      font-size: .83rem; color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: .78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .form-group input, .form-group select {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--accent);
+    }
+    .form-group select option { background: var(--surface2); }
+
+    .launch-bar {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .btn-launch {
+      padding: 9px 20px;
+      border-radius: 7px;
+      border: none;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-launch:hover { opacity: .88; transform: scale(.97); }
+    .btn-rdp  { background: #388bfd; color: #fff; }
+    .btn-vnc  { background: #a371f7; color: #fff; }
+    .btn-ssh  { background: #3fb950; color: #000; }
+
+    /* ── Saved Sessions ── */
+    .sessions-list {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 40px;
+    }
+    .session-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .session-item:hover { border-color: var(--accent); background: var(--surface2); }
+    .session-icon {
+      font-size: 1.2rem;
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .session-info { flex: 1; }
+    .session-name { font-size: .95rem; font-weight: 600; }
+    .session-meta { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+    .session-actions { display: flex; gap: 8px; }
+    .btn-sm {
+      padding: 5px 11px; font-size: .78rem;
+      border-radius: 5px; border: 1px solid var(--border);
+      background: var(--surface3); color: var(--text);
+      cursor: pointer; font-weight: 600;
+      transition: background .12s;
+    }
+    .btn-sm:hover { background: var(--surface2); }
+    .btn-sm.connect { background: var(--accent); color: #000; border-color: var(--accent); }
+    .btn-sm.danger { color: var(--red); border-color: rgba(248,81,73,.3); }
+    .btn-sm.danger:hover { background: rgba(248,81,73,.08); }
+
+    /* ── Log / Output ── */
+    .log-box {
+      background: #0a0e14;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'Fira Mono', 'Cascadia Code', monospace;
+      font-size: .8rem;
+      color: #a8d8a8;
+      max-height: 180px;
+      overflow-y: auto;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .log-line { display: block; }
+    .log-line.info  { color: var(--accent); }
+    .log-line.ok    { color: var(--green); }
+    .log-line.warn  { color: var(--yellow); }
+    .log-line.err   { color: var(--red); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    }
+    .modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .modal p { font-size: .85rem; color: var(--muted); margin-bottom: 18px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      main { padding: 20px 14px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════════════ -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🖥️</div>
+    Remote Support Launcher
+  </div>
+  <div class="header-right">
+    <span class="status-dot"></span>
+    <span class="header-time" id="clock">--:--</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── QUICK LAUNCH ───────────────────────────────────────────── -->
+  <h2>Quick Launch</h2>
+  <div class="quick-grid">
+
+    <!-- TeamViewer -->
+    <div class="app-card" style="--card-color:#0e73ba" onclick="launchApp('teamviewer')">
+      <div class="card-header">
+        <div class="app-icon" style="background:rgba(14,115,186,.15); color:#0e73ba">📡</div>
+        <div>
+          <div class="app-name">TeamViewer</div>
+          <div class="app-desc">Remote desktop &amp; support</div>
+        </div>
+      </div>
+      <div class="card-body">Industry-standard for attended remote support. Cross-platform, no port forwarding needed.</div>
+      <div class="card-actions">
+        <button class="btn btn-primary" style="background:#0e73ba;color:#fff" onclick="launchApp('teamviewer');event.stopPropagation()">▶ Launch</button>
+        <button class="btn btn-ghost" onclick="openInstallModal('teamviewer');event.stopPropagation()">Install</button>
+        <span class="badge not-installed" id="badge-teamviewer">Not Installed</span>
+      </div>
+    </div>
+
+    <!-- AnyDesk -->
+    <div class="app-card" style="--card-color:#ef443b" onclick="launchApp('anydesk')">
+      <div class="card-header">
+        <div class="app-icon" style="background:rgba(239,68,59,.15); color:#ef443b">⚡</div>
+        <div>
+          <div class="app-name">AnyDesk</div>
+          <div class="app-desc">Fast, lightweight remote access</div>
+        </div>
+      </div>
+      <div class="card-body">Low-latency remote desktop. Great for bandwidth-limited environments and quick sessions.</div>
+      <div class="card-actions">
+        <button class="btn btn-primary" style="background:#ef443b;color:#fff" onclick="launchApp('anydesk');event.stopPropagation()">▶ Launch</button>
+        <button class="btn btn-ghost" onclick="openInstallModal('anydesk');event.stopPropagation()">Install</button>
+        <span class="badge not-installed" id="badge-anydesk">Not Installed</span>
+      </div>
+    </div>
+
+    <!-- VNC -->
+    <div class="app-card" style="--card-color:#a371f7" onclick="showVNCForm()">
+      <div class="card-header">
+        <div class="app-icon" style="background:rgba(163,113,247,.15); color:#a371f7">🔵</div>
+        <div>
+          <div class="app-name">VNC Viewer</div>
+          <div class="app-desc">Open-standard screen sharing</div>
+        </div>
+      </div>
+      <div class="card-body">Platform-agnostic. Great for Linux/Mac targets. Runs over any network with port access.</div>
+      <div class="card-actions">
+        <button class="btn btn-primary" style="background:#a371f7;color:#fff" onclick="showVNCForm();event.stopPropagation()">▶ Connect</button>
+        <button class="btn btn-ghost" onclick="generateVNCCmd();event.stopPropagation()">Build CMD</button>
+        <span class="badge installed" id="badge-vnc">Installed</span>
+      </div>
+    </div>
+
+    <!-- RDP -->
+    <div class="app-card" style="--card-color:#388bfd" onclick="showRDPForm()">
+      <div class="card-header">
+        <div class="app-icon" style="background:rgba(56,139,253,.15); color:#388bfd">🪟</div>
+        <div>
+          <div class="app-name">RDP / xfreerdp</div>
+          <div class="app-desc">Windows Remote Desktop Protocol</div>
+        </div>
+      </div>
+      <div class="card-body">Connect to Windows machines via RDP. Uses xfreerdp3 or rdesktop — both available on this host.</div>
+      <div class="card-actions">
+        <button class="btn btn-primary" style="background:#388bfd;color:#fff" onclick="showRDPForm();event.stopPropagation()">▶ Connect</button>
+        <button class="btn btn-ghost" onclick="generateRDPCmd();event.stopPropagation()">Build CMD</button>
+        <span class="badge installed" id="badge-rdp">Installed</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── SESSION LAUNCHER ───────────────────────────────────────── -->
+  <h2>Session Launcher</h2>
+  <div class="session-panel">
+    <div class="panel-title">Quick Connect</div>
+    <div class="panel-sub">Fill in details and launch directly. Command is shown in the log below.</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Host / IP</label>
+        <input type="text" id="host" placeholder="192.168.1.100" />
+      </div>
+      <div class="form-group">
+        <label>Port</label>
+        <input type="number" id="port" placeholder="auto" />
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="administrator" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+      <div class="form-group">
+        <label>Resolution</label>
+        <select id="resolution">
+          <option value="1920x1080">1920×1080</option>
+          <option value="1280x720">1280×720</option>
+          <option value="1366x768">1366×768</option>
+          <option value="2560x1440">2560×1440</option>
+          <option value="/f">Fullscreen</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Protocol</label>
+        <select id="protocol" onchange="updatePortHint()">
+          <option value="rdp">RDP (xfreerdp3)</option>
+          <option value="rdp-legacy">RDP (rdesktop)</option>
+          <option value="vnc">VNC (vncviewer)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="launch-bar">
+      <button class="btn-launch btn-rdp" onclick="launch('rdp')">🪟 Launch RDP</button>
+      <button class="btn-launch btn-vnc" onclick="launch('vnc')">🔵 Launch VNC</button>
+      <button class="btn-launch btn-ssh" onclick="launch('ssh')">🔒 SSH Tunnel</button>
+      <button class="btn btn-ghost" onclick="copyCommand()" style="border-radius:7px;padding:9px 16px;font-size:.9rem">📋 Copy CMD</button>
+      <button class="btn btn-ghost" onclick="saveSession()" style="border-radius:7px;padding:9px 16px;font-size:.9rem">💾 Save Session</button>
+    </div>
+  </div>
+
+  <!-- ── LOG OUTPUT ─────────────────────────────────────────────── -->
+  <h2>Command Output</h2>
+  <div class="log-box" id="logbox">
+    <span class="log-line info">[09:00:00] Remote Support Launcher ready</span><br>
+    <span class="log-line ok">[09:00:00] Detected: vncviewer ✓  xfreerdp3 ✓  rdesktop ✓</span><br>
+    <span class="log-line warn">[09:00:00] TeamViewer — not installed (click Install)</span><br>
+    <span class="log-line warn">[09:00:00] AnyDesk — not installed (click Install)</span><br>
+    <span class="log-line info">[09:00:00] Tip: Save frequent sessions below for one-click access</span><br>
+  </div>
+
+  <!-- ── SAVED SESSIONS ─────────────────────────────────────────── -->
+  <h2>Saved Sessions</h2>
+  <div class="sessions-list" id="sessions-list">
+    <!-- Populated by JS -->
+  </div>
+  <button class="btn btn-ghost" onclick="clearAllSessions()" style="font-size:.8rem;padding:6px 14px;margin-bottom:40px">🗑 Clear All Saved Sessions</button>
+
+</main>
+
+<!-- ── INSTALL MODAL ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="install-modal">
+  <div class="modal">
+    <h3 id="modal-title">Install Application</h3>
+    <p id="modal-body">Follow the steps below to install.</p>
+    <pre id="modal-cmd" style="background:#0a0e14;border:1px solid #30363d;border-radius:6px;padding:12px;font-size:.8rem;color:#3fb950;overflow-x:auto;white-space:pre-wrap;line-height:1.6"></pre>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+      <button class="btn btn-primary" onclick="copyModalCmd()">📋 Copy Command</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   REMOTE SUPPORT LAUNCHER — main.js (inline)
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ── Clock ──────────────────────────────────────────────────────────
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+tick();
+setInterval(tick, 1000);
+
+// ── Log helper ────────────────────────────────────────────────────
+function log(msg, type = 'info') {
+  const box = document.getElementById('logbox');
+  const ts  = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const line = document.createElement('span');
+  line.className = `log-line ${type}`;
+  line.textContent = `[${ts}] ${msg}`;
+  box.appendChild(line);
+  box.appendChild(document.createElement('br'));
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── Port hints ────────────────────────────────────────────────────
+const defaultPorts = { rdp: 3389, 'rdp-legacy': 3389, vnc: 5900 };
+function updatePortHint() {
+  const proto = document.getElementById('protocol').value;
+  const portEl = document.getElementById('port');
+  if (!portEl.value) portEl.placeholder = defaultPorts[proto] || '';
+}
+updatePortHint();
+
+// ── Build command ─────────────────────────────────────────────────
+function buildCommand(override) {
+  const host     = document.getElementById('host').value.trim()     || '192.168.1.100';
+  const port     = document.getElementById('port').value.trim();
+  const user     = document.getElementById('username').value.trim() || 'administrator';
+  const pass     = document.getElementById('password').value.trim();
+  const res      = document.getElementById('resolution').value;
+  const protocol = override || document.getElementById('protocol').value;
+
+  if (protocol === 'rdp') {
+    const portFlag = port ? `/port:${port}` : '';
+    const passFlag = pass ? ` /p:'${pass}'` : '';
+    const resFlag  = res === '/f' ? ' /f' : ` /size:${res}`;
+    return `xfreerdp3 /v:${host}${port ? ':'+port : ''} /u:${user}${passFlag}${resFlag} /cert:ignore /dynamic-resolution`;
+  }
+  if (protocol === 'rdp-legacy') {
+    const portFlag = port ? ` -P ${port}` : '';
+    const passFlag = pass ? ` -p '${pass}'` : '';
+    return `rdesktop -u ${user}${passFlag}${portFlag} -g ${res === '/f' ? 'fullscreen' : res} ${host}`;
+  }
+  if (protocol === 'vnc') {
+    const target = port ? `${host}::${port}` : host;
+    return `vncviewer ${target}`;
+  }
+  if (protocol === 'ssh') {
+    const portFlag = port ? `-p ${port}` : '';
+    return `ssh ${portFlag} ${user}@${host}`;
+  }
+  return '';
+}
+
+// ── Launch (shows command in log — browser can't exec natively) ───
+function launch(proto) {
+  const cmd = buildCommand(proto === 'ssh' ? 'ssh' : undefined);
+  if (proto === 'rdp')      { document.getElementById('protocol').value = 'rdp'; }
+  if (proto === 'vnc')      { document.getElementById('protocol').value = 'vnc'; }
+  const finalCmd = proto === 'ssh' ? buildCommand('ssh') : buildCommand();
+
+  log(`▶ ${finalCmd}`, 'ok');
+  log('Copy and run in terminal, or use the shell launcher script.', 'warn');
+
+  // Copy to clipboard silently
+  navigator.clipboard?.writeText(finalCmd).then(() => {
+    log('Command copied to clipboard ✓', 'info');
+  });
+}
+
+function copyCommand() {
+  const cmd = buildCommand();
+  navigator.clipboard?.writeText(cmd).then(() => {
+    log(`Copied: ${cmd}`, 'ok');
+  });
+}
+
+// ── Show VNC / RDP forms (just pre-selects protocol) ─────────────
+function showVNCForm() {
+  document.getElementById('protocol').value = 'vnc';
+  document.getElementById('port').placeholder = '5900';
+  log('VNC selected. Enter host and click Launch VNC.', 'info');
+}
+function showRDPForm() {
+  document.getElementById('protocol').value = 'rdp';
+  document.getElementById('port').placeholder = '3389';
+  log('RDP selected. Enter host and click Launch RDP.', 'info');
+}
+function generateVNCCmd() { log(buildCommand('vnc'), 'ok'); }
+function generateRDPCmd() { log(buildCommand('rdp'), 'ok'); }
+
+// ── App Launchers (TeamViewer / AnyDesk) ──────────────────────────
+const appCmds = {
+  teamviewer: 'teamviewer',
+  anydesk: 'anydesk'
+};
+function launchApp(app) {
+  const cmd = appCmds[app];
+  const el = document.getElementById(`badge-${app}`);
+  if (el && el.classList.contains('not-installed')) {
+    openInstallModal(app);
+    return;
+  }
+  log(`▶ ${cmd}`, 'ok');
+  navigator.clipboard?.writeText(cmd).then(() => log('Copied to clipboard ✓', 'info'));
+}
+
+// ── Install Modal ─────────────────────────────────────────────────
+const installInfo = {
+  teamviewer: {
+    title: 'Install TeamViewer',
+    body: 'TeamViewer requires a .deb download from teamviewer.com. Run:',
+    cmd: `# Download and install TeamViewer (Debian/Kali)
+wget https://download.teamviewer.com/download/linux/teamviewer_amd64.deb -O /tmp/teamviewer.deb
+sudo dpkg -i /tmp/teamviewer.deb
+sudo apt-get install -f -y
+sudo systemctl enable --now teamviewerd`
+  },
+  anydesk: {
+    title: 'Install AnyDesk',
+    body: 'AnyDesk provides a .deb package. Run:',
+    cmd: `# Download and install AnyDesk (Debian/Kali)
+wget -qO /tmp/anydesk.deb https://download.anydesk.com/linux/anydesk_amd64.deb
+sudo dpkg -i /tmp/anydesk.deb
+sudo apt-get install -f -y
+anydesk  # or: sudo systemctl start anydesk`
+  }
+};
+
+function openInstallModal(app) {
+  const info = installInfo[app];
+  if (!info) return;
+  document.getElementById('modal-title').textContent = info.title;
+  document.getElementById('modal-body').textContent  = info.body;
+  document.getElementById('modal-cmd').textContent   = info.cmd;
+  document.getElementById('install-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('install-modal').classList.remove('open');
+}
+function copyModalCmd() {
+  const txt = document.getElementById('modal-cmd').textContent;
+  navigator.clipboard?.writeText(txt).then(() => {
+    log('Install command copied to clipboard ✓', 'ok');
+    closeModal();
+  });
+}
+// Close on overlay click
+document.getElementById('install-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── Saved Sessions ────────────────────────────────────────────────
+const STORAGE_KEY = 'rsl_sessions';
+
+function getSessions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function setSessions(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+function saveSession() {
+  const host     = document.getElementById('host').value.trim();
+  const port     = document.getElementById('port').value.trim();
+  const user     = document.getElementById('username').value.trim();
+  const protocol = document.getElementById('protocol').value;
+  const res      = document.getElementById('resolution').value;
+
+  if (!host) { log('Enter a host to save this session.', 'warn'); return; }
+
+  const sessions = getSessions();
+  const name = `${user || 'user'}@${host}` + (port ? `:${port}` : '');
+  sessions.push({ id: Date.now(), name, host, port, user, protocol, res, saved: new Date().toLocaleDateString() });
+  setSessions(sessions);
+  renderSessions();
+  log(`Session saved: ${name}`, 'ok');
+}
+
+const protoIcon = { rdp: '🪟', 'rdp-legacy': '🪟', vnc: '🔵', ssh: '🔒' };
+const protoLabel = { rdp: 'RDP', 'rdp-legacy': 'RDP (legacy)', vnc: 'VNC', ssh: 'SSH' };
+
+function renderSessions() {
+  const sessions = getSessions();
+  const list = document.getElementById('sessions-list');
+  if (!sessions.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:12px 0">No saved sessions yet. Fill in connection details and click 💾 Save Session.</div>';
+    return;
+  }
+  list.innerHTML = sessions.map(s => `
+    <div class="session-item" onclick="loadSession(${s.id})">
+      <div class="session-icon" style="background:rgba(56,139,253,.12)">${protoIcon[s.protocol] || '🖥️'}</div>
+      <div class="session-info">
+        <div class="session-name">${s.name}</div>
+        <div class="session-meta">${protoLabel[s.protocol] || s.protocol} · ${s.res} · Saved ${s.saved}</div>
+      </div>
+      <div class="session-actions">
+        <button class="btn-sm connect" onclick="connectSession(${s.id});event.stopPropagation()">▶ Connect</button>
+        <button class="btn-sm danger" onclick="deleteSession(${s.id});event.stopPropagation()">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadSession(id) {
+  const s = getSessions().find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('host').value       = s.host;
+  document.getElementById('port').value       = s.port || '';
+  document.getElementById('username').value   = s.user || '';
+  document.getElementById('protocol').value   = s.protocol;
+  document.getElementById('resolution').value = s.res;
+  log(`Loaded session: ${s.name}`, 'info');
+}
+
+function connectSession(id) {
+  loadSession(id);
+  const s = getSessions().find(x => x.id === id);
+  if (!s) return;
+  const cmd = buildCommand(s.protocol);
+  log(`▶ ${cmd}`, 'ok');
+  navigator.clipboard?.writeText(cmd).then(() => log('Command copied to clipboard ✓', 'info'));
+}
+
+function deleteSession(id) {
+  const sessions = getSessions().filter(s => s.id !== id);
+  setSessions(sessions);
+  renderSessions();
+  log('Session deleted.', 'warn');
+}
+
+function clearAllSessions() {
+  if (!confirm('Delete all saved sessions?')) return;
+  setSessions([]);
+  renderSessions();
+  log('All sessions cleared.', 'warn');
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+renderSessions();
+</script>
+</body>
+</html>

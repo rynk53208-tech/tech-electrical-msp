@@ -1,0 +1,13 @@
+[
+  {
+    "id": "TKT-001",
+    "clientId": "c1",
+    "issue": "Server not responding after power outage",
+    "details": "Main file server went down during power outage.",
+    "priority": "critical",
+    "status": "in-progress",
+    "assigned": "Irvin Avitia",
+    "created": "2026-03-19T08:52:47.913062",
+    "resolved": null
+  }
+]

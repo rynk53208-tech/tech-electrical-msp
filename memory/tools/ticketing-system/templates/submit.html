@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Submit Ticket — TES LLC{% endblock %}
+{% block breadcrumb %}<span class="breadcrumb"><a href="{{ url_for('dashboard') }}">Dashboard</a> › Submit Ticket</span>{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Submit a Support Request</h1>
+  <p class="page-sub">Tech &amp; Electrical Services LLC — 24/7 Support Portal</p>
+</div>
+
+<div class="form-card">
+  <form method="POST" action="{{ url_for('submit_ticket') }}" class="ticket-form">
+
+    <div class="form-section-title">Your Information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="client_name">Full Name <span class="required">*</span></label>
+        <input type="text" id="client_name" name="client_name" class="form-input"
+               placeholder="Jane Smith" required/>
+      </div>
+      <div class="form-group">
+        <label for="client_email">Email Address <span class="required">*</span></label>
+        <input type="email" id="client_email" name="client_email" class="form-input"
+               placeholder="jane@company.com" required/>
+      </div>
+    </div>
+
+    <div class="form-section-title">Issue Details</div>
+    <div class="form-group">
+      <label for="title">Issue Summary <span class="required">*</span></label>
+      <input type="text" id="title" name="title" class="form-input"
+             placeholder="Short description of the issue" required maxlength="200"/>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="category">Category <span class="required">*</span></label>
+        <select id="category" name="category" class="form-select" required>
+          {% for c in categories %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+        <div class="form-hint" id="category-hint">Auto-routes to the appropriate team.</div>
+      </div>
+      <div class="form-group">
+        <label for="priority">Priority <span class="required">*</span></label>
+        <select id="priority" name="priority" class="form-select" required>
+          {% for p in priorities %}
+          <option value="{{ p }}" {% if p == 'Medium' %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+        <div class="form-hint" id="priority-hint">Medium = 8h response / 72h resolve</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Detailed Description <span class="required">*</span></label>
+      <textarea id="description" name="description" class="form-textarea" rows="6"
+                placeholder="Describe the issue in detail — what happened, when, what you've tried..." required></textarea>
+    </div>
+
+    <!-- SLA Preview -->
+    <div class="sla-preview" id="sla-preview">
+      <div class="sla-preview-title">📋 SLA Targets</div>
+      <div class="sla-preview-body">
+        <div>⏱️ Response: <strong id="sla-response">8 hours</strong></div>
+        <div>✅ Resolution: <strong id="sla-resolve">72 hours</strong></div>
+        <div>👤 Routed to: <strong id="sla-team">IT Team</strong></div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg">Submit Ticket</button>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-ghost btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+const SLA_RESPONSE = {"Critical":1,"High":4,"Medium":8,"Low":24};
+const SLA_RESOLVE  = {"Critical":4,"High":24,"Medium":72,"Low":168};
+const ROUTING      = {
+  "IT Support":"IT Team","Electrical":"Electrical Team",
+  "Cybersecurity":"Cyber Team","Hardware Repair":"Hardware Team","Software":"Dev Team"
+};
+
+function updateSLAPreview() {
+  const p = document.getElementById("priority").value;
+  const c = document.getElementById("category").value;
+  document.getElementById("sla-response").textContent = SLA_RESPONSE[p] + " hour(s)";
+  document.getElementById("sla-resolve").textContent  = SLA_RESOLVE[p]  + " hour(s)";
+  document.getElementById("sla-team").textContent     = ROUTING[c] || "IT Team";
+}
+
+document.getElementById("priority").addEventListener("change", updateSLAPreview);
+document.getElementById("category").addEventListener("change", updateSLAPreview);
+updateSLAPreview();
+</script>
+{% endblock %}

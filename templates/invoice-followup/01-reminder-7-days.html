@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Reminder - Due Soon</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: left;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .body-section {
+            padding: 30px 20px;
+        }
+        .body-section p {
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .invoice-details {
+            background-color: #f0f4ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .invoice-details p {
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .invoice-details strong {
+            color: #0066cc;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #0066cc;
+            color: white !important;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .cta-button:hover {
+            background-color: #0052a3;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Invoice Due Soon</h1>
+            <p>Quick reminder about your upcoming payment</p>
+        </div>
+
+        <div class="body-section">
+            <p>Hi {{CLIENT_NAME}},</p>
+
+            <p>Thank you for your business! We wanted to send a friendly reminder that your invoice will be due soon.</p>
+
+            <div class="invoice-details">
+                <p><strong>Invoice Number:</strong> {{INVOICE_NUMBER}}</p>
+                <p><strong>Amount Due:</strong> {{AMOUNT}}</p>
+                <p><strong>Due Date:</strong> {{DUE_DATE}}</p>
+            </div>
+
+            <p>If you've already processed this payment, please disregard this message—we appreciate your promptness!</p>
+
+            <p style="text-align: center;">
+                <a href="{{PAYMENT_LINK}}" class="cta-button">Pay Now</a>
+            </p>
+
+            <p>If you have any questions or need an invoice copy, just reach out. We're here to help.</p>
+
+            <div class="signature">
+                <p style="margin: 0;">Best regards,</p>
+                <p style="margin: 5px 0 0 0;"><strong>{{COMPANY_NAME}}</strong></p>
+                <p style="margin: 2px 0 0 0;">{{CONTACT_PHONE}}</p>
+                <p style="margin: 2px 0 0 0;">{{CONTACT_EMAIL}}</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">Thank you for your business.</p>
+        </div>
+    </div>
+</body>
+</html>

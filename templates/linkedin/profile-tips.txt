@@ -1,0 +1,6 @@
+LinkedIn Profile Optimization Tips:
+- Lead with Northrop-level credibility: mention Northrop experience and dual IT/electrical credibility.
+- Focus on outcomes: uptime improvement, mean time to recovery, incident reduction.
+- Include a short, value-based headline and a summary that mentions DevSecOps, cybersecurity, and hardware repair capabilities.
+- Add media: case studies, whitepapers, or a 1-page micro-case study.
+- Include clear CTAs: book a time, download content, or connect for a quick chat.

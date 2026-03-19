@@ -1,0 +1,44 @@
+{
+  "networks": [
+    {
+      "id": "net-001",
+      "name": "Home LAN",
+      "cidr": "192.168.1.0/24",
+      "gateway": "192.168.1.1",
+      "vlan": null,
+      "dns": [
+        "192.168.1.1",
+        "8.8.8.8"
+      ],
+      "description": "Primary home network",
+      "tags": [
+        "home",
+        "lan"
+      ],
+      "created": "2026-03-19T00:00:00Z"
+    },
+    {
+      "id": "net-002",
+      "name": "Office LAN",
+      "cidr": "10.10.0.0/24",
+      "gateway": "10.10.0.1",
+      "vlan": null,
+      "dns": [],
+      "description": "",
+      "tags": [],
+      "created": "2026-03-19T16:59:53Z"
+    }
+  ],
+  "subnets": [],
+  "dhcp_ranges": [
+    {
+      "id": "dhcp-001",
+      "network_id": "net-001",
+      "name": "Home DHCP Pool",
+      "start": "192.168.1.100",
+      "end": "192.168.1.200",
+      "lease_time": "24h",
+      "active": true
+    }
+  ]
+}

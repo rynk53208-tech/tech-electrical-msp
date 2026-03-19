@@ -1,0 +1,140 @@
+{
+  "description": "Sample invoice data for testing the email templates",
+  "sample_invoices": [
+    {
+      "id": "INV-2026-001",
+      "client_name": "Acme Corp",
+      "invoice_number": "INV-2026-001",
+      "amount": "$2,500.00",
+      "due_date": "2026-03-26",
+      "days_overdue": 0,
+      "status": "pending",
+      "late_fees": "$0.00",
+      "total_amount": "$2,500.00",
+      "template_to_use": "01-reminder-7-days.html",
+      "next_send_date": "2026-03-19"
+    },
+    {
+      "id": "INV-2026-002",
+      "client_name": "TechStart LLC",
+      "invoice_number": "INV-2026-002",
+      "amount": "$5,750.00",
+      "due_date": "2026-03-20",
+      "days_overdue": 0,
+      "status": "due_today",
+      "late_fees": "$0.00",
+      "total_amount": "$5,750.00",
+      "template_to_use": "02-due-today.html",
+      "next_send_date": "2026-03-20"
+    },
+    {
+      "id": "INV-2026-003",
+      "client_name": "Global Solutions",
+      "invoice_number": "INV-2026-003",
+      "amount": "$8,200.00",
+      "due_date": "2026-03-15",
+      "days_overdue": 4,
+      "status": "overdue",
+      "late_fees": "$0.00",
+      "total_amount": "$8,200.00",
+      "template_to_use": "03-overdue-1st-notice.html",
+      "next_send_date": "2026-03-19"
+    },
+    {
+      "id": "INV-2026-004",
+      "client_name": "Digital Ventures",
+      "invoice_number": "INV-2026-004",
+      "amount": "$3,400.00",
+      "due_date": "2026-03-10",
+      "days_overdue": 9,
+      "status": "seriously_overdue",
+      "late_fees": "$340.00",
+      "total_amount": "$3,740.00",
+      "template_to_use": "04-overdue-2nd-notice.html",
+      "next_send_date": "2026-03-19"
+    },
+    {
+      "id": "INV-2026-005",
+      "client_name": "Premier Partners",
+      "invoice_number": "INV-2026-005",
+      "amount": "$6,100.00",
+      "due_date": "2026-03-01",
+      "days_overdue": 18,
+      "status": "critical",
+      "late_fees": "$915.00",
+      "total_amount": "$7,015.00",
+      "template_to_use": "05-final-notice.html",
+      "next_send_date": "2026-03-19"
+    }
+  ],
+  "placeholder_reference": {
+    "{{CLIENT_NAME}}": "Customer's name or company name (e.g., 'Acme Corp')",
+    "{{INVOICE_NUMBER}}": "Invoice ID (e.g., 'INV-2026-001')",
+    "{{AMOUNT}}": "Original invoice amount (e.g., '$2,500.00')",
+    "{{DUE_DATE}}": "Original due date (e.g., '2026-03-26')",
+    "{{DAYS_OVERDUE}}": "Number of days past due (e.g., '4')",
+    "{{LATE_FEES}}": "Late fees or interest charged (e.g., '$340.00')",
+    "{{TOTAL_AMOUNT}}": "Total amount due including fees (e.g., '$3,740.00')",
+    "{{PAYMENT_LINK}}": "Link to your payment portal (e.g., 'https://payments.example.com')",
+    "{{COMPANY_NAME}}": "Your company name (e.g., 'ABC Services Inc.')",
+    "{{CONTACT_PHONE}}": "Your phone number (e.g., '(555) 123-4567')",
+    "{{CONTACT_EMAIL}}": "Your email address (e.g., 'billing@example.com')"
+  },
+  "automation_rules": {
+    "rule_1": {
+      "trigger": "invoice_created",
+      "days_before_due": 7,
+      "template": "01-reminder-7-days.html",
+      "action": "send_email"
+    },
+    "rule_2": {
+      "trigger": "invoice_due",
+      "days_offset": 0,
+      "template": "02-due-today.html",
+      "action": "send_email"
+    },
+    "rule_3": {
+      "trigger": "invoice_overdue",
+      "days_offset": 3,
+      "template": "03-overdue-1st-notice.html",
+      "action": "send_email"
+    },
+    "rule_4": {
+      "trigger": "invoice_overdue",
+      "days_offset": 15,
+      "template": "04-overdue-2nd-notice.html",
+      "action": "send_email"
+    },
+    "rule_5": {
+      "trigger": "invoice_overdue",
+      "days_offset": 30,
+      "template": "05-final-notice.html",
+      "action": "send_email"
+    },
+    "rule_6": {
+      "trigger": "invoice_overdue",
+      "days_offset": 33,
+      "template": null,
+      "action": "escalate_to_collections"
+    }
+  },
+  "integration_notes": {
+    "stripe": "Use Stripe's webhook events to trigger emails automatically",
+    "wave": "Wave Accounting has built-in reminders; can also export to CSV and send manually",
+    "freshbooks": "FreshBooks has automated payment reminders; these templates can supplement",
+    "zapier": "Use Zapier to connect your invoice app and send via email service (Gmail, Sendgrid, etc.)",
+    "custom_integration": "Use the JSON structure above to build a custom automation in your app"
+  },
+  "testing_checklist": [
+    "Replace all {{PLACEHOLDERS}} with actual data",
+    "Test in Gmail (web and mobile)",
+    "Test in Outlook (web and desktop)",
+    "Test in Apple Mail",
+    "Verify all links work (payment link, unsubscribe, etc.)",
+    "Check that images load properly",
+    "Verify button styling and colors",
+    "Test on mobile devices (smaller screens)",
+    "Verify signature is correct",
+    "Send test to yourself first before production"
+  ]
+}

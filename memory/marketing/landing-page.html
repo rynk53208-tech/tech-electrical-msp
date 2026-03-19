@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managed IT Services | Expert Tech Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        
+        .phone-number {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .phone-number:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #fbbf24;
+            color: #1e3a8a;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3a8a;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .service-card h3 {
+            color: #2563eb;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Contact Form */
+        .contact {
+            background: #f9fafb;
+            padding: 5rem 2rem;
+        }
+        
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .submit-button:hover {
+            background: #1d4ed8;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: #4b5563;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        
+        .testimonial-company {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">TechPro Solutions</div>
+            <a href="tel:+19515551234" class="phone-number">📞 (951) 555-1234</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Enterprise-Grade IT Managed Services for Your Business</h1>
+        <p>Cybersecurity, cloud infrastructure, and 24/7 tech support backed by Northrop Grumman-level expertise—without the enterprise price tag.</p>
+        <a href="#contact" class="cta-button">Get a Free Consultation</a>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>🛡️ Cybersecurity</h3>
+                <p>Enterprise-grade threat protection, vulnerability assessments, security audits, and compliance management to keep your data safe.</p>
+            </div>
+            <div class="service-card">
+                <h3>☁️ Cloud & Infrastructure</h3>
+                <p>AWS, Azure, and hybrid cloud solutions. Design, migration, optimization, and 24/7 monitoring of your infrastructure.</p>
+            </div>
+            <div class="service-card">
+                <h3>💻 IT Support & Help Desk</h3>
+                <p>Responsive technical support for your team. Remote and on-site assistance with fast resolution times.</p>
+            </div>
+            <div class="service-card">
+                <h3>🔧 Hardware Repair</h3>
+                <p>Computer repair, custom builds, and rare micro-soldering/board-level repair services. We fix what others replace.</p>
+            </div>
+            <div class="service-card">
+                <h3>⚡ Electrical Services</h3>
+                <p>Complete electrical solutions including installations, upgrades, repairs, and safety inspections for commercial and residential.</p>
+            </div>
+            <div class="service-card">
+                <h3>📋 IT Consulting</h3>
+                <p>Strategic technology planning, vendor management, and infrastructure assessments to align IT with your business goals.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2 class="section-title">Request a Consultation</h2>
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@company.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(951) 555-1234">
+                </div>
+                <div class="form-group">
+                    <label for="service">Service Interested In</label>
+                    <select id="service" name="service">
+                        <option value="">Select a service...</option>
+                        <option value="cybersecurity">Cybersecurity</option>
+                        <option value="cloud">Cloud & Infrastructure</option>
+                        <option value="support">IT Support</option>
+                        <option value="hardware">Hardware Repair</option>
+                        <option value="electrical">Electrical Services</option>
+                        <option value="consulting">IT Consulting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">How Can We Help?</label>
+                    <textarea id="message" name="message" placeholder="Tell us about your project or needs..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Submit Request</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"TechPro transformed our IT infrastructure. Their cybersecurity expertise is top-notch—we finally sleep soundly at night knowing our data is protected."</p>
+                <p class="testimonial-author">Sarah Mitchell</p>
+                <p class="testimonial-company">Operations Director, Mitchell Manufacturing</p>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"They fixed our server issue in under an hour what our previous IT company couldn't solve in a week. True experts."</p>
+                <p class="testimonial-author">Michael Chen</p>
+                <p class="testimonial-company">CEO, Chen Industries</p>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Responsive, knowledgeable, and fair pricing. Finally an IT partner who treats our business like their own."</p>
+                <p class="testimonial-author">Jennifer Rodriguez</p>
+                <p class="testimonial-company">Founder, Rodriguez Design Studio</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 TechPro Solutions. All rights reserved.</p>
+        <p>📞 (951) 555-1234 | info@techprosolutions.com</p>
+    </footer>
+</body>
+</html>

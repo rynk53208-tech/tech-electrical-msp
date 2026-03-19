@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" class="page-contact">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact Tech & Electrical Services LLC in Temecula, CA. Get a free IT assessment, cybersecurity audit, computer repair quote, or electrical estimate. Call (951) 555-0100." />
+  <title>Contact &amp; Get a Quote | Tech &amp; Electrical Services LLC — Temecula, CA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Tech &amp; <span>Electrical</span></div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="services.html" class="nav-services">Services</a>
+      <a href="about.html" class="nav-about">About</a>
+      <a href="portfolio.html" class="nav-portfolio">Portfolio</a>
+      <a href="contact.html" class="nav-contact active">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <span class="nav-phone">📞 <a href="tel:+1-951-555-0100">(951) 555-0100</a></span>
+      <a href="#quote" class="btn btn-primary btn-sm">Get a Quote</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ──────────────────────────────────────────── -->
+<section style="padding: 8rem 0 4rem; background: var(--bg-section); position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,212,255,0.07) 0%, transparent 70%);"></div>
+  <div class="container text-center" style="position: relative; z-index: 1;">
+    <div class="section-tag">Contact Us</div>
+    <h1>Let's Talk About<br><span class="gradient-text">Your Next Project</span></h1>
+    <p style="max-width: 600px; margin: 1.25rem auto; font-size: 1.1rem;">Free assessments for qualifying businesses. Fast response. No scripts, no runaround — just a real conversation about what you need.</p>
+  </div>
+</section>
+
+<!-- ── QUICK CONTACT BAR ──────────────────────────────────── -->
+<div style="background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.5rem 0;">
+  <div class="container">
+    <div class="grid-3" style="gap: 1rem;">
+      <a href="tel:+1-951-555-0100" style="display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15); border-radius: var(--radius); text-decoration: none; transition: all 0.25s; color: inherit;" class="hover-lift">
+        <span style="font-size: 1.5rem;">📞</span>
+        <div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Call or Text</div>
+          <div style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">(951) 555-0100</div>
+        </div>
+      </a>
+      <a href="mailto:info@techelectricalsvc.com" style="display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15); border-radius: var(--radius); text-decoration: none; transition: all 0.25s; color: inherit;">
+        <span style="font-size: 1.5rem;">✉️</span>
+        <div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Email Us</div>
+          <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem;">info@techelectricalsvc.com</div>
+        </div>
+      </a>
+      <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15); border-radius: var(--radius);">
+        <span style="font-size: 1.5rem;">📍</span>
+        <div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Location</div>
+          <div style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem;">Temecula, CA 92590</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN CONTACT SECTION ───────────────────────────────── -->
+<section class="section" id="quote">
+  <div class="container">
+    <div class="grid-2" style="gap: 3rem; align-items: flex-start;">
+
+      <!-- Contact Form -->
+      <div class="fade-up">
+        <h2 style="margin-bottom: 0.5rem;">Send Us a Message</h2>
+        <p style="margin-bottom: 2rem;">Fill out the form and we'll get back to you within 1 business hour during business hours.</p>
+
+        <div class="contact-form" id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" class="form-control" placeholder="John" required />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" class="form-control" placeholder="Smith" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" class="form-control" placeholder="john@yourbusiness.com" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" class="form-control" placeholder="(951) 555-0000" />
+            </div>
+            <div class="form-group">
+              <label for="company">Company / Business</label>
+              <input type="text" id="company" class="form-control" placeholder="Your Company LLC" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="service">Service Needed *</label>
+            <select id="service" class="form-control" required>
+              <option value="" disabled selected>Select a service...</option>
+              <option value="cybersecurity">🔒 Cybersecurity / Security Audit</option>
+              <option value="msp">🖥️ Managed IT / MSP Services</option>
+              <option value="mssp">🛡️ MSSP / 24-7 Security Monitoring</option>
+              <option value="repair">⚙️ Computer Repair / Diagnostics</option>
+              <option value="build">🔧 Custom PC / Server Build</option>
+              <option value="data">💾 Data Recovery</option>
+              <option value="electrical">⚡ Electrical Services</option>
+              <option value="coding">💻 Custom Software / Web Dev</option>
+              <option value="other">🤔 Not Sure — Need Assessment</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="urgency">Urgency</label>
+            <select id="urgency" class="form-control">
+              <option value="normal">Standard — Within a week</option>
+              <option value="soon">Soon — Within 2-3 days</option>
+              <option value="urgent">Urgent — Today or tomorrow</option>
+              <option value="emergency">🚨 Emergency — Need help NOW</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Tell Us More *</label>
+            <textarea id="message" class="form-control" rows="5" placeholder="Describe your situation, what you need, and any relevant details. The more context, the faster we can help." required></textarea>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem;">
+            <input type="checkbox" id="assessment" style="width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;" />
+            <label for="assessment" style="font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; font-weight: 400;">
+              Yes, I'd like a <strong style="color: var(--text-primary);">free IT assessment</strong> as part of this inquiry
+            </label>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center;" onclick="submitForm()">
+            Send Message →
+          </button>
+
+          <!-- Success message -->
+          <div class="form-success" id="formSuccess">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+            <h3 style="margin-bottom: 0.5rem;">Message Received!</h3>
+            <p>We'll get back to you within 1 business hour. For emergencies, call us directly at <a href="tel:+1-951-555-0100" style="color: var(--primary);">(951) 555-0100</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Info + Hours -->
+      <div class="fade-up delay-2">
+        <div class="contact-info" style="margin-bottom: 2rem;">
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div>
+              <div class="contact-item-label">Phone / Text</div>
+              <div class="contact-item-value"><a href="tel:+1-951-555-0100">(951) 555-0100</a></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">✉️</div>
+            <div>
+              <div class="contact-item-label">Email</div>
+              <div class="contact-item-value"><a href="mailto:info@techelectricalsvc.com">info@techelectricalsvc.com</a></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div>
+              <div class="contact-item-label">Location</div>
+              <div class="contact-item-value">Temecula, CA 92590<br><span style="font-size: 0.85rem; color: var(--text-muted);">Serving Inland Empire &amp; North San Diego</span></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🕐</div>
+            <div>
+              <div class="contact-item-label">Business Hours</div>
+              <div class="contact-item-value">
+                Monday–Friday: 8:00 AM – 6:00 PM<br>
+                Saturday: 9:00 AM – 3:00 PM<br>
+                <span style="font-size: 0.85rem; color: var(--primary);">24/7 emergency support for MSP clients</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- What to expect -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 1.25rem;">What Happens Next</h4>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="step">
+              <div class="step-number" style="width: 36px; height: 36px; font-size: 0.9rem; flex-shrink: 0;">1</div>
+              <div class="step-content">
+                <strong style="font-size: 0.9rem; color: var(--text-primary);">We respond fast</strong>
+                <p style="font-size: 0.85rem;">Expect a reply within 1 business hour. Emergencies get an immediate callback.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number" style="width: 36px; height: 36px; font-size: 0.9rem; flex-shrink: 0;">2</div>
+              <div class="step-content">
+                <strong style="font-size: 0.9rem; color: var(--text-primary);">Free 30-min assessment call</strong>
+                <p style="font-size: 0.85rem;">We'll ask questions, listen to your situation, and give you an honest take.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number" style="width: 36px; height: 36px; font-size: 0.9rem; flex-shrink: 0;">3</div>
+              <div class="step-content">
+                <strong style="font-size: 0.9rem; color: var(--text-primary);">Clear, itemized quote</strong>
+                <p style="font-size: 0.85rem;">No surprises. You'll know exactly what it costs before we start anything.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency CTA -->
+        <div style="background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius); padding: 1.5rem; text-align: center;">
+          <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🚨</div>
+          <h4 style="color: #fca5a5; margin-bottom: 0.5rem;">IT Emergency?</h4>
+          <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Ransomware, server down, breach detected? Don't wait — call now.</p>
+          <a href="tel:+1-951-555-0100" class="btn btn-sm" style="background: #ef4444; color: #fff; width: 100%; justify-content: center;">📞 Emergency: (951) 555-0100</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICE-SPECIFIC INQUIRY TILES ─────────────────────── -->
+<section class="section-sm" style="background: var(--bg-section); padding: 3rem 0;">
+  <div class="container">
+    <div class="section-header fade-up" style="margin-bottom: 2rem;">
+      <div class="section-tag">Quick Inquiries</div>
+      <h2>What Are You Looking For?</h2>
+    </div>
+    <div class="grid-4">
+      <a href="#quote" class="card fade-up delay-1" style="text-align: center; text-decoration: none; cursor: pointer;" onclick="document.getElementById('service').value='cybersecurity'">
+        <div style="font-size: 2rem; margin-bottom: 0.75rem;">🔒</div>
+        <h4>Security Audit</h4>
+        <p style="font-size: 0.85rem;">Find vulnerabilities before hackers do</p>
+        <div style="margin-top: 1rem; color: var(--primary); font-size: 0.85rem; font-weight: 600;">From $499 →</div>
+      </a>
+      <a href="#quote" class="card fade-up delay-2" style="text-align: center; text-decoration: none; cursor: pointer;" onclick="document.getElementById('service').value='msp'">
+        <div style="font-size: 2rem; margin-bottom: 0.75rem;">🖥️</div>
+        <h4>Managed IT</h4>
+        <p style="font-size: 0.85rem;">Flat-rate monthly IT management</p>
+        <div style="margin-top: 1rem; color: var(--primary); font-size: 0.85rem; font-weight: 600;">From $500/mo →</div>
+      </a>
+      <a href="#quote" class="card fade-up delay-3" style="text-align: center; text-decoration: none; cursor: pointer;" onclick="document.getElementById('service').value='repair'">
+        <div style="font-size: 2rem; margin-bottom: 0.75rem;">⚙️</div>
+        <h4>Computer Repair</h4>
+        <p style="font-size: 0.85rem;">Including micro soldering &amp; data recovery</p>
+        <div style="margin-top: 1rem; color: var(--primary); font-size: 0.85rem; font-weight: 600;">$49 diagnostic →</div>
+      </a>
+      <a href="#quote" class="card fade-up delay-4" style="text-align: center; text-decoration: none; cursor: pointer;" onclick="document.getElementById('service').value='electrical'">
+        <div style="font-size: 2rem; margin-bottom: 0.75rem;">⚡</div>
+        <h4>Electrical</h4>
+        <p style="font-size: 0.85rem;">Panels, EV chargers, low-voltage</p>
+        <div style="margin-top: 1rem; color: var(--accent); font-size: 0.85rem; font-weight: 600;">Free estimate →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">FAQ</div>
+      <h2>Common Questions</h2>
+    </div>
+
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+
+      <div class="card fade-up" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>Do you offer emergency support?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>Yes. MSP clients get 24/7 emergency support as part of their plan. For non-MSP clients, we offer emergency on-call service — call (951) 555-0100 and select the emergency option. Emergency rates apply.</p>
+        </div>
+      </div>
+
+      <div class="card fade-up delay-1" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>How far do you travel for on-site work?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>We're based in Temecula and regularly serve the entire Inland Empire (Riverside and San Bernardino counties) plus North San Diego County — Fallbrook, Murrieta, Menifee, Lake Elsinore, and beyond. For larger projects, we travel further. Just ask.</p>
+        </div>
+      </div>
+
+      <div class="card fade-up delay-2" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>Can you handle both IT and electrical on the same project?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>That's our specialty. When you're building a server room, doing an office build-out, or installing infrastructure, we handle the IT design AND the electrical work — no hand-offs between two separate contractors. One point of contact, one invoice.</p>
+        </div>
+      </div>
+
+      <div class="card fade-up delay-3" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>What's the diagnostic fee for computer repair?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>Our diagnostic fee is $49 and is applied toward the cost of any repair. If you choose not to proceed after diagnosis, you pay the $49 and get a full written report of what we found.</p>
+        </div>
+      </div>
+
+      <div class="card fade-up" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>Do MSP contracts require a long-term commitment?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>We offer month-to-month and annual contracts. Annual contracts receive a 10% discount. We believe in earning your business every month — not locking you in.</p>
+        </div>
+      </div>
+
+      <div class="card fade-up delay-1" onclick="toggleFaq(this)" style="cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h4>Are you licensed and insured?</h4>
+          <span class="faq-icon" style="color: var(--primary); font-size: 1.25rem; transition: transform 0.3s;">+</span>
+        </div>
+        <div class="faq-answer" style="display: none; margin-top: 1rem;">
+          <p>Yes. Our electrical partner Charles Garcia is a licensed electrician in California. We carry general liability insurance. Ask us for proof of license and insurance — we'll provide it immediately.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo logo" style="margin-bottom: 1rem; display: inline-flex;">
+          <div class="logo-icon" style="width:36px;height:36px;font-size:1rem;border-radius:8px;">⚡</div>
+          <div style="margin-left: 0.6rem; font-weight: 800; font-size: 0.95rem;">Tech &amp; <span style="color: var(--primary);">Electrical</span></div>
+        </a>
+        <p>Full-spectrum IT and electrical solutions for businesses in Temecula and the Inland Empire.</p>
+        <div class="footer-badges">
+          <span class="footer-badge">Security+</span>
+          <span class="footer-badge">MS CompSci</span>
+          <span class="footer-badge">Licensed Electrical</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html#cyber">Cybersecurity</a></li>
+          <li><a href="services.html#msp">MSP / MSSP</a></li>
+          <li><a href="services.html#repair">Computer Repair</a></li>
+          <li><a href="services.html#electrical">Electrical</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+1-951-555-0100">(951) 555-0100</a></li>
+          <li><a href="mailto:info@techelectricalsvc.com">info@techelectricalsvc.com</a></li>
+          <li><a href="#">Temecula, CA 92590</a></li>
+          <li><a href="contact.html">Mon–Sat: 8am–6pm</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Tech &amp; Electrical Services LLC. All rights reserved. Temecula, CA.</p>
+      <p style="color: var(--text-muted);">Licensed · Insured · Certified</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+
+  function submitForm() {
+    const required = ['firstName', 'lastName', 'email', 'service', 'message'];
+    let valid = true;
+    required.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.style.borderColor = '#ef4444';
+        el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.1)';
+        valid = false;
+        setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 3000);
+      }
+    });
+
+    if (!valid) return;
+
+    // Simulate form submission
+    const form = document.getElementById('contactForm');
+    const success = document.getElementById('formSuccess');
+
+    // Hide all form fields
+    Array.from(form.children).forEach(child => {
+      if (!child.classList.contains('form-success')) child.style.display = 'none';
+    });
+
+    success.classList.add('show');
+    success.style.display = 'block';
+  }
+
+  function toggleFaq(card) {
+    const answer = card.querySelector('.faq-answer');
+    const icon = card.querySelector('.faq-icon');
+    const isOpen = answer.style.display !== 'none';
+    answer.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '+' : '−';
+    icon.style.transform = isOpen ? '' : 'rotate(45deg)';
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; observer.observe(el);
+  });
+</script>
+</body>
+</html>

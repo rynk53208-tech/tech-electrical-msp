@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TES LLC Ticketing{% endblock %}
+
+{% block content %}
+<!-- Stats Row -->
+<div class="stats-grid">
+  <div class="stat-card total">
+    <div class="stat-num">{{ stats.total }}</div>
+    <div class="stat-label">Total Tickets</div>
+  </div>
+  <div class="stat-card open">
+    <div class="stat-num">{{ stats.open }}</div>
+    <div class="stat-label">Open</div>
+  </div>
+  <div class="stat-card in-progress">
+    <div class="stat-num">{{ stats.in_progress }}</div>
+    <div class="stat-label">In Progress</div>
+  </div>
+  <div class="stat-card pending">
+    <div class="stat-num">{{ stats.pending }}</div>
+    <div class="stat-label">Pending</div>
+  </div>
+  <div class="stat-card resolved">
+    <div class="stat-num">{{ stats.resolved }}</div>
+    <div class="stat-label">Resolved</div>
+  </div>
+  <div class="stat-card critical">
+    <div class="stat-num">{{ stats.critical }}</div>
+    <div class="stat-label">🚨 Critical</div>
+  </div>
+</div>
+
+<!-- Filter / Search Bar -->
+<div class="filter-bar">
+  <form method="GET" action="{{ url_for('dashboard') }}" class="filter-form">
+    <input type="text" name="q" placeholder="🔍 Search tickets, clients..." class="filter-input"
+           value="{{ filters.q }}"/>
+    <select name="status" class="filter-select">
+      <option value="">All Statuses</option>
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if filters.status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <select name="category" class="filter-select">
+      <option value="">All Categories</option>
+      {% for c in categories %}
+        <option value="{{ c }}" {% if filters.category == c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <select name="priority" class="filter-select">
+      <option value="">All Priorities</option>
+      {% for p in priorities %}
+        <option value="{{ p }}" {% if filters.priority == p %}selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-ghost btn-sm">Clear</a>
+  </form>
+</div>
+
+<!-- Ticket Table -->
+<div class="table-wrap">
+  <table class="ticket-table">
+    <thead>
+      <tr>
+        <th>Ticket ID</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assigned To</th>
+        <th>Client</th>
+        <th>SLA</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if not tickets %}
+      <tr>
+        <td colspan="10" class="empty-row">No tickets found. <a href="{{ url_for('submit_ticket') }}">Submit one?</a></td>
+      </tr>
+      {% endif %}
+      {% for t in tickets %}
+      <tr class="ticket-row priority-{{ t.priority | lower | replace(' ', '-') }}">
+        <td><a href="{{ url_for('ticket_detail', ticket_id=t.ticket_id) }}" class="ticket-id-link">{{ t.ticket_id }}</a></td>
+        <td class="ticket-title-cell">
+          <a href="{{ url_for('ticket_detail', ticket_id=t.ticket_id) }}">{{ t.title }}</a>
+        </td>
+        <td><span class="badge category-badge cat-{{ t.category | lower | replace(' ', '-') }}">{{ t.category }}</span></td>
+        <td><span class="badge priority-badge pri-{{ t.priority | lower }}">{{ t.priority }}</span></td>
+        <td><span class="badge status-badge stat-{{ t.status | lower | replace(' ', '-') }}">{{ t.status }}</span></td>
+        <td class="assigned-cell">{{ t.assigned_to }}</td>
+        <td class="client-cell">
+          <div class="client-name">{{ t.client_name }}</div>
+          <div class="client-email">{{ t.client_email }}</div>
+        </td>
+        <td>
+          {% set sla = t.sla_status() %}
+          {% if sla == 'breached' %}
+            <span class="sla-badge sla-breached" title="SLA Breached">🔴 Breached</span>
+          {% elif sla == 'warning' %}
+            <span class="sla-badge sla-warning" title="Response SLA at risk">🟡 At Risk</span>
+          {% else %}
+            <span class="sla-badge sla-ok">🟢 OK</span>
+          {% endif %}
+        </td>
+        <td class="date-cell">
+          {{ t.created_at.strftime('%m/%d %H:%M') if t.created_at else '—' }}
+        </td>
+        <td>
+          <a href="{{ url_for('ticket_detail', ticket_id=t.ticket_id) }}" class="btn btn-ghost btn-xs">View →</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" class="page-about">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About Tech & Electrical Services LLC — Meet the team behind Temecula's premier IT and electrical services company. Security+, MS Computer Science, and defense contractor background." />
+  <title>About Us | Tech &amp; Electrical Services LLC — Temecula, CA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Tech &amp; <span>Electrical</span></div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="services.html" class="nav-services">Services</a>
+      <a href="about.html" class="nav-about active">About</a>
+      <a href="portfolio.html" class="nav-portfolio">Portfolio</a>
+      <a href="contact.html" class="nav-contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <span class="nav-phone">📞 <a href="tel:+1-951-555-0100">(951) 555-0100</a></span>
+      <a href="contact.html" class="btn btn-primary btn-sm">Get a Quote</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ──────────────────────────────────────────── -->
+<section style="padding: 8rem 0 4rem; background: var(--bg-section); position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,212,255,0.06) 0%, transparent 70%);"></div>
+  <div class="container text-center" style="position: relative; z-index: 1;">
+    <div class="section-tag">About Us</div>
+    <h1>Built on Real Experience,<br><span class="gradient-text">Not Just Certifications</span></h1>
+    <p style="max-width: 620px; margin: 1.25rem auto; font-size: 1.1rem;">We started Tech &amp; Electrical Services LLC because businesses in Temecula deserve enterprise-grade technology support without the enterprise price tag — and a team that actually shows up.</p>
+  </div>
+</section>
+
+<!-- ── ORIGIN STORY ───────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="align-items: center; gap: 4rem;">
+      <div class="fade-up">
+        <div class="section-tag">Our Story</div>
+        <h2>From Help Desk to<br>Defense Contractor</h2>
+        <p style="margin-bottom: 1.25rem;">Irvin started in IT at USGS on the help desk — the ground floor. Over the next decade, he worked his way through Desktop Support at Tree Line Biosciences, PC Technician roles (II and III) at Northrop Grumman, and eventually into Cyber Systems Engineering and DevOps &amp; Cloud Infrastructure at one of the world's leading defense contractors.</p>
+        <p style="margin-bottom: 1.25rem;">Along the way, he earned a <strong style="color: var(--text-primary);">BS in Information Technology</strong> and a <strong style="color: var(--text-primary);">MS in Computer Science</strong>, and picked up his <strong style="color: var(--primary);">CompTIA Security+</strong> certification. He also taught himself micro soldering and board-level hardware repair — the kind of skills that let him fix what other technicians turn away.</p>
+        <p>Tech &amp; Electrical Services LLC was born from a simple idea: bring that same level of expertise to local businesses in Temecula, but with the responsiveness and personal service that big IT firms can't offer.</p>
+      </div>
+      <div class="fade-up delay-2">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>USGS — IT Help Desk</h4>
+              <p style="font-size: 0.9rem;">Started at the foundation: real support for real users. Learned how IT actually works in practice.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Tree Line Biosciences — Desktop Support</h4>
+              <p style="font-size: 0.9rem;">Biotech environment: high-stakes systems, regulated data, precision required.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Northrop Grumman — PC Tech II/III → Cyber Systems → DevOps</h4>
+              <p style="font-size: 0.9rem;">Defense-grade security, classified systems, and cloud infrastructure at national scale.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Tech &amp; Electrical Services LLC — Temecula</h4>
+              <p style="font-size: 0.9rem;">Bringing it all back local. Enterprise knowledge, small-business pricing, personal service.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TEAM ───────────────────────────────────────────────── -->
+<section class="section" style="background: var(--bg-section);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">The Team</div>
+      <h2>People Who Actually Know Their Stuff</h2>
+    </div>
+
+    <div class="grid-2" style="max-width: 900px; margin: 0 auto;">
+      <!-- Irvin -->
+      <div class="team-card fade-up delay-1">
+        <div class="team-avatar primary">IA</div>
+        <div class="name">Irvin Avitia</div>
+        <div class="role">Founder &amp; Lead Engineer</div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">10+ years across help desk, biotech, and defense contracting. Specializes in cybersecurity, DevOps, cloud infrastructure, and hardware repair — including micro soldering.</p>
+        <div class="certs">
+          <span class="cert-badge">Security+</span>
+          <span class="cert-badge">BS Information Technology</span>
+          <span class="cert-badge">MS Computer Science</span>
+          <span class="cert-badge">DevOps / Cloud</span>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: left;">
+          <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;">Expertise</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+            <span class="tag">Cybersecurity</span>
+            <span class="tag">DevOps</span>
+            <span class="tag">Cloud Infrastructure</span>
+            <span class="tag purple">Micro Soldering</span>
+            <span class="tag green">Hardware Repair</span>
+            <span class="tag">MSP Operations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charles -->
+      <div class="team-card fade-up delay-2">
+        <div class="team-avatar accent">CG</div>
+        <div class="name">Charles Garcia</div>
+        <div class="role">Electrical Partner &amp; Licensed Electrician</div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Licensed electrician with commercial and residential experience. Charles handles all electrical work — panels, low-voltage, EV chargers, and server room power design — fully permitted and up to code.</p>
+        <div class="certs">
+          <span class="cert-badge amber">Licensed Electrician — CA</span>
+          <span class="cert-badge amber">Commercial &amp; Residential</span>
+          <span class="cert-badge amber">Low-Voltage Specialist</span>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: left;">
+          <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;">Expertise</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+            <span class="tag amber">Panel Upgrades</span>
+            <span class="tag amber">Low-Voltage</span>
+            <span class="tag amber">EV Chargers</span>
+            <span class="tag amber">Commercial Wiring</span>
+            <span class="tag amber">Permits &amp; Inspections</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VALUES ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Our Values</div>
+      <h2>How We Operate</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card fade-up delay-1">
+        <div class="card-icon">🎯</div>
+        <h3>Competence First</h3>
+        <p>We don't bluff. If we don't know something, we say so and find someone who does. Our recommendations come from real experience, not sales scripts.</p>
+      </div>
+      <div class="card fade-up delay-2">
+        <div class="card-icon purple">⚡</div>
+        <h3>Speed &amp; Reliability</h3>
+        <p>We respond fast, show up when we say we will, and finish on time. Downtime costs you money — we take that seriously.</p>
+      </div>
+      <div class="card fade-up delay-3">
+        <div class="card-icon green">🤝</div>
+        <h3>Honest Pricing</h3>
+        <p>Flat rates, no hidden fees, no upselling you things you don't need. We'd rather earn a long-term client than squeeze a one-time invoice.</p>
+      </div>
+      <div class="card fade-up delay-1">
+        <div class="card-icon accent">🔒</div>
+        <h3>Security by Default</h3>
+        <p>Every project gets security-minded design. We don't add it as an afterthought — it's how we build from day one.</p>
+      </div>
+      <div class="card fade-up delay-2">
+        <div class="card-icon">📚</div>
+        <h3>Always Learning</h3>
+        <p>Technology changes fast. We stay current through continuous education, certifications, and hands-on experimentation in our lab.</p>
+      </div>
+      <div class="card fade-up delay-3">
+        <div class="card-icon green">🌱</div>
+        <h3>Local &amp; Invested</h3>
+        <p>We're Temecula locals. When your business grows, our community grows. We're invested in your success beyond the invoice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CREDENTIALS ────────────────────────────────────────── -->
+<section class="section" style="background: var(--bg-section);">
+  <div class="container">
+    <div class="grid-2" style="align-items: center; gap: 4rem;">
+      <div class="fade-up">
+        <div class="section-tag">Credentials &amp; Background</div>
+        <h2>The Qualifications<br>That Back It Up</h2>
+        <p style="margin-bottom: 2rem;">Our work is backed by formal education, recognized certifications, and real-world experience in regulated, high-security environments.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div class="contact-item">
+            <div class="contact-item-icon">🎓</div>
+            <div>
+              <div class="contact-item-label">Education</div>
+              <div class="contact-item-value">BS Information Technology · MS Computer Science</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🏆</div>
+            <div>
+              <div class="contact-item-label">Certification</div>
+              <div class="contact-item-value">CompTIA Security+ (DoD 8570 Compliant)</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🏭</div>
+            <div>
+              <div class="contact-item-label">Industry Experience</div>
+              <div class="contact-item-value">Northrop Grumman (Defense) · Biotech · Federal Government</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">⚡</div>
+            <div>
+              <div class="contact-item-label">Electrical</div>
+              <div class="contact-item-value">Licensed Electrician Partner (CA) — Commercial &amp; Residential</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🔧</div>
+            <div>
+              <div class="contact-item-label">Hardware</div>
+              <div class="contact-item-value">Self-taught micro soldering &amp; board-level repair specialist</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up delay-2">
+        <div class="highlight-box" style="text-align: center; padding: 2.5rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🛡️</div>
+          <h3 style="margin-bottom: 1rem;">DoD-Grade Security Experience</h3>
+          <p style="font-size: 0.95rem;">When you hire us, you're getting the same security mindset used to protect national defense systems — applied to your business network and data.</p>
+          <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="cert-badge" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Zero-Trust Architecture</span>
+            <span class="cert-badge" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">NIST Framework</span>
+            <span class="cert-badge" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">SIEM / SOC</span>
+            <span class="cert-badge" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Cloud Security</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem; text-align: center;">
+          <div style="font-size: 1.5rem; margin-bottom: 0.75rem;">📍</div>
+          <h4>Locally Rooted</h4>
+          <p style="font-size: 0.9rem;">Based in Temecula, CA. Fast on-site response for clients throughout the Inland Empire and North San Diego County.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────── -->
+<section class="cta-section section-sm">
+  <div class="container">
+    <div class="cta-inner fade-up">
+      <div class="section-tag">Work With Us</div>
+      <h2>Let's Talk About What<br>Your Business Actually Needs</h2>
+      <p>No scripts. No upsells. Just a real conversation about your technology — and how we can help.</p>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary btn-lg">Book a Free Call</a>
+        <a href="services.html" class="btn btn-secondary btn-lg">View Services</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo logo" style="margin-bottom: 1rem; display: inline-flex;">
+          <div class="logo-icon" style="width:36px;height:36px;font-size:1rem;border-radius:8px;">⚡</div>
+          <div style="margin-left: 0.6rem; font-weight: 800; font-size: 0.95rem;">Tech &amp; <span style="color: var(--primary);">Electrical</span></div>
+        </a>
+        <p>Full-spectrum IT and electrical solutions for businesses in Temecula and the Inland Empire.</p>
+        <div class="footer-badges">
+          <span class="footer-badge">Security+</span>
+          <span class="footer-badge">MS CompSci</span>
+          <span class="footer-badge">Licensed Electrical</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html#cyber">Cybersecurity</a></li>
+          <li><a href="services.html#msp">MSP / MSSP</a></li>
+          <li><a href="services.html#repair">Computer Repair</a></li>
+          <li><a href="services.html#electrical">Electrical</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+1-951-555-0100">(951) 555-0100</a></li>
+          <li><a href="mailto:info@techelectricalsvc.com">info@techelectricalsvc.com</a></li>
+          <li><a href="#">Temecula, CA 92590</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Tech &amp; Electrical Services LLC. All rights reserved. Temecula, CA.</p>
+      <p style="color: var(--text-muted);">Licensed · Insured · Certified</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; observer.observe(el);
+  });
+</script>
+</body>
+</html>

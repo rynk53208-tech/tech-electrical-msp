@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irvin's Tech Services - Pricing Calculator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #eee;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 span { font-size: 1.5rem; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        .result {
+            background: rgba(0,212,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 16px;
+        }
+        .result-label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        .result-value.monthly { color: #4ade80; }
+        .tier-info {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        .tier-info strong { color: #fff; }
+        .msp-tiers {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .tier-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            background: transparent;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .tier-btn:hover { border-color: #00d4ff; color: #fff; }
+        .tier-btn.active {
+            background: #00d4ff;
+            color: #1a1a2e;
+            border-color: #00d4ff;
+            font-weight: bold;
+        }
+        .summary {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #00d4ff;
+        }
+        .summary h2 { margin-bottom: 20px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .summary-item {
+            background: rgba(255,255,255,0.03);
+            padding: 16px;
+            border-radius: 8px;
+        }
+        .summary-item .label { color: #888; font-size: 0.85rem; }
+        .summary-item .value { font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 4px; }
+        .total-row {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .total-row .label { font-size: 1.2rem; }
+        .total-row .value { font-size: 2rem; font-weight: bold; color: #4ade80; }
+        .notes {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255,193,7,0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Irvin's Tech Services</h1>
+        <p class="subtitle">Quick Quote Calculator</p>
+
+        <div class="calculator">
+            <!-- MSP Pricing -->
+            <div class="card">
+                <h2><span>🖥️</span> MSP (Managed Services)</h2>
+                <label>Select Tier</label>
+                <div class="msp-tiers">
+                    <button class="tier-btn active" data-tier="basic" data-price="125">Basic<br>$125/user</button>
+                    <button class="tier-btn" data-tier="standard" data-price="150">Standard<br>$150/user</button>
+                    <button class="tier-btn" data-tier="premium" data-price="175">Premium<br>$175/user</button>
+                </div>
+                <label>Number of Users</label>
+                <input type="number" id="msp-users" value="10" min="1" oninput="calculate()">
+                <div class="result">
+                    <div class="result-label">Monthly Cost</div>
+                    <div class="result-value monthly" id="msp-total">$1,250/mo</div>
+                </div>
+                <div class="tier-info" id="tier-info">
+                    <strong>Basic:</strong> Monitoring, patch management, antivirus, email support
+                </div>
+            </div>
+
+            <!-- Hourly Services -->
+            <div class="card">
+                <h2><span>⏱️</span> Hourly Services</h2>
+                <label>Service Type</label>
+                <select id="hourly-type" onchange="calculate()">
+                    <option value="125">General IT Support - $125/hr</option>
+                    <option value="150">Advanced/Specialized - $150/hr</option>
+                    <option value="175">Cybersecurity Consulting - $125/hr</option>
+                    <option value="150">Cloud/DevOps - $150/hr</option>
+                    <option value="custom">Emergency/After Hours ($175-225/hr)</option>
+                </select>
+                <div id="emergency-rate-group" style="display:none;">
+                    <label>Emergency Rate ($/hr)</label>
+                    <input type="number" id="emergency-rate" value="200" min="175" max="225" oninput="calculate()">
+                </div>
+                <label>Hours</label>
+                <input type="number" id="hourly-hours" value="2" min="0.5" step="0.5" oninput="calculate()">
+                <div class="result">
+                    <div class="result-label">Total</div>
+                    <div class="result-value" id="hourly-total">$250</div>
+                </div>
+                <div class="tier-info">
+                    <strong>Emergency:</strong> After-hours, weekends, holidays. 2hr minimum.
+                </div>
+            </div>
+
+            <!-- Project Estimate -->
+            <div class="card">
+                <h2><span>📦</span> Project Estimate</h2>
+                <label>Project Type</label>
+                <select id="project-type" onchange="calculate()">
+                    <option value="remote">Remote Support Session - $150</option>
+                    <option value="onsite">On-Site Visit - $200</option>
+                    <option value="setup">New Computer Setup - $175</option>
+                    <option value="network">Network Setup (Basic) - $500</option>
+                    <option value="network-adv">Network Setup (Advanced) - $1,200</option>
+                    <option value="security">Security Audit - $800</option>
+                    <option value="migration">Data Migration - $400</option>
+                    <option value="custom">Custom Project (enter hours)</option>
+                </select>
+                <div id="custom-hours-group" style="display:none;">
+                    <label>Estimated Hours</label>
+                    <input type="number" id="project-hours" value="4" min="1" oninput="calculate()">
+                    <label>Rate ($/hr)</label>
+                    <input type="number" id="project-rate" value="125" oninput="calculate()">
+                </div>
+                <div class="result">
+                    <div class="result-label">Estimate</div>
+                    <div class="result-value" id="project-total">$150</div>
+                </div>
+            </div>
+
+            <!-- Hardware/Repair -->
+            <div class="card">
+                <h2><span>🔧</span> Hardware & Repair</h2>
+                <label>Service</label>
+                <select id="hardware-type" onchange="calculate()">
+                    <option value="80">Diagnostic Fee - $80</option>
+                    <option value="120">Standard Repair - $120</option>
+                    <option value="200">Board Level/Micro Solder - $200+</option>
+                    <option value="150">Data Recovery (Standard) - $150</option>
+                    <option value="350">Data Recovery (Advanced) - $350</option>
+                    <option value="100">Virus/Malware Removal - $100</option>
+                </select>
+                <label>Quantity</label>
+                <input type="number" id="hardware-qty" value="1" min="1" oninput="calculate()">
+                <div class="result">
+                    <div class="result-label">Total</div>
+                    <div class="result-value" id="hardware-total">$80</div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary">
+                <h2>📋 Quote Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">MSP Monthly</div>
+                        <div class="value" id="sum-msp">$1,250</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Hourly Services</div>
+                        <div class="value" id="sum-hourly">$250</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Project</div>
+                        <div class="value" id="sum-project">$150</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Hardware/Repair</div>
+                        <div class="value" id="sum-hardware">$80</div>
+                    </div>
+                </div>
+                <div class="total-row">
+                    <span class="label">Total One-Time</span>
+                    <span class="value" id="total-onetime">$480</span>
+                </div>
+                <div class="total-row">
+                    <span class="label">Total Monthly (Recurring)</span>
+                    <span class="value" id="total-monthly">$1,250</span>
+                </div>
+                <div class="notes">
+                    💡 <strong>Pricing Tiers:</strong><br>
+                    • MSP: $125-175/user/month (Basic → Standard → Premium)<br>
+                    • Hourly: $125-175/hr (General → Specialized)<br>
+                    • Emergency: $175-225/hr (2hr minimum, after-hours/weekends)<br>
+                    <br>
+                    Prices are estimates. Final pricing depends on scope, travel, and complexity.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tierInfo = {
+            basic: '<strong>Basic:</strong> Monitoring, patch management, antivirus, email support',
+            standard: '<strong>Standard:</strong> Basic + remote desktop, backup monitoring, helpdesk (9-5)',
+            premium: '<strong>Premium:</strong> Standard + 24/7 support, advanced security, SIEM, vCISO'
+        };
+
+        // MSP Tier buttons
+        document.querySelectorAll('.tier-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('tier-info').innerHTML = tierInfo[this.dataset.tier];
+                calculate();
+            });
+        });
+
+        function formatCurrency(amount) {
+            return '$' + amount.toLocaleString();
+        }
+
+        function calculate() {
+            // MSP
+            const selectedTier = document.querySelector('.tier-btn.active');
+            const mspPrice = parseInt(selectedTier.dataset.price);
+            const mspUsers = parseInt(document.getElementById('msp-users').value) || 0;
+            const mspTotal = mspPrice * mspUsers;
+            document.getElementById('msp-total').textContent = formatCurrency(mspTotal) + '/mo';
+
+            // Hourly
+            const hourlyType = document.getElementById('hourly-type');
+            const emergencyRateGroup = document.getElementById('emergency-rate-group');
+            let hourlyRate;
+            
+            if (hourlyType.value === 'custom') {
+                emergencyRateGroup.style.display = 'block';
+                hourlyRate = parseInt(document.getElementById('emergency-rate').value) || 200;
+            } else {
+                emergencyRateGroup.style.display = 'none';
+                hourlyRate = parseInt(hourlyType.value);
+            }
+            const hourlyHours = parseFloat(document.getElementById('hourly-hours').value) || 0;
+            const hourlyTotal = hourlyRate * hourlyHours;
+            document.getElementById('hourly-total').textContent = formatCurrency(hourlyTotal);
+
+            // Project
+            const projectType = document.getElementById('project-type').value;
+            const customHoursGroup = document.getElementById('custom-hours-group');
+            let projectTotal = 0;
+
+            if (projectType === 'custom') {
+                customHoursGroup.style.display = 'block';
+                const hours = parseFloat(document.getElementById('project-hours').value) || 0;
+                const rate = parseInt(document.getElementById('project-rate').value) || 125;
+                projectTotal = hours * rate;
+            } else {
+                customHoursGroup.style.display = 'none';
+                const projectPrices = {
+                    remote: 150,
+                    onsite: 200,
+                    setup: 175,
+                    network: 500,
+                    'network-adv': 1200,
+                    security: 800,
+                    migration: 400
+                };
+                projectTotal = projectPrices[projectType] || 0;
+            }
+            document.getElementById('project-total').textContent = formatCurrency(projectTotal);
+
+            // Hardware
+            const hardwarePrice = parseInt(document.getElementById('hardware-type').value);
+            const hardwareQty = parseInt(document.getElementById('hardware-qty').value) || 1;
+            const hardwareTotal = hardwarePrice * hardwareQty;
+            document.getElementById('hardware-total').textContent = formatCurrency(hardwareTotal);
+
+            // Summary
+            const onetime = hourlyTotal + projectTotal + hardwareTotal;
+            document.getElementById('sum-msp').textContent = formatCurrency(mspTotal);
+            document.getElementById('sum-hourly').textContent = formatCurrency(hourlyTotal);
+            document.getElementById('sum-project').textContent = formatCurrency(projectTotal);
+            document.getElementById('sum-hardware').textContent = formatCurrency(hardwareTotal);
+            document.getElementById('total-onetime').textContent = formatCurrency(onetime);
+            document.getElementById('total-monthly').textContent = formatCurrency(mspTotal);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

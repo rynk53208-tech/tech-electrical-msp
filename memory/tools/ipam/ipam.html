@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Address Manager - Tech & Electrical Services LLC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0f1627 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(15, 22, 39, 0.95);
+            border-bottom: 2px solid #00d4ff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+            color: #0a0f1e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(245, 158, 11, 0.3);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(15, 22, 39, 0.7);
+            border-right: 2px solid #00d4ff;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #00d4ff;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            color: #a0a0a0;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border-left-color: #00d4ff;
+        }
+
+        .nav-item.active {
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+            border-left-color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff, #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: #808080;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(20, 30, 50, 0.8);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(10, 15, 30, 0.8);
+            border: 1px solid #00d4ff;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: "Courier New", monospace;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+            background: rgba(10, 15, 30, 1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(20, 30, 50, 0.6);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #00d4ff;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-available {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .badge-allocated {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .badge-reserved {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .badge-gateway {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .badge-dhcp {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00a8cc);
+            transition: width 0.3s ease;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(20, 30, 50, 0.8);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #808080;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            flex: 1;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .btn-success:hover {
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0f1627;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .ip-display {
+            font-family: "Courier New", monospace;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .device-type-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 4px;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 2px solid #00d4ff;
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+            }
+
+            .nav-section {
+                margin-bottom: 0;
+                margin-right: 30px;
+                min-width: 200px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo-icon">🌐</div>
+            <div class="header-title">IP Address Manager</div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-secondary" onclick="exportData()">📥 Export CSV</button>
+            <button class="btn btn-secondary" onclick="exportJSON()">📄 Export JSON</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">📊 Dashboard</div>
+                <div class="nav-item active" onclick="switchView('dashboard')">Overview</div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">🔧 Management</div>
+                <div class="nav-item" onclick="switchView('subnets')">Subnets</div>
+                <div class="nav-item" onclick="switchView('devices')">Devices</div>
+                <div class="nav-item" onclick="switchView('dhcp')">DHCP Ranges</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">📋 Tools</div>
+                <div class="nav-item" onclick="switchView('allocation')">IP Allocation</div>
+                <div class="nav-item" onclick="switchView('availability')">Availability</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div class="view active" id="dashboard">
+                <h1 class="page-title">IP Address Manager Dashboard</h1>
+                <p class="page-subtitle">Track, manage, and monitor your network IP space</p>
+
+                <div class="stat-grid" id="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-subnets">0</div>
+                        <div class="stat-label">Subnets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-ips">0</div>
+                        <div class="stat-label">Total IPs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="allocated-ips">0</div>
+                        <div class="stat-label">Allocated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="available-ips">0</div>
+                        <div class="stat-label">Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-devices">0</div>
+                        <div class="stat-label">Devices</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="utilization">0%</div>
+                        <div class="stat-label">Utilization</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Quick Actions</div>
+                    <button class="btn btn-primary" onclick="openAddSubnetModal()" style="margin-right: 10px; margin-bottom: 10px;">+ Add Subnet</button>
+                    <button class="btn btn-primary" onclick="openAddDeviceModal()" style="margin-bottom: 10px;">+ Add Device</button>
+                    <button class="btn btn-primary" onclick="openAddDHCPModal()">+ Add DHCP Range</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Recent Activity</div>
+                    <div id="activity-log" style="font-size: 14px; color: #a0a0a0;">
+                        <p>No activity yet. Start by adding a subnet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subnets View -->
+            <div class="view" id="subnets">
+                <h1 class="page-title">Subnet Management</h1>
+                <p class="page-subtitle">Create and manage network subnets</p>
+
+                <button class="btn btn-primary" onclick="openAddSubnetModal()" style="margin-bottom: 20px;">+ Add New Subnet</button>
+
+                <div class="table-container">
+                    <table id="subnets-table">
+                        <thead>
+                            <tr>
+                                <th>Network</th>
+                                <th>CIDR</th>
+                                <th>Gateway</th>
+                                <th>Usable IPs</th>
+                                <th>Allocated</th>
+                                <th>Utilization</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subnets-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Devices View -->
+            <div class="view" id="devices">
+                <h1 class="page-title">Device Assignment</h1>
+                <p class="page-subtitle">Manage IP assignments to devices</p>
+
+                <button class="btn btn-primary" onclick="openAddDeviceModal()" style="margin-bottom: 20px;">+ Assign Device</button>
+
+                <div class="table-container">
+                    <table id="devices-table">
+                        <thead>
+                            <tr>
+                                <th>Device Name</th>
+                                <th>Type</th>
+                                <th>IP Address</th>
+                                <th>Subnet</th>
+                                <th>MAC Address</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devices-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- DHCP View -->
+            <div class="view" id="dhcp">
+                <h1 class="page-title">DHCP Range Management</h1>
+                <p class="page-subtitle">Configure DHCP ranges for automatic IP assignment</p>
+
+                <button class="btn btn-primary" onclick="openAddDHCPModal()" style="margin-bottom: 20px;">+ Add DHCP Range</button>
+
+                <div class="table-container">
+                    <table id="dhcp-table">
+                        <thead>
+                            <tr>
+                                <th>Subnet</th>
+                                <th>Start IP</th>
+                                <th>End IP</th>
+                                <th>Total IPs</th>
+                                <th>Allocated</th>
+                                <th>Available</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dhcp-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- IP Allocation View -->
+            <div class="view" id="allocation">
+                <h1 class="page-title">IP Allocation Tracker</h1>
+                <p class="page-subtitle">View detailed IP allocation status by subnet</p>
+
+                <div id="allocation-container"></div>
+            </div>
+
+            <!-- Availability View -->
+            <div class="view" id="availability">
+                <h1 class="page-title">IP Availability</h1>
+                <p class="page-subtitle">Monitor available and allocated IP addresses</p>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-available">0</div>
+                        <div class="stat-label">Total Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-allocated">0</div>
+                        <div class="stat-label">Total Allocated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-reserved">0</div>
+                        <div class="stat-label">Total Reserved</div>
+                    </div>
+                </div>
+
+                <div id="availability-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Subnet Modal -->
+    <div class="modal" id="subnet-modal">
+        <div class="modal-content">
+            <div class="modal-header">Add Subnet</div>
+            <form onsubmit="addSubnet(event)">
+                <div class="form-group">
+                    <label class="form-label">Network Address (e.g., 192.168.1.0)</label>
+                    <input type="text" id="subnet-network" required placeholder="192.168.1.0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">CIDR Notation (e.g., 24)</label>
+                    <input type="number" id="subnet-cidr" min="1" max="32" required placeholder="24">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gateway IP</label>
+                    <input type="text" id="subnet-gateway" required placeholder="192.168.1.1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="subnet-description" placeholder="e.g., Main Office LAN"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('subnet-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Subnet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div class="modal" id="device-modal">
+        <div class="modal-content">
+            <div class="modal-header">Assign Device to IP</div>
+            <form onsubmit="addDevice(event)">
+                <div class="form-group">
+                    <label class="form-label">Device Name</label>
+                    <input type="text" id="device-name" required placeholder="e.g., Office Workstation">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Device Type</label>
+                    <select id="device-type" required>
+                        <option value="">Select Type...</option>
+                        <option value="Workstation">Workstation</option>
+                        <option value="Server">Server</option>
+                        <option value="Router">Router</option>
+                        <option value="Switch">Switch</option>
+                        <option value="Firewall">Firewall</option>
+                        <option value="Printer">Printer</option>
+                        <option value="Camera">Camera</option>
+                        <option value="Access Point">Access Point</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">IP Address</label>
+                    <input type="text" id="device-ip" required placeholder="192.168.1.100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">MAC Address (Optional)</label>
+                    <input type="text" id="device-mac" placeholder="00:11:22:33:44:55">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="device-status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Reserved">Reserved</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea id="device-notes" placeholder="Additional notes..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('device-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Device</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add DHCP Modal -->
+    <div class="modal" id="dhcp-modal">
+        <div class="modal-content">
+            <div class="modal-header">Add DHCP Range</div>
+            <form onsubmit="addDHCP(event)">
+                <div class="form-group">
+                    <label class="form-label">Subnet</label>
+                    <select id="dhcp-subnet" required>
+                        <option value="">Select Subnet...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start IP</label>
+                    <input type="text" id="dhcp-start" required placeholder="192.168.1.100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">End IP</label>
+                    <input type="text" id="dhcp-end" required placeholder="192.168.1.200">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Lease Time (hours)</label>
+                    <input type="number" id="dhcp-lease" value="24" min="1" max="720">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('dhcp-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add DHCP Range</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let ipamData = {
+            subnets: [],
+            devices: [],
+            dhcpRanges: [],
+            activity: []
+        };
+
+        // Load sample data
+        function initializeSampleData() {
+            ipamData = {
+                subnets: [
+                    { id: 1, network: '192.168.1.0', cidr: 24, gateway: '192.168.1.1', description: 'Main Office LAN', tags: ['office', 'main'] },
+                    { id: 2, network: '192.168.2.0', cidr: 24, gateway: '192.168.2.1', description: 'IT Lab Network', tags: ['lab', 'testing'] },
+                    { id: 3, network: '10.0.0.0', cidr: 16, gateway: '10.0.0.1', description: 'Data Center', tags: ['dc', 'servers'] }
+                ],
+                devices: [
+                    { id: 1, name: 'Main Router', type: 'Router', ip: '192.168.1.1', subnet: '192.168.1.0/24', mac: '00:11:22:33:44:00', status: 'Active', notes: 'Primary gateway' },
+                    { id: 2, name: 'Office Workstation 1', type: 'Workstation', ip: '192.168.1.10', subnet: '192.168.1.0/24', mac: '00:11:22:33:44:11', status: 'Active', notes: '' },
+                    { id: 3, name: 'File Server', type: 'Server', ip: '192.168.1.50', subnet: '192.168.1.0/24', mac: '00:11:22:33:44:22', status: 'Active', notes: 'Primary backup storage' },
+                    { id: 4, name: 'Lab Firewall', type: 'Firewall', ip: '192.168.2.1', subnet: '192.168.2.0/24', mac: '00:11:22:33:44:33', status: 'Active', notes: '' },
+                    { id: 5, name: 'Lab Server', type: 'Server', ip: '10.0.0.10', subnet: '10.0.0.0/16', mac: '00:11:22:33:44:44', status: 'Active', notes: 'Development environment' }
+                ],
+                dhcpRanges: [
+                    { id: 1, subnet: '192.168.1.0/24', startIp: '192.168.1.100', endIp: '192.168.1.200', leaseTime: 24, allocated: 15 },
+                    { id: 2, subnet: '192.168.2.0/24', startIp: '192.168.2.100', endIp: '192.168.2.200', leaseTime: 24, allocated: 8 }
+                ],
+                activity: [
+                    { timestamp: new Date(Date.now() - 3600000), action: 'Added subnet 10.0.0.0/16' },
+                    { timestamp: new Date(Date.now() - 7200000), action: 'Assigned IP 192.168.1.50 to File Server' },
+                    { timestamp: new Date(Date.now() - 10800000), action: 'Created DHCP range for 192.168.1.0/24' }
+                ]
+            };
+            loadFromStorage();
+        }
+
+        // Local storage
+        function loadFromStorage() {
+            const stored = localStorage.getItem('ipamData');
+            if (stored) {
+                try {
+                    ipamData = JSON.parse(stored);
+                } catch (e) {
+                    console.error('Failed to load data from storage', e);
+                }
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('ipamData', JSON.stringify(ipamData));
+        }
+
+        // UI Functions
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(viewName).classList.add('active');
+            event.target.classList.add('active');
+
+            updateAllViews();
+        }
+
+        function updateAllViews() {
+            updateStats();
+            updateSubnetsTable();
+            updateDevicesTable();
+            updateDHCPTable();
+            updateAllocationView();
+            updateAvailabilityView();
+        }
+
+        function updateStats() {
+            const totalSubnets = ipamData.subnets.length;
+            const totalDevices = ipamData.devices.length;
+            let totalIPs = 0;
+            let allocatedIPs = 0;
+
+            ipamData.subnets.forEach(subnet => {
+                const hosts = Math.pow(2, 32 - parseInt(subnet.cidr)) - 2;
+                totalIPs += hosts;
+            });
+
+            allocatedIPs = ipamData.devices.length;
+            const availableIPs = totalIPs - allocatedIPs;
+            const utilization = totalIPs > 0 ? Math.round((allocatedIPs / totalIPs) * 100) : 0;
+
+            document.getElementById('total-subnets').textContent = totalSubnets;
+            document.getElementById('total-ips').textContent = totalIPs;
+            document.getElementById('allocated-ips').textContent = allocatedIPs;
+            document.getElementById('available-ips').textContent = availableIPs;
+            document.getElementById('total-devices').textContent = totalDevices;
+            document.getElementById('utilization').textContent = utilization + '%';
+            document.getElementById('total-available').textContent = availableIPs;
+            document.getElementById('total-allocated').textContent = allocatedIPs;
+            document.getElementById('total-reserved').textContent = ipamData.dhcpRanges.reduce((sum, r) => sum + r.allocated, 0);
+        }
+
+        function updateSubnetsTable() {
+            const tbody = document.getElementById('subnets-body');
+            tbody.innerHTML = '';
+
+            ipamData.subnets.forEach(subnet => {
+                const hosts = Math.pow(2, 32 - parseInt(subnet.cidr)) - 2;
+                const allocated = ipamData.devices.filter(d => d.subnet === `${subnet.network}/${subnet.cidr}`).length;
+                const utilization = Math.round((allocated / hosts) * 100);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="ip-display">${subnet.network}</td>
+                    <td>/${subnet.cidr}</td>
+                    <td class="ip-display">${subnet.gateway}</td>
+                    <td>${hosts}</td>
+                    <td>${allocated}</td>
+                    <td>
+                        <div class="progress-bar" style="width: 100px;">
+                            <div class="progress-fill" style="width: ${utilization}%"></div>
+                        </div>
+                        ${utilization}%
+                    </td>
+                    <td>${subnet.description}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSubnet(${subnet.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateDevicesTable() {
+            const tbody = document.getElementById('devices-body');
+            tbody.innerHTML = '';
+
+            ipamData.devices.forEach(device => {
+                const row = document.createElement('tr');
+                const statusBadge = device.status === 'Active' ? 'badge-allocated' : 'badge-reserved';
+                row.innerHTML = `
+                    <td>${device.name}</td>
+                    <td><span class="device-type-icon">${device.type.charAt(0)}</span>${device.type}</td>
+                    <td class="ip-display">${device.ip}</td>
+                    <td>${device.subnet}</td>
+                    <td style="font-size: 12px; font-family: monospace;">${device.mac}</td>
+                    <td><span class="badge ${statusBadge}">${device.status}</span></td>
+                    <td>${device.notes}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteDevice(${device.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateDHCPTable() {
+            const tbody = document.getElementById('dhcp-body');
+            tbody.innerHTML = '';
+
+            ipamData.dhcpRanges.forEach(range => {
+                const row = document.createElement('tr');
+                const available = 100 - range.allocated; // Simplified
+                row.innerHTML = `
+                    <td>${range.subnet}</td>
+                    <td class="ip-display">${range.startIp}</td>
+                    <td class="ip-display">${range.endIp}</td>
+                    <td>256</td>
+                    <td>${range.allocated}</td>
+                    <td>${available}</td>
+                    <td><span class="badge badge-dhcp">Active</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteDHCP(${range.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateAllocationView() {
+            const container = document.getElementById('allocation-container');
+            container.innerHTML = '';
+
+            ipamData.subnets.forEach(subnet => {
+                const subnetDevices = ipamData.devices.filter(d => d.subnet === `${subnet.network}/${subnet.cidr}`);
+                const hosts = Math.pow(2, 32 - parseInt(subnet.cidr)) - 2;
+                const utilization = Math.round((subnetDevices.length / hosts) * 100);
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '20px';
+                card.innerHTML = `
+                    <div class="card-title">${subnet.network}/${subnet.cidr}</div>
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Allocation</span>
+                            <span>${subnetDevices.length}/${hosts} IPs</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${utilization}%"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: #808080;">
+                        <p><strong>${subnet.description}</strong></p>
+                        <p>Devices allocated: ${subnetDevices.length}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateAvailabilityView() {
+            const container = document.getElementById('availability-container');
+            container.innerHTML = '';
+
+            ipamData.subnets.forEach(subnet => {
+                const hosts = Math.pow(2, 32 - parseInt(subnet.cidr)) - 2;
+                const allocated = ipamData.devices.filter(d => d.subnet === `${subnet.network}/${subnet.cidr}`).length;
+                const available = hosts - allocated;
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '20px';
+                card.innerHTML = `
+                    <div class="card-title">${subnet.network}/${subnet.cidr}</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                        <div style="background: rgba(16,185,129,0.1); padding: 10px; border-radius: 4px; text-align: center;">
+                            <div style="color: #10b981; font-weight: 700; font-size: 20px;">${available}</div>
+                            <div style="color: #10b981; font-size: 12px;">Available</div>
+                        </div>
+                        <div style="background: rgba(245,158,11,0.1); padding: 10px; border-radius: 4px; text-align: center;">
+                            <div style="color: #f59e0b; font-weight: 700; font-size: 20px;">${allocated}</div>
+                            <div style="color: #f59e0b; font-size: 12px;">Allocated</div>
+                        </div>
+                        <div style="background: rgba(139,92,246,0.1); padding: 10px; border-radius: 4px; text-align: center;">
+                            <div style="color: #a78bfa; font-weight: 700; font-size: 20px;">${hosts}</div>
+                            <div style="color: #a78bfa; font-size: 12px;">Total Usable</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateActivityLog() {
+            const container = document.getElementById('activity-log');
+            container.innerHTML = '';
+
+            ipamData.activity.slice(-5).reverse().forEach(entry => {
+                const time = entry.timestamp.toLocaleTimeString();
+                const div = document.createElement('p');
+                div.innerHTML = `<strong>${time}:</strong> ${entry.action}`;
+                container.appendChild(div);
+            });
+        }
+
+        // Form handlers
+        function openAddSubnetModal() {
+            document.getElementById('subnet-modal').classList.add('active');
+        }
+
+        function openAddDeviceModal() {
+            document.getElementById('device-modal').classList.add('active');
+        }
+
+        function openAddDHCPModal() {
+            const select = document.getElementById('dhcp-subnet');
+            select.innerHTML = '<option value="">Select Subnet...</option>';
+            ipamData.subnets.forEach(subnet => {
+                const option = document.createElement('option');
+                option.value = `${subnet.network}/${subnet.cidr}`;
+                option.textContent = `${subnet.network}/${subnet.cidr}`;
+                select.appendChild(option);
+            });
+            document.getElementById('dhcp-modal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function addSubnet(event) {
+            event.preventDefault();
+            const subnet = {
+                id: Date.now(),
+                network: document.getElementById('subnet-network').value,
+                cidr: parseInt(document.getElementById('subnet-cidr').value),
+                gateway: document.getElementById('subnet-gateway').value,
+                description: document.getElementById('subnet-description').value
+            };
+            ipamData.subnets.push(subnet);
+            ipamData.activity.push({ timestamp: new Date(), action: `Added subnet ${subnet.network}/${subnet.cidr}` });
+            saveToStorage();
+            showToast(`Subnet ${subnet.network}/${subnet.cidr} added successfully`);
+            closeModal('subnet-modal');
+            document.getElementById('subnet-modal').querySelector('form').reset();
+            updateAllViews();
+        }
+
+        function addDevice(event) {
+            event.preventDefault();
+            const device = {
+                id: Date.now(),
+                name: document.getElementById('device-name').value,
+                type: document.getElementById('device-type').value,
+                ip: document.getElementById('device-ip').value,
+                subnet: ipamData.subnets.length > 0 ? `${ipamData.subnets[0].network}/${ipamData.subnets[0].cidr}` : 'Unknown',
+                mac: document.getElementById('device-mac').value,
+                status: document.getElementById('device-status').value,
+                notes: document.getElementById('device-notes').value
+            };
+            ipamData.devices.push(device);
+            ipamData.activity.push({ timestamp: new Date(), action: `Assigned ${device.name} to ${device.ip}` });
+            saveToStorage();
+            showToast(`Device ${device.name} added successfully`);
+            closeModal('device-modal');
+            document.getElementById('device-modal').querySelector('form').reset();
+            updateAllViews();
+        }
+
+        function addDHCP(event) {
+            event.preventDefault();
+            const dhcp = {
+                id: Date.now(),
+                subnet: document.getElementById('dhcp-subnet').value,
+                startIp: document.getElementById('dhcp-start').value,
+                endIp: document.getElementById('dhcp-end').value,
+                leaseTime: parseInt(document.getElementById('dhcp-lease').value),
+                allocated: 0
+            };
+            ipamData.dhcpRanges.push(dhcp);
+            ipamData.activity.push({ timestamp: new Date(), action: `Created DHCP range ${dhcp.startIp} - ${dhcp.endIp}` });
+            saveToStorage();
+            showToast(`DHCP range added successfully`);
+            closeModal('dhcp-modal');
+            document.getElementById('dhcp-modal').querySelector('form').reset();
+            updateAllViews();
+        }
+
+        function deleteSubnet(id) {
+            if (confirm('Delete this subnet? Associated devices will not be deleted.')) {
+                ipamData.subnets = ipamData.subnets.filter(s => s.id !== id);
+                saveToStorage();
+                showToast('Subnet deleted');
+                updateAllViews();
+            }
+        }
+
+        function deleteDevice(id) {
+            if (confirm('Delete this device assignment?')) {
+                ipamData.devices = ipamData.devices.filter(d => d.id !== id);
+                saveToStorage();
+                showToast('Device deleted');
+                updateAllViews();
+            }
+        }
+
+        function deleteDHCP(id) {
+            if (confirm('Delete this DHCP range?')) {
+                ipamData.dhcpRanges = ipamData.dhcpRanges.filter(r => r.id !== id);
+                saveToStorage();
+                showToast('DHCP range deleted');
+                updateAllViews();
+            }
+        }
+
+        // Export functions
+        function exportCSV() {
+            let csv = 'SUBNETS\n';
+            csv += 'Network,CIDR,Gateway,Description\n';
+            ipamData.subnets.forEach(s => {
+                csv += `${s.network},${s.cidr},${s.gateway},"${s.description}"\n`;
+            });
+
+            csv += '\nDEVICES\n';
+            csv += 'Device Name,Type,IP Address,Subnet,MAC Address,Status,Notes\n';
+            ipamData.devices.forEach(d => {
+                csv += `"${d.name}","${d.type}","${d.ip}","${d.subnet}","${d.mac}","${d.status}","${d.notes}"\n`;
+            });
+
+            csv += '\nDHCP RANGES\n';
+            csv += 'Subnet,Start IP,End IP,Lease Time,Allocated\n';
+            ipamData.dhcpRanges.forEach(r => {
+                csv += `"${r.subnet}","${r.startIp}","${r.endIp}","${r.leaseTime}h","${r.allocated}"\n`;
+            });
+
+            downloadFile(csv, 'ipam-export.csv', 'text/csv');
+        }
+
+        function exportJSON() {
+            const json = JSON.stringify(ipamData, null, 2);
+            downloadFile(json, 'ipam-export.json', 'application/json');
+        }
+
+        function exportData() {
+            exportCSV();
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`${filename} downloaded`);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initializeSampleData();
+            updateAllViews();
+            updateActivityLog();
+
+            // Close modals on background click
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal.id);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+Discovery Script (2-3 minutes):
+- Purpose: qualify fit and uncover pain points around uptime, incidents, backup disaster recovery, and security posture.
+- Probing questions:
+  - What systems keep you up at night (critical apps, backups, remote access)?
+  - How do you currently handle incident response and change management?
+  - What would a 2x improvement in uptime mean for your business?
+  - Do you have regulated compliance concerns (PCI, HIPAA, etc.)?
+- Suggested next steps: share a tailored 30-min DevSecOps cadence; schedule a demo or pilot.

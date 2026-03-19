@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: #ecf0f1;
+            border: 2px dashed #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #95a5a6;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .company-details {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h1 {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .invoice-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .invoice-meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .invoice-meta-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Bill To / Ship To Section */
+        .billing-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .billing-box h3 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .billing-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Line Items Table */
+        .line-items {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        thead {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 13px;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .totals-box {
+            width: 350px;
+        }
+
+        .totals-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .totals-line.total {
+            border-top: 2px solid #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding: 15px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .amount {
+            text-align: right;
+            color: #333;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-box h4 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            background-color: #ecf0f1;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .notes-box {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 3px solid #2c3e50;
+            margin-top: 20px;
+        }
+
+        .notes-box h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .notes-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+
+            .invoice-container {
+                max-width: 100%;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+        }
+
+        @page {
+            margin: 0.5in;
+        }
+
+        /* Utility Classes */
+        .print-button {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .print-button:hover {
+            background-color: #1a252f;
+        }
+
+        @media screen and only screen {
+            .print-only {
+                display: none;
+            }
+            
+            .no-print {
+                display: block;
+            }
+        }
+
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="company-info">
+                <div class="logo-placeholder">Logo</div>
+                <div class="company-name">Company Name</div>
+                <div class="company-details">
+                    <p>123 Business Street<br>
+                    City, State 12345<br>
+                    Phone: (555) 123-4567<br>
+                    Email: info@company.com</p>
+                </div>
+            </div>
+
+            <div class="invoice-title">
+                <h1>INVOICE</h1>
+                <div class="invoice-meta">
+                    <div class="invoice-meta-item">
+                        <span class="invoice-meta-label">Invoice #</span>
+                        <span>INV-2026-001</span>
+                    </div>
+                    <div class="invoice-meta-item">
+                        <span class="invoice-meta-label">Date</span>
+                        <span id="invoice-date">03/19/2026</span>
+                    </div>
+                    <div class="invoice-meta-item">
+                        <span class="invoice-meta-label">Due Date</span>
+                        <span id="due-date">04/18/2026</span>
+                    </div>
+                    <div class="invoice-meta-item">
+                        <span class="invoice-meta-label">Status</span>
+                        <span style="color: #27ae60; font-weight: 600;">Unpaid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Information -->
+        <div class="billing-section">
+            <div class="billing-box">
+                <h3>Bill To</h3>
+                <p>
+                    <strong>Client Name</strong><br>
+                    Client Company<br>
+                    456 Client Avenue<br>
+                    City, State 54321<br>
+                    contact@clientcompany.com
+                </p>
+            </div>
+
+            <div class="billing-box">
+                <h3>Ship To</h3>
+                <p>
+                    <strong>Client Name</strong><br>
+                    Client Company<br>
+                    456 Client Avenue<br>
+                    City, State 54321
+                </p>
+            </div>
+        </div>
+
+        <!-- Line Items -->
+        <div class="line-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-center" style="width: 80px;">Quantity</th>
+                        <th class="text-right" style="width: 100px;">Unit Rate</th>
+                        <th class="text-right" style="width: 100px;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Professional Services - Consulting</td>
+                        <td class="text-center">8</td>
+                        <td class="text-right">$150.00</td>
+                        <td class="text-right amount">$1,200.00</td>
+                    </tr>
+                    <tr>
+                        <td>Software License (Annual)</td>
+                        <td class="text-center">1</td>
+                        <td class="text-right">$500.00</td>
+                        <td class="text-right amount">$500.00</td>
+                    </tr>
+                    <tr>
+                        <td>Hardware - Equipment Installation & Setup</td>
+                        <td class="text-center">2</td>
+                        <td class="text-right">$450.00</td>
+                        <td class="text-right amount">$900.00</td>
+                    </tr>
+                    <tr>
+                        <td>Support & Maintenance (30 days)</td>
+                        <td class="text-center">1</td>
+                        <td class="text-right">$250.00</td>
+                        <td class="text-right amount">$250.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="totals-section">
+            <div class="totals-box">
+                <div class="totals-line">
+                    <span class="label">Subtotal</span>
+                    <span class="amount">$2,850.00</span>
+                </div>
+                <div class="totals-line">
+                    <span class="label">Tax (10%)</span>
+                    <span class="amount">$285.00</span>
+                </div>
+                <div class="totals-line">
+                    <span class="label">Discount</span>
+                    <span class="amount">$0.00</span>
+                </div>
+                <div class="totals-line total">
+                    <span>TOTAL DUE</span>
+                    <span>$3,135.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <div class="footer-columns">
+                <!-- Payment Terms -->
+                <div class="footer-box">
+                    <h4>Payment Terms</h4>
+                    <p>Net 30 days from invoice date. Late payments subject to 1.5% monthly interest charge.</p>
+                </div>
+
+                <!-- Accepted Payment Methods -->
+                <div class="footer-box">
+                    <h4>Accepted Payment Methods</h4>
+                    <div class="payment-methods">
+                        <span class="payment-badge">💳 Credit Card</span>
+                        <span class="payment-badge">🏦 Bank Transfer</span>
+                        <span class="payment-badge">💰 Check</span>
+                        <span class="payment-badge">📱 PayPal</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 12px;">
+                        Payment instructions:<br>
+                        Bank: XYZ Bank<br>
+                        Account: ****1234
+                    </p>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-box">
+                    <h4>Questions?</h4>
+                    <p>
+                        Contact us anytime:<br>
+                        Phone: (555) 123-4567<br>
+                        Email: billing@company.com<br>
+                        Website: www.company.com
+                    </p>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="notes-box">
+                <h4>📝 Additional Notes</h4>
+                <p>Thank you for your business! We appreciate the opportunity to work with you. If you have any questions regarding this invoice, please don't hesitate to contact us. All work is guaranteed for 30 days. Please refer to our terms and conditions for warranty details.</p>
+            </div>
+
+            <!-- Footer text -->
+            <p style="text-align: center; font-size: 11px; color: #95a5a6; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ecf0f1;">
+                This is an official invoice. Please retain for your records.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-populate dates
+        (function() {
+            const today = new Date();
+            const dueDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days later
+
+            const formatDate = (date) => {
+                return (date.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                       date.getDate().toString().padStart(2, '0') + '/' +
+                       date.getFullYear();
+            };
+
+            document.getElementById('invoice-date').textContent = formatDate(today);
+            document.getElementById('due-date').textContent = formatDate(dueDate);
+        })();
+    </script>
+</body>
+</html>

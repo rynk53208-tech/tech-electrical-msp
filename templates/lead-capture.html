@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free IT Security Assessment | Northrop-Grade Security for Your Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        header p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .subheader {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Main Content */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 60px 20px;
+            background-color: white;
+        }
+
+        .left-column h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #0066cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #1a1a2e;
+        }
+
+        .benefit-text p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid #0066cc;
+        }
+
+        .form-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #0066cc;
+            text-align: center;
+        }
+
+        .form-section p {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label:last-child {
+            margin-bottom: 0;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .cta-button:hover {
+            background-color: #0052a3;
+        }
+
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+
+        .disclaimer {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .disclaimer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        /* Highlights */
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 40px 20px;
+            background-color: #f5f5f5;
+        }
+
+        .highlight-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-card h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+
+        .highlight-card p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
+
+            .highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .left-column h2 {
+                font-size: 24px;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+        }
+
+        .testimonial {
+            background-color: #fff8e6;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .testimonial strong {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Get Your Free IT Security Assessment</h1>
+            <p>Identify critical vulnerabilities before attackers do</p>
+            <p class="subheader">Defense-grade security analysis for your business • No credit card required</p>
+        </div>
+    </header>
+
+    <div class="highlights">
+        <div class="highlight-card">
+            <h3>60 Min</h3>
+            <p>Complete vulnerability assessment</p>
+        </div>
+        <div class="highlight-card">
+            <h3>100%</h3>
+            <p>Actionable recommendations</p>
+        </div>
+        <div class="highlight-card">
+            <h3>$0</h3>
+            <p>No cost, no obligations</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="left-column">
+                <h2>Why This Assessment Matters</h2>
+
+                <div class="benefit">
+                    <div class="benefit-icon">✓</div>
+                    <div class="benefit-text">
+                        <h3>Find Hidden Vulnerabilities</h3>
+                        <p>Most companies don't realize their security gaps until it's too late. We identify risks your current tools miss.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">✓</div>
+                    <div class="benefit-text">
+                        <h3>Compliance Clarity</h3>
+                        <p>Are you audit-ready? We check against HIPAA, PCI-DSS, SOC 2, and industry-specific requirements.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">✓</div>
+                    <div class="benefit-text">
+                        <h3>Real Roadmap (Not Generic Checklists)</h3>
+                        <p>You get a customized 30/90/365-day remediation plan tailored to your business, not generic recommendations.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">✓</div>
+                    <div class="benefit-text">
+                        <h3>Enterprise-Grade Expertise</h3>
+                        <p>Analyzed by a Northrop Grumman-trained Cyber Systems Engineer. Real expertise applied to your business.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="benefit-icon">✓</div>
+                    <div class="benefit-text">
+                        <h3>No Fluff, Just Facts</h3>
+                        <p>We don't sell scare tactics. You get honest findings and clear prioritization of what actually matters.</p>
+                    </div>
+                </div>
+
+                <div class="testimonial">
+                    <strong>"We thought our security was solid until they found 7 critical issues in 60 minutes. Game-changer."</strong><br>
+                    — Sarah M., MSP Owner, San Diego
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Claim Your Assessment</h2>
+                <p>Schedule a time that works for you. We'll handle the rest.</p>
+
+                <form id="assessmentForm">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company">Company Name *</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companySize">Company Size *</label>
+                        <select id="companySize" name="companySize" required>
+                            <option value="">Select...</option>
+                            <option value="1-10">1-10 employees</option>
+                            <option value="11-50">11-50 employees</option>
+                            <option value="51-200">51-200 employees</option>
+                            <option value="201-500">201-500 employees</option>
+                            <option value="501+">501+ employees</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industry">Industry *</label>
+                        <select id="industry" name="industry" required>
+                            <option value="">Select...</option>
+                            <option value="MSP">Managed Service Provider (MSP)</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Financial">Financial Services</option>
+                            <option value="Legal">Legal</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Tech">Technology</option>
+                            <option value="Education">Education</option>
+                            <option value="Government">Government/Non-Profit</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label>What are your biggest security concerns? (Select all that apply)</label>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="ransomware">
+                                Ransomware & data breach protection
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="compliance">
+                                Compliance & audit readiness
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="infrastructure">
+                                Outdated infrastructure & technical debt
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="staffing">
+                                Limited security staffing/expertise
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="backup">
+                                Backup, disaster recovery & business continuity
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="concerns" value="vendor">
+                                Vendor/supply chain risk
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="cta-button">Schedule Your Free Assessment →</button>
+
+                    <p class="disclaimer">
+                        By submitting this form, you agree to be contacted about your security assessment. We never spam. 
+                        <a href="#">Privacy Policy</a> | <a href="#">Terms</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Cyber Systems | Defense-Grade Security for Mid-Market Business</p>
+            <p>Trusted by MSPs, IT leaders, and security professionals across California</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                companySize: document.getElementById('companySize').value,
+                industry: document.getElementById('industry').value,
+                concerns: Array.from(document.querySelectorAll('input[name="concerns"]:checked')).map(cb => cb.value),
+                submittedAt: new Date().toISOString()
+            };
+
+            // Log to console (in production, send to backend/CRM)
+            console.log('Form submitted:', formData);
+
+            // Show success message
+            alert('Thank you! Check your email for next steps. We\'ll be in touch within 24 hours.');
+
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>

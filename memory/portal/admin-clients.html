@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clients | Tech & Electrical Services Admin</title>
+  <link rel="stylesheet" href="portal.css">
+  <style>
+    .sidebar { background: #0f172a; }
+    .sidebar-header { border-bottom-color: rgba(255,255,255,0.06); }
+    .sidebar-logo { background: linear-gradient(135deg,#ef4444,#dc2626); }
+    .nav-item.active { background: linear-gradient(90deg,rgba(239,68,68,0.22),rgba(239,68,68,0.08)); }
+    .nav-item.active::before { background: #ef4444; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div class="sidebar-brand"><h2>Tech &amp; Electrical</h2><p>Admin Panel</p></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Overview</span>
+      <a href="admin-dashboard.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="admin-tickets.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+        All Tickets <span class="nav-badge">5</span>
+      </a>
+      <a href="reporting.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Reports
+      </a>
+      <span class="nav-section-label">Clients</span>
+      <a href="admin-clients.html" class="nav-item active">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Clients <span class="nav-badge info">24</span>
+      </a>
+      <span class="nav-section-label">Finance</span>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Invoices <span class="nav-badge warn">2</span>
+      </a>
+      <span class="nav-section-label">System</span>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626)">IA</div>
+        <div class="user-info">
+          <div class="user-name">Irvin Avitia</div>
+          <div class="user-role">Admin · Owner</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <a href="admin-dashboard.html">Admin</a>
+          <span>›</span>
+          <span class="current">Clients</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openAddClient()">+ Add Client</button>
+        <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Client Management</div>
+          <div class="page-subtitle">24 active clients · $8,450 MRR</div>
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="btn btn-secondary" onclick="exportCSV()">⬇️ Export</button>
+          <button class="btn btn-primary" onclick="openAddClient()">+ Add Client</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card">
+          <div class="stat-icon purple">👥</div>
+          <div class="stat-body"><div class="stat-label">Total Clients</div><div class="stat-value">24</div><div class="stat-change up">↑ 2 this month</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">📋</div>
+          <div class="stat-body"><div class="stat-label">On MSP Plan</div><div class="stat-value">18</div><div class="stat-change neutral">75% of clients</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">💰</div>
+          <div class="stat-body"><div class="stat-label">Monthly MRR</div><div class="stat-value">$8,450</div><div class="stat-change up">↑ 15% MoM</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red">⚠️</div>
+          <div class="stat-body"><div class="stat-label">With Overdue Invoice</div><div class="stat-value">2</div><div class="stat-change down">Action needed</div></div>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="card" style="padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+          <div class="search-bar" style="flex:1;min-width:200px">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" placeholder="Search clients..." oninput="filterClients(this.value)">
+          </div>
+          <select class="form-control" style="width:auto;padding:0.45rem 2rem 0.45rem 0.75rem" onchange="filterByPlan(this.value)">
+            <option value="">All Plans</option>
+            <option>MSP Professional</option>
+            <option>MSP Standard</option>
+            <option>MSP Essentials</option>
+            <option>On-demand</option>
+          </select>
+          <select class="form-control" style="width:auto;padding:0.45rem 2rem 0.45rem 0.75rem" onchange="filterByStatus(this.value)">
+            <option value="">All Status</option>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Clients Table -->
+      <div class="card">
+        <div class="table-wrapper" style="border:none;border-radius:0">
+          <table id="clientTable">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Plan</th>
+                <th>MRR</th>
+                <th>Open Tickets</th>
+                <th>Last Activity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">AC</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">Acme Corp</div><div style="font-size:0.72rem;color:var(--text-muted)">Temecula, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Jane Smith</div><div style="font-size:0.72rem;color:var(--text-muted)">jane@acme.com</div></td>
+                <td style="font-size:0.82rem">MSP Professional</td>
+                <td style="font-weight:600;color:var(--accent)">$1,800</td>
+                <td style="text-align:center"><span class="badge badge-progress" style="font-size:0.65rem">2</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">1h ago</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('Acme Corp')">View</button>
+                    <button class="btn btn-ghost btn-sm" onclick="alert('Edit')">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">BT</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">Barney's Tire Shop</div><div style="font-size:0.72rem;color:var(--text-muted)">Temecula, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Barney Rubble</div><div style="font-size:0.72rem;color:var(--text-muted)">barney@barneystire.com</div></td>
+                <td style="font-size:0.82rem">MSP Essentials</td>
+                <td style="font-weight:600;color:var(--accent)">$698</td>
+                <td style="text-align:center"><span class="badge badge-open" style="font-size:0.65rem">3 ⚠️</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">Just now</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('Barneys Tire Shop')">View</button>
+                    <button class="btn btn-ghost btn-sm">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">DF</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">DataFlow Inc</div><div style="font-size:0.72rem;color:var(--text-muted)">San Diego, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Mike Torres</div><div style="font-size:0.72rem;color:var(--text-muted)">admin@dataflow.io</div></td>
+                <td style="font-size:0.82rem">MSP Standard</td>
+                <td style="font-weight:600;color:var(--accent)">$1,200</td>
+                <td style="text-align:center"><span class="badge badge-resolved" style="font-size:0.65rem">0</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">Yesterday</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('DataFlow Inc')">View</button>
+                    <button class="btn btn-ghost btn-sm">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">SO</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">Smith Office</div><div style="font-size:0.72rem;color:var(--text-muted)">Murrieta, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Robert Smith</div><div style="font-size:0.72rem;color:var(--text-muted)">rsmith@smithoffice.com</div></td>
+                <td style="font-size:0.82rem">MSP Essentials</td>
+                <td style="font-weight:600;color:var(--accent)">$450</td>
+                <td style="text-align:center"><span class="badge badge-open" style="font-size:0.65rem">1</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">3h ago</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('Smith Office')">View</button>
+                    <button class="btn btn-ghost btn-sm">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">LL</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">Local Library</div><div style="font-size:0.72rem;color:var(--text-muted)">Temecula, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Patricia Lee</div><div style="font-size:0.72rem;color:var(--text-muted)">it@locallibrary.org</div></td>
+                <td style="font-size:0.82rem">On-demand</td>
+                <td style="font-weight:600;color:var(--text-secondary)">$350</td>
+                <td style="text-align:center"><span class="badge badge-progress" style="font-size:0.65rem">1</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">5h ago</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('Local Library')">View</button>
+                    <button class="btn btn-ghost btn-sm">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:linear-gradient(135deg,#ec4899,#db2777);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">TS</div>
+                    <div><div style="font-weight:500;font-size:0.9rem">Tech Startup LLC</div><div style="font-size:0.72rem;color:var(--text-muted)">San Diego, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem">Alex Chen</div><div style="font-size:0.72rem;color:var(--text-muted)">alex@techstartup.io</div></td>
+                <td style="font-size:0.82rem">MSP Standard</td>
+                <td style="font-weight:600;color:var(--accent)">$900</td>
+                <td style="text-align:center"><span class="badge badge-resolved" style="font-size:0.65rem">0</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">2d ago</td>
+                <td><span class="badge badge-active">Active</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm" onclick="viewClient('Tech Startup')">View</button>
+                    <button class="btn btn-ghost btn-sm">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:0.65rem">
+                    <div style="width:34px;height:34px;background:#9ca3af;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0">OD</div>
+                    <div><div style="font-weight:500;font-size:0.9rem;color:var(--text-secondary)">Old Client Co</div><div style="font-size:0.72rem;color:var(--text-muted)">Riverside, CA</div></div>
+                  </div>
+                </td>
+                <td><div style="font-size:0.82rem;color:var(--text-muted)">Tom Jones</div><div style="font-size:0.72rem;color:var(--text-muted)">tom@oldclient.com</div></td>
+                <td style="font-size:0.82rem;color:var(--text-muted)">On-demand</td>
+                <td style="font-weight:600;color:var(--text-muted)">$0</td>
+                <td style="text-align:center"><span class="badge badge-closed" style="font-size:0.65rem">0</span></td>
+                <td style="font-size:0.75rem;color:var(--text-muted)">45d ago</td>
+                <td><span class="badge badge-inactive">Inactive</span></td>
+                <td>
+                  <div style="display:flex;gap:0.4rem">
+                    <button class="btn btn-ghost btn-sm">View</button>
+                    <button class="btn btn-ghost btn-sm">Reactivate</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:1rem;border-top:1px solid var(--border-light);font-size:0.78rem;color:var(--text-muted)">
+          Showing 7 of 24 clients · <a href="#" style="color:var(--primary)">Load more</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="addClientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👤 Add New Client</div>
+      <button class="modal-close" onclick="closeAddClient()">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Company Name <span style="color:var(--danger)">*</span></label>
+        <input type="text" class="form-control" placeholder="Acme Corp">
+      </div>
+      <div class="form-group">
+        <label>Industry</label>
+        <select class="form-control">
+          <option>Select...</option>
+          <option>Automotive</option>
+          <option>Healthcare</option>
+          <option>Legal</option>
+          <option>Retail</option>
+          <option>Technology</option>
+          <option>Non-profit</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Primary Contact Name</label>
+        <input type="text" class="form-control" placeholder="Jane Smith">
+      </div>
+      <div class="form-group">
+        <label>Contact Email <span style="color:var(--danger)">*</span></label>
+        <input type="email" class="form-control" placeholder="jane@company.com">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" class="form-control" placeholder="(951) 555-0100">
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" class="form-control" placeholder="Temecula">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service Plan</label>
+        <select class="form-control">
+          <option>MSP Essentials ($450/mo)</option>
+          <option>MSP Standard ($900/mo)</option>
+          <option>MSP Professional ($1,800/mo)</option>
+          <option>On-demand (no contract)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Portal Access</label>
+        <select class="form-control">
+          <option>Yes — send invite email</option>
+          <option>No — skip for now</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea class="form-control" rows="2" placeholder="Any relevant notes about this client..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAddClient()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openAddClient() { document.getElementById('addClientModal').classList.add('open'); }
+function closeAddClient() { document.getElementById('addClientModal').classList.remove('open'); }
+document.getElementById('addClientModal').addEventListener('click', function(e) { if(e.target===this) closeAddClient(); });
+
+function saveClient() {
+  closeAddClient();
+  showToast('✅ Client added! Portal invite sent.');
+}
+
+function viewClient(name) {
+  alert(`Client detail view for "${name}"\n\nThis would open a full client profile with contact info, devices, ticket history, invoices, and service agreements.`);
+}
+
+function filterClients(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#clientTable tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function filterByPlan(plan) {
+  document.querySelectorAll('#clientTable tbody tr').forEach(row => {
+    row.style.display = !plan || row.textContent.includes(plan) ? '' : 'none';
+  });
+}
+
+function filterByStatus(status) {
+  document.querySelectorAll('#clientTable tbody tr').forEach(row => {
+    row.style.display = !status || row.textContent.includes(status) ? '' : 'none';
+  });
+}
+
+function exportCSV() {
+  showToast('⬇️ Exporting client list...');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#1a1a2e;color:#fff;padding:1rem 1.5rem;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:9999;font-size:0.9rem';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>

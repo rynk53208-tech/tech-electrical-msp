@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client FAQ - Managed IT Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #0d47a1;
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+        }
+
+        .search-btn {
+            padding: 12px 24px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #1565c0;
+        }
+
+        .clear-search {
+            display: none;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .clear-search:hover {
+            background: #e0e0e0;
+        }
+
+        .clear-search.active {
+            display: inline-block;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-filter {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .category-filter:hover {
+            border-color: #0d47a1;
+        }
+
+        .category-filter.active {
+            background: #0d47a1;
+            color: white;
+            border-color: #0d47a1;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .faq-section.active {
+            display: block;
+        }
+
+        .faq-section h2 {
+            font-size: 24px;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e3f2fd;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .faq-item.active-search {
+            display: block;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.3s ease;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+
+        .faq-question:hover {
+            background: #e3f2fd;
+        }
+
+        .faq-question.expanded {
+            background: #0d47a1;
+            color: white;
+        }
+
+        .faq-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.expanded .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .faq-question.expanded + .faq-answer {
+            max-height: 500px;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .faq-answer p {
+            margin-bottom: 12px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .faq-answer a {
+            color: #0d47a1;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .faq-answer a:hover {
+            border-bottom-color: #0d47a1;
+        }
+
+        .learn-more {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .learn-more:hover {
+            background: #0d47a1;
+            color: white;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .no-results h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #0d47a1;
+        }
+
+        .contact-section h2 {
+            font-size: 20px;
+            color: #0d47a1;
+            margin-bottom: 20px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            color: #0d47a1;
+            min-width: 30px;
+        }
+
+        .contact-info h3 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .contact-info p {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .contact-info a {
+            color: #0d47a1;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            font-size: 13px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            header {
+                page-break-after: avoid;
+            }
+
+            .search-container,
+            .category-nav,
+            .clear-search {
+                display: none;
+            }
+
+            .faq-section {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+
+            .faq-item {
+                display: block !important;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+                margin-bottom: 12px;
+            }
+
+            .faq-question {
+                background: #f0f0f0;
+                page-break-after: avoid;
+            }
+
+            .faq-question.expanded,
+            .faq-toggle {
+                display: none;
+            }
+
+            .faq-answer {
+                max-height: none !important;
+                padding: 15px 20px !important;
+            }
+
+            .contact-section {
+                page-break-inside: avoid;
+            }
+
+            footer {
+                page-break-before: avoid;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .category-nav {
+                gap: 8px;
+            }
+
+            .category-filter {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .faq-question {
+                padding: 14px 16px;
+            }
+
+            .faq-answer {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p>Find answers to common questions about our managed IT services</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchBox" class="search-box" placeholder="Search FAQ...">
+            <button id="searchBtn" class="search-btn">Search</button>
+            <button id="clearSearch" class="clear-search">Clear</button>
+        </div>
+
+        <!-- Category Navigation -->
+        <div class="category-nav">
+            <button class="category-filter active" data-category="all">All Categories</button>
+            <button class="category-filter" data-category="general">General IT</button>
+            <button class="category-filter" data-category="security">Security</button>
+            <button class="category-filter" data-category="billing">Billing</button>
+            <button class="category-filter" data-category="support">Support</button>
+            <button class="category-filter" data-category="technical">Technical</button>
+        </div>
+
+        <!-- General IT Section -->
+        <section class="faq-section active" data-category="general">
+            <h2>General IT & Managed Services</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is an MSP (Managed Service Provider)?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>An MSP is a company that proactively manages and maintains your IT infrastructure and systems. Rather than hiring an in-house IT team, we handle everything from network management, server maintenance, security monitoring, and user support — allowing you to focus on your core business.</p>
+                    <p>We use industry-leading monitoring tools to detect and resolve issues before they impact your operations, ensuring maximum uptime and security.</p>
+                    <a href="#" class="learn-more">Learn more about MSP services →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Why should I use managed services instead of hiring an in-house IT team?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Cost savings:</strong> MSP services typically cost 30–50% less than a full-time IT employee, with no recruitment, benefits, or training costs.</p>
+                    <p><strong>24/7 support:</strong> We're available around the clock, not just during business hours.</p>
+                    <p><strong>Expertise:</strong> Access to certified specialists in security, cloud, networking, and more.</p>
+                    <p><strong>Scalability:</strong> Services grow with your business — add or remove resources as needed.</p>
+                    <a href="#" class="learn-more">Compare costs →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What services are typically included in a managed services plan?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Standard services include:</p>
+                    <p>• 24/7 network monitoring and management<br>
+                    • Patch management and updates<br>
+                    • Help desk support via phone, email, and ticketing<br>
+                    • Backup and disaster recovery<br>
+                    • Security monitoring and threat detection<br>
+                    • Antivirus and malware protection<br>
+                    • Regular health checks and reports</p>
+                    <p>Additional services like cloud migration, cybersecurity consulting, and custom development are available as add-ons.</p>
+                    <a href="#" class="learn-more">View all services →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do you handle system upgrades and migrations?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We plan and execute system upgrades with zero downtime whenever possible. Our approach includes:</p>
+                    <p>• Assessment and planning<br>
+                    • Full data backup before any changes<br>
+                    • Staged rollouts to minimize disruption<br>
+                    • Testing on non-production systems first<br>
+                    • Post-migration validation and support</p>
+                    <p>For migrations, we provide detailed timelines and communicate every step of the process to your team.</p>
+                    <a href="#" class="learn-more">Request a migration consultation →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Security Section -->
+        <section class="faq-section" data-category="security">
+            <h2>Security & Data Protection</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What antivirus and malware protection do you provide?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We deploy enterprise-grade antivirus and anti-malware solutions on all devices, including:</p>
+                    <p>• Real-time threat detection and quarantine<br>
+                    • Ransomware protection<br>
+                    • Exploit prevention<br>
+                    • Regular definition updates (multiple times daily)<br>
+                    • Centralized reporting and quarantine management</p>
+                    <p>All solutions are industry-certified and receive regular security audits. We also perform quarterly penetration testing at no extra cost.</p>
+                    <a href="#" class="learn-more">View security solutions →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How often are backups performed and stored?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We follow the 3-2-1 backup rule:</p>
+                    <p>• <strong>3 copies:</strong> Original data + 2 backup copies<br>
+                    • <strong>2 media types:</strong> On-site disk storage + cloud redundancy<br>
+                    • <strong>1 off-site:</strong> Geographically isolated cloud backup</p>
+                    <p>Backup frequency varies by plan (typically daily to hourly for critical systems). Recovery time is typically 1–4 hours for most data. We test restores monthly to ensure reliability.</p>
+                    <a href="#" class="learn-more">Download our Backup & Recovery SLA →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is two-factor authentication (2FA) and why do I need it?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>2FA requires two verification steps to access your accounts: something you know (password) and something you have (phone, hardware key, app). Even if your password is compromised, hackers can't access your account without the second factor.</p>
+                    <p>We recommend 2FA for all critical accounts (email, cloud, VPN, admin panels). Implementation is simple — typically 2–5 minutes per account — and we provide setup guidance for your team.</p>
+                    <p>Popular options include Microsoft Authenticator, Google Authenticator, and hardware keys like YubiKey.</p>
+                    <a href="#" class="learn-more">2FA setup guide →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How is our data encrypted?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We use industry-standard encryption across multiple layers:</p>
+                    <p>• <strong>In transit:</strong> TLS 1.3 (256-bit) for all network communications<br>
+                    • <strong>At rest:</strong> AES-256 for file encryption (locally and in cloud)<br>
+                    • <strong>Backups:</strong> Encrypted before leaving your premises<br>
+                    • <strong>Device-level:</strong> BitLocker (Windows) and FileVault (Mac) enabled by default</p>
+                    <p>All encryption keys are managed securely, and we comply with HIPAA, GDPR, and other standards. Full documentation is available upon request.</p>
+                    <a href="#" class="learn-more">Encryption compliance details →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Are my systems compliant with industry standards (HIPAA, GDPR, SOC 2)?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. We maintain compliance with:</p>
+                    <p>• <strong>HIPAA:</strong> For healthcare data protection<br>
+                    • <strong>GDPR:</strong> For EU customer data<br>
+                    • <strong>SOC 2 Type II:</strong> Third-party audited security controls<br>
+                    • <strong>NIST Cybersecurity Framework:</strong> Industry standards implementation<br>
+                    • <strong>ISO 27001:</strong> Information security management</p>
+                    <p>We provide annual compliance reports, work with your auditors, and adjust security measures as standards evolve. Compliance is built into every service we provide.</p>
+                    <a href="#" class="learn-more">Request compliance documentation →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Billing Section -->
+        <section class="faq-section" data-category="billing">
+            <h2>Billing & Pricing</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How does managed services billing work?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We offer predictable, flat-rate monthly billing:</p>
+                    <p>• <strong>Per-device pricing:</strong> You pay a fixed rate per computer/server per month<br>
+                    • <strong>Tiered plans:</strong> Choose Essential, Professional, or Enterprise based on features needed<br>
+                    • <strong>No surprises:</strong> Price is locked in; no overage charges<br>
+                    • <strong>Volume discounts:</strong> Available for 50+ devices</p>
+                    <p>Billing includes all standard monitoring, support, and updates. One invoice, one date every month — easy to budget for.</p>
+                    <a href="#" class="learn-more">View pricing plans →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is included in each pricing tier?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Essential Plan:</strong> Basic monitoring, patch management, antivirus, standard support (business hours)</p>
+                    <p><strong>Professional Plan:</strong> Everything in Essential + 24/7 support, advanced threat detection, backup and recovery, phone support</p>
+                    <p><strong>Enterprise Plan:</strong> Everything in Professional + dedicated account manager, quarterly security audits, custom SLA, priority support (1-hour response)</p>
+                    <p>Each plan includes 24/7 remote access, monthly health reports, and unlimited user accounts. Compare plans side-by-side on our website.</p>
+                    <a href="#" class="learn-more">Compare pricing plans →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Are there setup fees or contract terms?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>No setup fees.</strong> We charge only for the services you use, starting with your first month of service.</p>
+                    <p><strong>Contract terms:</strong> Month-to-month or annual options. Annual commitments include a 10% discount and guaranteed pricing.</p>
+                    <p><strong>Cancellation:</strong> Cancel anytime with 30 days notice on month-to-month plans. Annual plans have a 90-day notice for prorated refunds.</p>
+                    <p>We're confident in our service — no lock-in required. Most clients stay with us for 3+ years.</p>
+                    <a href="#" class="learn-more">View contract terms →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What happens if I need additional services or want to add devices?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Scaling up is easy. Simply contact your account manager:</p>
+                    <p>• <strong>Add devices:</strong> Prorated billing from the day added<br>
+                    • <strong>Upgrade plan:</strong> Move to a higher tier anytime<br>
+                    • <strong>Custom services:</strong> Add security audits, cloud consulting, custom development<br>
+                    • <strong>Temporary needs:</strong> Request one-time services without long-term commitments</p>
+                    <p>Changes take effect immediately, and we adjust your next invoice accordingly. No penalties or surprises.</p>
+                    <a href="#" class="learn-more">Request a quote for add-on services →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How are invoices issued and what payment methods do you accept?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Invoicing:</strong> Emailed on the 1st of each month for the month ahead. Invoices are detailed and itemized.</p>
+                    <p><strong>Payment methods:</strong><br>
+                    • Credit card (auto-pay available)<br>
+                    • Bank transfer (ACH)<br>
+                    • Check (mailed to your address)<br>
+                    • Purchase order (for net-30 terms)</p>
+                    <p>Payment is due within 15 days of invoice date. Early payment discounts available. A late-payment reminder is sent automatically.</p>
+                    <a href="#" class="learn-more">Update payment information →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Section -->
+        <section class="faq-section" data-category="support">
+            <h2>Support & Service Levels</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I get technical support?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Support is available through multiple channels:</p>
+                    <p>• <strong>Phone:</strong> +1-XXX-XXX-XXXX (24/7 for Enterprise, business hours for other plans)<br>
+                    • <strong>Email:</strong> support@company.com<br>
+                    • <strong>Ticketing system:</strong> Portal available in your client dashboard<br>
+                    • <strong>Emergency hotline:</strong> For critical outages affecting multiple users</p>
+                    <p>Most issues are resolved remotely via secure screen sharing. If on-site assistance is needed, we dispatch a technician the same day (for Enterprise plans).</p>
+                    <a href="#" class="learn-more">Access the support portal →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What are your response and resolution times (SLA)?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Essential Plan:</strong> 4-hour response, next business day resolution</p>
+                    <p><strong>Professional Plan:</strong> 2-hour response, 4-hour resolution (non-critical); 1-hour response, same-day resolution (critical)</p>
+                    <p><strong>Enterprise Plan:</strong> 1-hour response, 2-hour resolution (critical); 30-minute response (emergencies)</p>
+                    <p>Critical issues include security incidents, data loss, or system outages. "Critical" is defined together during onboarding.</p>
+                    <p>We track against SLAs monthly and provide credit ($100–300) if we miss guaranteed response times.</p>
+                    <a href="#" class="learn-more">View full SLA details →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I speak to a dedicated account manager?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. Dedicated account managers are included with Enterprise plans and available as an add-on for Professional plans.</p>
+                    <p>Your account manager:</p>
+                    <p>• Reviews performance monthly<br>
+                    • Plans upgrades and optimizations<br>
+                    • Acts as your primary technical liaison<br>
+                    • Hosts quarterly business reviews<br>
+                    • Provides cell phone for urgent issues</p>
+                    <p>This personal relationship ensures your unique needs are always understood and prioritized.</p>
+                    <a href="#" class="learn-more">Upgrade to dedicated support →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What if I have an emergency outside business hours?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We maintain 24/7/365 support for all clients. If you experience a critical outage:</p>
+                    <p>• <strong>Call our emergency line:</strong> +1-XXX-XXX-XXXX (option for emergencies)<br>
+                    • <strong>An engineer responds within 15–30 minutes</strong> for critical production outages<br>
+                    • <strong>We work around the clock</strong> until the issue is resolved<br>
+                    • <strong>No emergency fees</strong> — included in all plans</p>
+                    <p>What qualifies as critical? System down, data loss risk, or security/compliance concerns. Minor issues may be logged for the next business day.</p>
+                    <a href="#" class="learn-more">Set up emergency contacts →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I submit feedback or file a complaint?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We value your feedback. Submit comments through:</p>
+                    <p>• <strong>Support portal:</strong> Use the feedback widget in your dashboard<br>
+                    • <strong>Email:</strong> feedback@company.com<br>
+                    • <strong>Account manager:</strong> Direct communication (Enterprise clients)<br>
+                    • <strong>Annual survey:</strong> Anonymous feedback collection</p>
+                    <p>Complaints are escalated to management and addressed within 5 business days. We track themes and adjust services accordingly.</p>
+                    <a href="#" class="learn-more">Submit feedback →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Section -->
+        <section class="faq-section" data-category="technical">
+            <h2>Technical & Compatibility</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What operating systems and devices do you support?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Desktops & Laptops:</strong> Windows 10/11, macOS (latest 2 versions), Linux (Ubuntu, CentOS)</p>
+                    <p><strong>Servers:</strong> Windows Server (2016+), Linux servers (all major distributions)</p>
+                    <p><strong>Mobile:</strong> iPhone/iPad, Android (business apps)</p>
+                    <p><strong>Printers:</strong> Network printers and multifunction devices</p>
+                    <p><strong>Networking:</strong> Routers, firewalls, switches from major vendors</p>
+                    <p>Older systems (Windows 7, legacy OS) can be supported at premium rates. Contact us for compatibility questions.</p>
+                    <a href="#" class="learn-more">View complete hardware requirements →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is remote access and how does it work?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Remote access allows our technicians (and authorized employees) to securely connect to your devices to troubleshoot and provide support. It works like:</p>
+                    <p>• We use secure, encrypted VPN technology<br>
+                    • Screen sharing shows what we're doing<br>
+                    • You can see and end the session anytime<br>
+                    • All remote sessions are monitored and logged<br>
+                    • No files are transferred without explicit permission</p>
+                    <p>Remote access dramatically speeds up support — most issues resolve in minutes instead of hours or days.</p>
+                    <a href="#" class="learn-more">Approve remote access for your devices →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How does your 24/7 monitoring work?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We deploy lightweight monitoring agents on all devices that:</p>
+                    <p>• Report system health (CPU, memory, disk, temperature) every 5 minutes<br>
+                    • Detect security threats and malware in real-time<br>
+                    • Log failed login attempts and suspicious activity<br>
+                    • Auto-alert our NOC (Network Operations Center) on critical events<br>
+                    • Use AI to predict and prevent failures before they happen</p>
+                    <p>Our NOC team is staffed 24/7/365. When an alert fires, a technician investigates within minutes. Most issues are fixed automatically or escalated to you with a solution.</p>
+                    <a href="#" class="learn-more">See monitoring dashboard →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Do you support VPN access for remote workers?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. We set up and manage enterprise-grade VPN for secure remote work:</p>
+                    <p>• <strong>Client VPN:</strong> Individual remote access for employees (Mac, Windows, Linux, mobile)<br>
+                    • <strong>Site-to-site VPN:</strong> Connect multiple office locations securely<br>
+                    • <strong>Multi-factor authentication:</strong> Integrated with your existing 2FA<br>
+                    • <strong>Split tunneling:</strong> Optional — send only work traffic through VPN for speed<br>
+                    • <strong>24/7 connectivity:</strong> Always-on VPN with automatic reconnection</p>
+                    <p>Setup is straightforward — employees download a profile and connect in seconds. We handle all updates and maintenance.</p>
+                    <a href="#" class="learn-more">Request VPN setup or troubleshooting →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Will your services work with our existing software and cloud platforms?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely. We integrate with:</p>
+                    <p>• <strong>Cloud platforms:</strong> Microsoft 365, Google Workspace, AWS, Azure, Salesforce<br>
+                    • <strong>Business software:</strong> QuickBooks, Slack, Zoom, Adobe Creative Suite, and thousands more<br>
+                    • <strong>Database systems:</strong> SQL Server, MySQL, PostgreSQL, MongoDB<br>
+                    • <strong>Legacy systems:</strong> We work with older software — though we may recommend upgrades for security</p>
+                    <p>During onboarding, we audit your current environment and confirm compatibility. If something isn't compatible, we find solutions or workarounds.</p>
+                    <a href="#" class="learn-more">Schedule a compatibility audit →</a>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What bandwidth or internet speed do I need?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Our monitoring and management traffic is **minimal**:</p>
+                    <p>• Monitoring uses ~500 KB per day per device (~0.004 Mbps average)<br>
+                    • Remote support uses 1–3 Mbps during active sessions<br>
+                    • Backups can be scheduled for off-peak hours to avoid congestion</p>
+                    <p><strong>Minimum recommended:</strong> 5 Mbps download / 1 Mbps upload per user</p>
+                    <p>If you have limited bandwidth (satellite, rural), we can optimize settings. Contact us to discuss your specific situation.</p>
+                    <a href="#" class="learn-more">Optimize for low-bandwidth environments →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults">
+            <h3>No results found</h3>
+            <p>Try different search terms or browse by category.</p>
+        </div>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h2>Still have questions? Let's chat.</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <div class="contact-info">
+                        <h3>Phone</h3>
+                        <p><a href="tel:+1-XXX-XXX-XXXX">+1-XXX-XXX-XXXX</a></p>
+                        <p style="font-size: 12px; color: #999; margin-top: 5px;">Available 24/7 for emergencies</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <div class="contact-info">
+                        <h3>Email</h3>
+                        <p><a href="mailto:support@company.com">support@company.com</a></p>
+                        <p style="font-size: 12px; color: #999; margin-top: 5px;">Response within 2 hours</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">🌐</span>
+                    <div class="contact-info">
+                        <h3>Online Portal</h3>
+                        <p><a href="#">client.portal.com</a></p>
+                        <p style="font-size: 12px; color: #999; margin-top: 5px;">Submit tickets, view status</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div class="contact-info">
+                        <h3>Office</h3>
+                        <p>123 Main Street<br>Tech City, TC 12345</p>
+                        <p style="font-size: 12px; color: #999; margin-top: 5px;">Mon–Fri, 9 AM–5 PM</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Managed IT Services. All rights reserved. | <a href="#" style="color: #4db8ff;">Privacy Policy</a> | <a href="#" style="color: #4db8ff;">Terms of Service</a></p>
+        <p style="font-size: 12px; margin-top: 10px;">Last updated: March 2024 | <a href="javascript:window.print()" style="color: #4db8ff;">Print this page</a></p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const searchBox = document.getElementById('searchBox');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearSearch = document.getElementById('clearSearch');
+        const categoryFilters = document.querySelectorAll('.category-filter');
+        const faqSections = document.querySelectorAll('.faq-section');
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        const noResults = document.getElementById('noResults');
+
+        let activeCategory = 'all';
+        let activeSearch = '';
+
+        // Accordion Toggle
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const isExpanded = question.classList.contains('expanded');
+                
+                // Close all others in the same category
+                faqQuestions.forEach(q => {
+                    if (q !== question && q.parentElement.parentElement === question.parentElement.parentElement) {
+                        q.classList.remove('expanded');
+                    }
+                });
+
+                // Toggle current
+                if (isExpanded) {
+                    question.classList.remove('expanded');
+                } else {
+                    question.classList.add('expanded');
+                }
+            });
+        });
+
+        // Category Filter
+        categoryFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                categoryFilters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                activeCategory = filter.dataset.category;
+                filterFAQ();
+            });
+        });
+
+        // Search Functionality
+        searchBtn.addEventListener('click', performSearch);
+        searchBox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        clearSearch.addEventListener('click', () => {
+            searchBox.value = '';
+            activeSearch = '';
+            clearSearch.classList.remove('active');
+            categoryFilters.forEach(f => f.classList.remove('active'));
+            categoryFilters[0].classList.add('active');
+            activeCategory = 'all';
+            filterFAQ();
+        });
+
+        function performSearch() {
+            activeSearch = searchBox.value.toLowerCase().trim();
+            if (activeSearch.length > 0) {
+                clearSearch.classList.add('active');
+            }
+            filterFAQ();
+        }
+
+        function filterFAQ() {
+            let hasResults = false;
+
+            faqSections.forEach(section => {
+                const sectionCategory = section.dataset.category;
+                const shouldShowSection = activeCategory === 'all' || activeCategory === sectionCategory;
+
+                if (shouldShowSection) {
+                    section.classList.add('active');
+
+                    const items = section.querySelectorAll('.faq-item');
+                    items.forEach(item => {
+                        const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                        const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                        const matches = activeSearch === '' || question.includes(activeSearch) || answer.includes(activeSearch);
+
+                        if (matches) {
+                            item.classList.add('active-search');
+                            hasResults = true;
+                        } else {
+                            item.classList.remove('active-search');
+                        }
+                    });
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            noResults.classList.toggle('show', !hasResults && activeSearch !== '');
+        }
+
+        // Initialize
+        filterFAQ();
+    </script>
+</body>
+</html>

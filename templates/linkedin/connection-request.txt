@@ -1,0 +1,2 @@
+LinkedIn Connection Request (short, value-based):
+Hi {Name}, I help MSPs tighten cybersecurity and runtime reliability with Northrop-grade practices—delivering fewer incidents and quicker remediation. If you’re exploring ways to reduce downtime this quarter, I’d value a quick connect.

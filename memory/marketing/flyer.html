@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech & Electrical Services LLC — Marketing Flyer</title>
+  <style>
+    /* ===== PRINT SETUP ===== */
+    @page {
+      size: 8.5in 11in;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 8.5in;
+      height: 11in;
+      background: #ffffff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #1a1a2e;
+      overflow: hidden;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ===== LAYOUT ===== */
+    .flyer {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 50%, #0a1628 100%);
+      padding: 0.38in 0.45in 0.3in;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.12) 0%, transparent 70%);
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00d4ff, #f59e0b, #00d4ff);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 0.22in;
+    }
+
+    .logo-mark {
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 68px;
+      height: 68px;
+      filter: drop-shadow(0 0 10px rgba(0,212,255,0.5));
+    }
+
+    .brand-text {
+      flex: 1;
+    }
+
+    .company-name {
+      font-size: 24pt;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .company-name span {
+      color: #00d4ff;
+    }
+
+    .tagline {
+      font-size: 9.5pt;
+      color: #94a3b8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .header-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      background: rgba(0,212,255,0.12);
+      border: 1px solid rgba(0,212,255,0.35);
+      color: #00d4ff;
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .badge.amber {
+      background: rgba(245,158,11,0.12);
+      border-color: rgba(245,158,11,0.35);
+      color: #f59e0b;
+    }
+
+    /* ===== HERO STRIP ===== */
+    .hero-strip {
+      background: linear-gradient(90deg, #00d4ff, #0099bb);
+      padding: 9px 0.45in;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .hero-strip p {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #0a0f1e;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-strip .highlight {
+      background: #0a0f1e;
+      color: #00d4ff;
+      font-size: 8.5pt;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== MAIN BODY ===== */
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0.28in 0.45in 0.2in;
+      gap: 0.18in;
+    }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-label {
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #00d4ff;
+      margin-bottom: 0.1in;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,212,255,0.4), transparent);
+    }
+
+    /* ===== SERVICES GRID ===== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.1in;
+    }
+
+    .service-card {
+      background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
+      border: 1px solid #dde4f0;
+      border-top: 3px solid #00d4ff;
+      border-radius: 6px;
+      padding: 0.1in 0.12in;
+      position: relative;
+    }
+
+    .service-card.electrical {
+      border-top-color: #f59e0b;
+    }
+
+    .service-card.cyber {
+      border-top-color: #10b981;
+    }
+
+    .service-icon {
+      font-size: 16pt;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .service-title {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #0d1b3e;
+      margin-bottom: 3px;
+      line-height: 1.2;
+    }
+
+    .service-desc {
+      font-size: 7.5pt;
+      color: #64748b;
+      line-height: 1.35;
+    }
+
+    .service-price {
+      font-size: 7pt;
+      font-weight: 700;
+      color: #00d4ff;
+      margin-top: 4px;
+    }
+
+    .service-card.electrical .service-price {
+      color: #f59e0b;
+    }
+
+    .service-card.cyber .service-price {
+      color: #10b981;
+    }
+
+    /* ===== DIFFERENTIATORS ===== */
+    .differentiators {
+      display: flex;
+      gap: 0.12in;
+    }
+
+    .diff-item {
+      flex: 1;
+      background: #0a0f1e;
+      border-radius: 8px;
+      padding: 0.1in 0.12in;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .diff-icon {
+      font-size: 16pt;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .diff-title {
+      font-size: 8pt;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .diff-text {
+      font-size: 7pt;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+
+    /* ===== BOTTOM SECTION ===== */
+    .bottom-row {
+      display: flex;
+      gap: 0.15in;
+      align-items: stretch;
+    }
+
+    /* ===== CTA BOX ===== */
+    .cta-box {
+      flex: 1;
+      background: linear-gradient(135deg, #0d1b3e, #0a2050);
+      border: 2px solid rgba(0,212,255,0.4);
+      border-radius: 10px;
+      padding: 0.14in 0.18in;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.15) 0%, transparent 70%);
+    }
+
+    .cta-headline {
+      font-size: 14pt;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    .cta-headline em {
+      color: #00d4ff;
+      font-style: normal;
+    }
+
+    .cta-subtext {
+      font-size: 8pt;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .cta-offer {
+      background: linear-gradient(90deg, #00d4ff, #0099bb);
+      color: #0a0f1e;
+      font-size: 9.5pt;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-radius: 6px;
+      display: inline-block;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== CONTACT BLOCK ===== */
+    .contact-block {
+      width: 2.1in;
+      background: #f8faff;
+      border: 1px solid #dde4f0;
+      border-radius: 10px;
+      padding: 0.14in 0.15in;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .contact-title {
+      font-size: 8pt;
+      font-weight: 800;
+      color: #0d1b3e;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #dde4f0;
+      padding-bottom: 5px;
+      margin-bottom: 2px;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .contact-icon {
+      font-size: 11pt;
+      line-height: 1.2;
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+    }
+
+    .contact-detail {
+      flex: 1;
+    }
+
+    .contact-label {
+      font-size: 6.5pt;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .contact-value {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    /* ===== QR CODE ===== */
+    .qr-block {
+      width: 1.3in;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .qr-placeholder {
+      width: 1in;
+      height: 1in;
+      border: 2px dashed #00d4ff;
+      border-radius: 8px;
+      background: #f0f9ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      position: relative;
+    }
+
+    /* QR corner finders */
+    .qr-placeholder::before,
+    .qr-placeholder::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #00d4ff;
+    }
+
+    .qr-placeholder::before {
+      top: 5px;
+      left: 5px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .qr-placeholder::after {
+      bottom: 5px;
+      right: 5px;
+      border-left: none;
+      border-top: none;
+    }
+
+    /* Additional corners via wrapper */
+    .qr-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-inner::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #00d4ff;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .qr-inner::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #00d4ff;
+      border-right: none;
+      border-top: none;
+    }
+
+    .qr-icon {
+      font-size: 20pt;
+      color: #00d4ff;
+    }
+
+    .qr-label {
+      font-size: 6pt;
+      font-weight: 700;
+      color: #0d1b3e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .qr-caption {
+      font-size: 7pt;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #0a0f1e;
+      padding: 8px 0.45in;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .footer-left {
+      font-size: 7pt;
+      color: #475569;
+    }
+
+    .footer-center {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    .footer-center span {
+      color: #00d4ff;
+    }
+
+    .footer-pills {
+      display: flex;
+      gap: 5px;
+    }
+
+    .footer-pill {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #64748b;
+      font-size: 6.5pt;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      html, body {
+        width: 8.5in;
+        height: 11in;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="flyer">
+
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <div class="header">
+    <div class="header-inner">
+      <!-- SVG Logo Mark -->
+      <div class="logo-mark">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="38" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
+          <circle cx="40" cy="40" r="32" fill="rgba(0,212,255,0.06)"/>
+          <!-- Hexagon -->
+          <polygon points="40,10 66,25 66,55 40,70 14,55 14,25"
+                   fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+          <!-- Lightning bolt -->
+          <path d="M43 18 L28 42 L38 42 L37 62 L52 38 L42 38 Z"
+                fill="url(#bolt)" filter="url(#glow)"/>
+          <!-- Circuit lines -->
+          <line x1="14" y1="40" x2="22" y2="40" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+          <line x1="58" y1="40" x2="66" y2="40" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+          <circle cx="14" cy="40" r="2.5" fill="#f59e0b" opacity="0.8"/>
+          <circle cx="66" cy="40" r="2.5" fill="#f59e0b" opacity="0.8"/>
+          <defs>
+            <linearGradient id="bolt" x1="28" y1="18" x2="52" y2="62" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#00d4ff"/>
+              <stop offset="1" stop-color="#0099bb"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="1.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="company-name">Tech &amp; Electrical<br><span>Services LLC</span></div>
+        <div class="tagline">Your Total Technology &amp; Electrical Partner</div>
+      </div>
+      <div class="header-badges">
+        <div class="badge">Security+</div>
+        <div class="badge">MS CompSci</div>
+        <div class="badge amber">CA Licensed Electrician</div>
+        <div class="badge">Defense-Grade Cyber</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ HERO STRIP ═══════════════════════════ -->
+  <div class="hero-strip">
+    <p>Serving Temecula, Murrieta &amp; the Inland Empire — Local Experts, Northrop Grumman–Level Credentials</p>
+    <div class="highlight">Same-Day Response Available</div>
+  </div>
+
+  <!-- ═══════════════════════════ BODY ═══════════════════════════ -->
+  <div class="body">
+
+    <!-- ─── SERVICES ─── -->
+    <div>
+      <div class="section-label">Our Services</div>
+      <div class="services-grid">
+
+        <div class="service-card">
+          <div class="service-icon">🛡️</div>
+          <div class="service-title">Cybersecurity &amp; MSSP</div>
+          <div class="service-desc">Security audits, penetration testing, 24/7 managed security monitoring, firewall config, and compliance readiness (HIPAA, PCI-DSS).</div>
+          <div class="service-price">From $499 audit · $800/mo MSSP</div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">💻</div>
+          <div class="service-title">Managed IT (MSP)</div>
+          <div class="service-desc">Full IT management for businesses — helpdesk, patch management, server monitoring, backup, and remote/on-site support.</div>
+          <div class="service-price">From $500/mo — all-inclusive</div>
+        </div>
+
+        <div class="service-card cyber">
+          <div class="service-icon">🔧</div>
+          <div class="service-title">Computer Repair &amp; Custom Builds</div>
+          <div class="service-desc">Board-level micro-soldering repair, liquid damage recovery, custom PC builds, workstation upgrades, and data recovery.</div>
+          <div class="service-price">$49 diagnostic · Parts + labor</div>
+        </div>
+
+        <div class="service-card electrical">
+          <div class="service-icon">⚡</div>
+          <div class="service-title">Electrical Services</div>
+          <div class="service-desc">Panel upgrades, circuit installation, EV charger install, commercial wiring, code compliance, and smart home electrical.</div>
+          <div class="service-price">Free estimate · Licensed &amp; bonded</div>
+        </div>
+
+        <div class="service-card electrical">
+          <div class="service-icon">🌐</div>
+          <div class="service-title">Network &amp; Infrastructure</div>
+          <div class="service-desc">Structured cabling, Wi-Fi design, VPN deployment, firewall setup, server room builds, and full network documentation.</div>
+          <div class="service-price">Site survey included</div>
+        </div>
+
+        <div class="service-card cyber">
+          <div class="service-icon">⚙️</div>
+          <div class="service-title">Software &amp; Cloud Dev</div>
+          <div class="service-desc">Custom web apps, business automation, cloud migrations (AWS/Azure), DevOps pipelines, and API integrations.</div>
+          <div class="service-price">From $500 · hourly available</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── DIFFERENTIATORS ─── -->
+    <div>
+      <div class="section-label">Why Choose Us</div>
+      <div class="differentiators">
+        <div class="diff-item">
+          <div class="diff-icon">🏛️</div>
+          <div>
+            <div class="diff-title">Defense-Grade Expertise</div>
+            <div class="diff-text">Northrop Grumman–trained Cyber Systems Engineer. Your business gets aerospace-level security without the government price tag.</div>
+          </div>
+        </div>
+        <div class="diff-item">
+          <div class="diff-icon">🔩</div>
+          <div>
+            <div class="diff-title">Board-Level Hardware Repair</div>
+            <div class="diff-text">Rare micro-soldering skill set — save 60–80% vs. replacement on water-damaged laptops, phones, and server boards.</div>
+          </div>
+        </div>
+        <div class="diff-item">
+          <div class="diff-icon">⚡</div>
+          <div>
+            <div class="diff-title">IT + Electrical: One Company</div>
+            <div class="diff-text">No more coordinating two vendors. We handle structured cabling, panel upgrades, EV charger installs AND your IT — under one contract.</div>
+          </div>
+        </div>
+        <div class="diff-item">
+          <div class="diff-icon">📍</div>
+          <div>
+            <div class="diff-title">Local &amp; Responsive</div>
+            <div class="diff-text">Temecula-based, same-day calls available. You reach a real person who knows your business — not a remote help desk offshore.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── BOTTOM ROW: CTA + Contact + QR ─── -->
+    <div class="bottom-row">
+
+      <!-- CTA -->
+      <div class="cta-box">
+        <div class="cta-headline">Get Your <em>FREE</em><br>Security Assessment</div>
+        <div class="cta-subtext">Not sure if your business is protected? We'll do a no-cost, no-pressure IT &amp; security review — find gaps before the bad guys do. $299 value, yours free for new clients.</div>
+        <div class="cta-offer">📞 Call or Text to Claim Your Free Assessment →</div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="contact-block">
+        <div class="contact-title">Contact Us</div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div class="contact-detail">
+            <div class="contact-label">Phone / Text</div>
+            <div class="contact-value">(951) 555-0199</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-detail">
+            <div class="contact-label">Email</div>
+            <div class="contact-value">info@techandelectrical.com</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">🌐</div>
+          <div class="contact-detail">
+            <div class="contact-label">Website</div>
+            <div class="contact-value">www.techandelectrical.com</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail">
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Temecula, CA 92591</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">🕐</div>
+          <div class="contact-detail">
+            <div class="contact-label">Hours</div>
+            <div class="contact-value">Mon–Sat 8AM–7PM<br>Emergency: 24/7</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code Placeholder -->
+      <div class="qr-block">
+        <div class="section-label" style="font-size:6.5pt; letter-spacing:1.5px; margin-bottom:4px;">Scan Me</div>
+        <div class="qr-placeholder">
+          <div class="qr-inner">
+            <div class="qr-icon">⬛</div>
+            <!-- Replace this placeholder with an actual QR code image:
+                 <img src="qr-code.png" width="80" height="80" alt="QR Code">
+                 Point to: /free-assessment or landing page URL -->
+          </div>
+        </div>
+        <div class="qr-caption">Scan for free<br>assessment form</div>
+      </div>
+
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <div class="footer">
+    <div class="footer-left">© 2026 Tech &amp; Electrical Services LLC · All Rights Reserved · CA Lic. #XXXXXXX</div>
+    <div class="footer-center">Serving <span>Temecula · Murrieta · Menifee · Hemet · San Jacinto · Lake Elsinore</span></div>
+    <div class="footer-pills">
+      <div class="footer-pill">Insured</div>
+      <div class="footer-pill">Bonded</div>
+      <div class="footer-pill">Licensed</div>
+    </div>
+  </div>
+
+</div><!-- /flyer -->
+</body>
+</html>

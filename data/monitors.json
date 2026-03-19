@@ -1,0 +1,30 @@
+[
+  {
+    "id": "m1",
+    "name": "Barney File Server",
+    "clientId": "c1",
+    "type": "server",
+    "ip": "192.168.1.10",
+    "status": "down",
+    "cpu": 0,
+    "ram": 0,
+    "disk": 72,
+    "uptime": 94.2,
+    "lastCheck": "2026-03-19T08:52:47.916629",
+    "latency": null
+  },
+  {
+    "id": "m2",
+    "name": "Barney Firewall",
+    "clientId": "c1",
+    "type": "firewall",
+    "ip": "192.168.1.1",
+    "status": "up",
+    "cpu": 18,
+    "ram": 42,
+    "disk": 15,
+    "uptime": 99.9,
+    "lastCheck": "2026-03-19T08:52:47.916638",
+    "latency": 2
+  }
+]

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log File Viewer — Tech & Electrical Services LLC</title>
+<style>
+:root {
+  --bg: #0a0f1e;
+  --surface: #0f1526;
+  --surface2: #151d35;
+  --surface3: #1a2440;
+  --border: #1e2d4a;
+  --cyan: #00d4ff;
+  --cyan-dim: #0099bb;
+  --amber: #f59e0b;
+  --amber-dim: #b07500;
+  --green: #10b981;
+  --red: #ef4444;
+  --red-dim: #991b1b;
+  --orange: #f97316;
+  --purple: #a855f7;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-muted: #475569;
+  --sidebar-w: 240px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
+
+/* ── Layout ── */
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; z-index: 10;
+}
+header h1 {
+  font-size: 15px; font-weight: 700; color: var(--cyan);
+  letter-spacing: .04em; white-space: nowrap;
+}
+header .logo { font-size: 18px; }
+.header-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+#main { display: flex; flex: 1; overflow: hidden; }
+
+/* ── Sidebar ── */
+#sidebar {
+  width: var(--sidebar-w); background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+}
+.sidebar-section { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.sidebar-section h3 { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: 8px; }
+
+.file-list { overflow-y: auto; flex: 1; padding: 8px 0; }
+.file-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; cursor: pointer; transition: background .15s;
+  font-size: 12px; color: var(--text-dim); position: relative;
+}
+.file-item:hover { background: var(--surface2); }
+.file-item.active { background: var(--surface3); color: var(--cyan); }
+.file-item .file-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-item .file-size { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+.file-item .del-btn {
+  opacity: 0; background: none; border: none; color: var(--red);
+  cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1;
+}
+.file-item:hover .del-btn { opacity: 1; }
+
+/* ── Toolbar ── */
+#toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap;
+}
+.tb-group { display: flex; align-items: center; gap: 6px; }
+.tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+input[type=text], input[type=number], select {
+  background: var(--surface3); border: 1px solid var(--border);
+  color: var(--text); border-radius: 5px; padding: 5px 9px;
+  font-size: 12px; outline: none; transition: border-color .2s;
+}
+input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--cyan); }
+input[type=text]::placeholder { color: var(--text-muted); }
+#search-input { width: 220px; }
+
+.btn {
+  padding: 5px 11px; border-radius: 5px; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 600; transition: all .15s; white-space: nowrap;
+}
+.btn-primary { background: var(--cyan); color: #000; }
+.btn-primary:hover { background: #00b5d8; }
+.btn-ghost { background: var(--surface3); color: var(--text-dim); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+.btn-ghost.active { background: var(--surface2); color: var(--cyan); border-color: var(--cyan-dim); }
+.btn-danger { background: var(--red-dim); color: var(--text); }
+.btn-danger:hover { background: var(--red); }
+.btn-green { background: #065f46; color: var(--green); border: 1px solid #10b981; }
+.btn-green:hover { background: #047857; }
+
+label.btn { cursor: pointer; }
+
+/* ── Content ── */
+#content-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+#stats-bar {
+  display: flex; gap: 16px; padding: 6px 14px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  font-size: 11px; flex-shrink: 0; flex-wrap: wrap;
+}
+.stat { display: flex; align-items: center; gap: 5px; }
+.stat-label { color: var(--text-muted); }
+.stat-val { font-weight: 700; }
+.stat-val.red { color: var(--red); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.green { color: var(--green); }
+.stat-val.cyan { color: var(--cyan); }
+
+/* ── Log View ── */
+#log-wrapper { flex: 1; overflow: auto; position: relative; }
+#log-table {
+  width: 100%; border-collapse: collapse; font-family: 'Cascadia Code', 'Consolas', 'Fira Code', 'Courier New', monospace;
+  font-size: 12.5px; line-height: 1.6;
+}
+#log-table td { padding: 1px 8px; vertical-align: top; white-space: pre-wrap; word-break: break-all; }
+.ln-col { color: var(--text-muted); text-align: right; user-select: none; width: 1%; white-space: nowrap; border-right: 1px solid var(--border); padding-right: 10px !important; min-width: 50px; position: sticky; left: 0; }
+
+/* Row highlighting */
+.row-error   { background: rgba(239,68,68,0.12); }
+.row-warn    { background: rgba(245,158,11,0.10); }
+.row-info    { background: rgba(0,212,255,0.06); }
+.row-debug   { background: rgba(168,85,247,0.07); }
+.row-success { background: rgba(16,185,129,0.08); }
+.row-match   { background: rgba(0,212,255,0.18) !important; outline: 1px solid rgba(0,212,255,0.4); }
+
+tr:hover td { background: rgba(255,255,255,0.03); }
+
+/* Inline syntax spans */
+.hl-error   { color: var(--red);    font-weight: 700; }
+.hl-warn    { color: var(--amber);  font-weight: 700; }
+.hl-info    { color: var(--cyan);   font-weight: 600; }
+.hl-debug   { color: var(--purple); }
+.hl-success { color: var(--green);  font-weight: 600; }
+.hl-timestamp { color: #60a5fa; }
+.hl-ip      { color: #34d399; }
+.hl-url     { color: #a78bfa; text-decoration: underline; }
+.hl-number  { color: #fb923c; }
+.hl-quoted  { color: #fbbf24; }
+.hl-path    { color: #6ee7b7; }
+.hl-http-ok   { color: var(--green); font-weight: 700; }
+.hl-http-err  { color: var(--red);   font-weight: 700; }
+.hl-http-redir{ color: var(--amber); font-weight: 700; }
+.hl-key       { color: #93c5fd; }
+.search-mark  { background: rgba(245,158,11,0.5); border-radius: 2px; padding: 0 1px; }
+
+/* ── Empty / Drop Zone ── */
+#drop-zone {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; color: var(--text-muted); font-size: 14px;
+  border: 2px dashed var(--border); margin: 16px; border-radius: 10px;
+  transition: border-color .2s, background .2s; cursor: pointer;
+}
+#drop-zone.over { border-color: var(--cyan); background: rgba(0,212,255,0.04); }
+#drop-zone .dz-icon { font-size: 48px; }
+#drop-zone .dz-title { font-size: 16px; font-weight: 600; color: var(--text-dim); }
+
+/* ── Tail mode indicator ── */
+#tail-indicator {
+  position: fixed; bottom: 16px; right: 16px;
+  background: rgba(0,212,255,0.15); border: 1px solid var(--cyan);
+  color: var(--cyan); padding: 6px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; display: none;
+  align-items: center; gap: 6px;
+}
+#tail-indicator.visible { display: flex; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+/* ── Toast ── */
+#toast-container { position: fixed; bottom: 60px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 9999; }
+.toast {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 16px; font-size: 12px; min-width: 220px; max-width: 360px;
+  animation: slideIn .2s ease; display: flex; align-items: center; gap: 8px;
+}
+.toast.error { border-color: var(--red); }
+.toast.success { border-color: var(--green); }
+@keyframes slideIn { from{transform:translateX(30px);opacity:0} to{transform:translateX(0);opacity:1} }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Jump nav ── */
+#jump-nav {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 3px; pointer-events: none;
+}
+.jump-tick { width: 8px; height: 2px; border-radius: 1px; cursor: pointer; pointer-events: auto; opacity: .8; }
+.jump-tick:hover { opacity: 1; transform: scaleX(1.3); }
+
+/* ── Filter panel ── */
+#filter-panel {
+  display: none; padding: 8px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+#filter-panel.open { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.level-pill {
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;
+  cursor: pointer; border: 1px solid transparent; transition: all .15s; user-select: none;
+}
+.level-pill.active { opacity: 1; }
+.level-pill.inactive { opacity: 0.35; }
+.pill-error   { border-color: var(--red);    color: var(--red);    }
+.pill-warn    { border-color: var(--amber);  color: var(--amber);  }
+.pill-info    { border-color: var(--cyan);   color: var(--cyan);   }
+.pill-debug   { border-color: var(--purple); color: var(--purple); }
+.pill-success { border-color: var(--green);  color: var(--green);  }
+
+.pill-error.active   { background: rgba(239,68,68,0.2); }
+.pill-warn.active    { background: rgba(245,158,11,0.2); }
+.pill-info.active    { background: rgba(0,212,255,0.15); }
+.pill-debug.active   { background: rgba(168,85,247,0.2); }
+.pill-success.active { background: rgba(16,185,129,0.2); }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ─ Header ─ -->
+<header>
+  <span class="logo">⚡</span>
+  <h1>Log File Viewer</h1>
+  <span style="font-size:11px;color:var(--text-muted);margin-left:4px;">Tech & Electrical Services LLC</span>
+  <div class="header-right">
+    <label class="btn btn-primary" title="Upload log file">
+      ⬆ Upload
+      <input type="file" id="file-input" accept=".log,.txt,.out,.err,.csv,.json,.ndjson,.syslog,.evtx,.gz" multiple style="display:none">
+    </label>
+    <button class="btn btn-ghost" id="btn-export" title="Export filtered lines">⬇ Export</button>
+    <button class="btn btn-ghost" id="btn-demo">Demo Log</button>
+  </div>
+</header>
+
+<!-- ─ Main ─ -->
+<div id="main">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="sidebar-section">
+      <h3>Open Files</h3>
+    </div>
+    <div class="file-list" id="file-list">
+      <div style="padding:20px 12px;font-size:11px;color:var(--text-muted);text-align:center;">
+        No files open.<br>Upload a log file to begin.
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div id="content-area">
+
+    <!-- Toolbar -->
+    <div id="toolbar">
+      <div class="tb-group">
+        <input type="text" id="search-input" placeholder="🔍 Search / Regex (Ctrl+F)…" title="Search text or /regex/">
+        <button class="btn btn-ghost" id="btn-case" title="Case sensitive">Aa</button>
+        <button class="btn btn-ghost" id="btn-regex" title="Use regex">.*</button>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="tb-group">
+        <button class="btn btn-ghost active" id="btn-filter-levels" title="Filter by log level">Levels ▾</button>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="tb-group">
+        <button class="btn btn-ghost active" id="btn-linenos" title="Toggle line numbers">## Lines</button>
+        <button class="btn btn-ghost active" id="btn-highlight" title="Toggle syntax highlight">✨ Highlight</button>
+        <button class="btn btn-ghost" id="btn-wrap" title="Toggle line wrap">↩ Wrap</button>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="tb-group">
+        <button class="btn btn-ghost" id="btn-tail" title="Tail mode (auto-scroll to bottom)">📡 Tail</button>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="tb-group" style="font-size:11px;color:var(--text-muted);">
+        <span id="match-label"></span>
+      </div>
+    </div>
+
+    <!-- Filter panel -->
+    <div id="filter-panel" class="open">
+      <span style="font-size:11px;color:var(--text-muted);margin-right:4px;">Show:</span>
+      <span class="level-pill pill-error  active" data-level="error">ERROR</span>
+      <span class="level-pill pill-warn   active" data-level="warn">WARN</span>
+      <span class="level-pill pill-info   active" data-level="info">INFO</span>
+      <span class="level-pill pill-debug  active" data-level="debug">DEBUG</span>
+      <span class="level-pill pill-success active" data-level="success">OK/SUCCESS</span>
+      <span class="level-pill pill-info   active" style="border-color:#64748b;color:#94a3b8;" data-level="other">OTHER</span>
+      <button class="btn btn-ghost" id="btn-levels-all" style="margin-left:8px;font-size:11px;padding:2px 8px;">All</button>
+      <button class="btn btn-ghost" id="btn-levels-errors" style="font-size:11px;padding:2px 8px;">Errors only</button>
+    </div>
+
+    <!-- Stats bar -->
+    <div id="stats-bar">
+      <div class="stat"><span class="stat-label">Lines:</span><span class="stat-val cyan" id="st-total">—</span></div>
+      <div class="stat"><span class="stat-label">Shown:</span><span class="stat-val cyan" id="st-shown">—</span></div>
+      <div class="stat"><span class="stat-label">Errors:</span><span class="stat-val red" id="st-errors">0</span></div>
+      <div class="stat"><span class="stat-label">Warnings:</span><span class="stat-val amber" id="st-warns">0</span></div>
+      <div class="stat"><span class="stat-label">Info:</span><span class="stat-val cyan" id="st-infos">0</span></div>
+      <div class="stat"><span class="stat-label">File:</span><span class="stat-val" id="st-filename" style="color:var(--text-dim)">—</span></div>
+      <div class="stat"><span class="stat-label">Size:</span><span class="stat-val" id="st-size" style="color:var(--text-dim)">—</span></div>
+    </div>
+
+    <!-- Log view -->
+    <div id="log-wrapper">
+      <div id="drop-zone" id="dz">
+        <div class="dz-icon">📂</div>
+        <div class="dz-title">Drop log file here</div>
+        <div>or use the Upload button above</div>
+        <label class="btn btn-ghost" style="margin-top:8px;">
+          Browse Files
+          <input type="file" accept=".log,.txt,.out,.err,.csv,.json,.ndjson,.syslog" multiple style="display:none" id="dz-input">
+        </label>
+      </div>
+      <table id="log-table" style="display:none">
+        <tbody id="log-body"></tbody>
+      </table>
+      <div id="jump-nav"></div>
+    </div>
+
+  </div><!-- /content-area -->
+</div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- Tail indicator -->
+<div id="tail-indicator">
+  <div class="pulse"></div>
+  TAILING
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script>
+'use strict';
+
+// ─── State ────────────────────────────────────────────────────────────────
+const state = {
+  files: [],          // [{name, size, lines:[]}]
+  activeIdx: -1,
+  search: '',
+  caseSensitive: false,
+  useRegex: false,
+  lineNos: true,
+  highlight: true,
+  wrap: false,
+  tail: false,
+  levels: {error:true, warn:true, info:true, debug:true, success:true, other:true},
+  filterOpen: true,
+  tailInterval: null,
+  renderTimeout: null,
+  visibleLines: [],   // indices of currently visible lines
+};
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fileInput   = $('file-input');
+const dzInput     = $('dz-input');
+const fileList    = $('file-list');
+const dropZone    = $('drop-zone');
+const logTable    = $('log-table');
+const logBody     = $('log-body');
+const logWrapper  = $('log-wrapper');
+const searchInput = $('search-input');
+const matchLabel  = $('match-label');
+const tailIndicator=$('tail-indicator');
+const jumpNav     = $('jump-nav');
+const filterPanel = $('filter-panel');
+
+// ─── Toast ────────────────────────────────────────────────────────────────
+function toast(msg, type='info', ms=3000) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='error'?'❌':type==='success'?'✅':'ℹ️'}</span><span>${msg}</span>`;
+  $('toast-container').appendChild(el);
+  setTimeout(()=>el.remove(), ms);
+}
+
+// ─── File loading ─────────────────────────────────────────────────────────
+function humanSize(bytes) {
+  if(bytes < 1024) return bytes+'B';
+  if(bytes < 1048576) return (bytes/1024).toFixed(1)+'KB';
+  return (bytes/1048576).toFixed(1)+'MB';
+}
+
+function loadFiles(fileArr) {
+  Array.from(fileArr).forEach(file => {
+    if(file.size > 50*1024*1024) { toast(`${file.name} exceeds 50MB limit — skipped`, 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const text = e.target.result;
+      const lines = text.split('\n');
+      // Remove trailing empty line
+      if(lines[lines.length-1]==='') lines.pop();
+      const existing = state.files.findIndex(f=>f.name===file.name);
+      const entry = {name: file.name, size: file.size, lines, rawText: text};
+      if(existing>=0) { state.files[existing]=entry; setActive(existing); }
+      else { state.files.push(entry); setActive(state.files.length-1); }
+      renderSidebar();
+      toast(`Loaded ${file.name} (${humanSize(file.size)}, ${lines.length.toLocaleString()} lines)`, 'success');
+    };
+    reader.onerror = ()=>toast(`Failed to read ${file.name}`, 'error');
+    reader.readAsText(file);
+  });
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────
+function renderSidebar() {
+  if(!state.files.length) {
+    fileList.innerHTML = '<div style="padding:20px 12px;font-size:11px;color:var(--text-muted);text-align:center;">No files open.</div>';
+    return;
+  }
+  fileList.innerHTML = state.files.map((f,i)=>`
+    <div class="file-item ${i===state.activeIdx?'active':''}" data-idx="${i}" title="${f.name}">
+      <span class="file-name">📄 ${f.name}</span>
+      <span class="file-size">${humanSize(f.size)}</span>
+      <button class="del-btn" data-del="${i}" title="Close file">✕</button>
+    </div>`).join('');
+}
+
+fileList.addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if(del) { const i=+del.dataset.del; state.files.splice(i,1); if(state.activeIdx>=state.files.length) state.activeIdx=state.files.length-1; renderSidebar(); renderLog(); e.stopPropagation(); return; }
+  const item = e.target.closest('[data-idx]');
+  if(item) setActive(+item.dataset.idx);
+});
+
+function setActive(idx) {
+  state.activeIdx = idx;
+  renderSidebar();
+  renderLog();
+}
+
+// ─── Log level detection ──────────────────────────────────────────────────
+const LEVEL_PATTERNS = {
+  error:   /\b(error|critical|fatal|crit|fail(?:ure|ed)?|exception|traceback|panic|abort|crash)\b/i,
+  warn:    /\b(warn(?:ing)?|alert|caution|deprecated?)\b/i,
+  success: /\b(ok|success(?:ful)?|done|complete[d]?|start(?:ed)?|ready|connected|accepted|authorized)\b/i,
+  info:    /\b(info(?:rmation)?|notice|verbose|starting|listening)\b/i,
+  debug:   /\b(debug|trace|verbose)\b/i,
+};
+
+function detectLevel(line) {
+  for(const [lvl, pat] of Object.entries(LEVEL_PATTERNS)) {
+    if(pat.test(line)) return lvl;
+  }
+  return 'other';
+}
+
+// ─── Syntax highlighting ──────────────────────────────────────────────────
+function escape(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function highlight(raw) {
+  let s = escape(raw);
+
+  // HTTP status codes
+  s = s.replace(/\b(5\d{2})\b/g, '<span class="hl-http-err">$1</span>');
+  s = s.replace(/\b(4\d{2})\b/g, '<span class="hl-http-err">$1</span>');
+  s = s.replace(/\b(3\d{2})\b/g, '<span class="hl-http-redir">$1</span>');
+  s = s.replace(/\b(2\d{2})\b/g, '<span class="hl-http-ok">$1</span>');
+
+  // Timestamps: ISO 8601, common log formats
+  s = s.replace(/\b(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?(?:Z|[+-]\d{2}:?\d{2})?)\b/g, '<span class="hl-timestamp">$1</span>');
+  s = s.replace(/\b(\d{2}\/\w+\/\d{4}:\d{2}:\d{2}:\d{2} [+-]\d{4})\b/g, '<span class="hl-timestamp">$1</span>');
+
+  // IP addresses
+  s = s.replace(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)\b/g, '<span class="hl-ip">$1</span>');
+
+  // Log levels
+  s = s.replace(/\b(ERROR|CRITICAL|FATAL|EXCEPTION)\b/g, '<span class="hl-error">$1</span>');
+  s = s.replace(/\b(WARN(?:ING)?|ALERT)\b/g,             '<span class="hl-warn">$1</span>');
+  s = s.replace(/\b(INFO|NOTICE)\b/g,                    '<span class="hl-info">$1</span>');
+  s = s.replace(/\b(DEBUG|TRACE)\b/g,                    '<span class="hl-debug">$1</span>');
+  s = s.replace(/\b(SUCCESS|OK|DONE|COMPLETE)\b/g,       '<span class="hl-success">$1</span>');
+
+  // Quoted strings
+  s = s.replace(/(&quot;[^&]*?&quot;|&#039;[^&]*?&#039;)/g, '<span class="hl-quoted">$1</span>');
+  s = s.replace(/(&#039;.*?&#039;)/g, '<span class="hl-quoted">$1</span>');
+
+  // Paths
+  s = s.replace(/\b([A-Za-z]:\\[^\s&"]+|\/[^\s"&amp;,;(){}<>]{2,})\b/g, '<span class="hl-path">$1</span>');
+
+  // URLs (basic)
+  s = s.replace(/\b(https?:\/\/[^\s"&amp;]+)\b/g, '<span class="hl-url">$1</span>');
+
+  // Key=value
+  s = s.replace(/\b([a-zA-Z_]\w*)(?==\S)/g, '<span class="hl-key">$1</span>');
+
+  return s;
+}
+
+// ─── Search & mark ────────────────────────────────────────────────────────
+function applySearchMark(html, term, caseSensitive, useRegex) {
+  if(!term) return html;
+  try {
+    let pat;
+    if(useRegex) { pat = new RegExp(term, caseSensitive?'g':'gi'); }
+    else { pat = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), caseSensitive?'g':'gi'); }
+    // Work on text only (skip inside HTML tags)
+    return html.replace(/>([^<]*)</g, (m, text) => {
+      return '>' + text.replace(pat, m2=>`<mark class="search-mark">${m2}</mark>`) + '<';
+    });
+  } catch(e) { return html; }
+}
+
+// ─── Main render ──────────────────────────────────────────────────────────
+function renderLog() {
+  // Reset
+  jumpNav.innerHTML = '';
+  matchLabel.textContent = '';
+
+  if(state.activeIdx<0 || !state.files.length) {
+    logTable.style.display='none';
+    dropZone.style.display='flex';
+    updateStats(null);
+    return;
+  }
+
+  dropZone.style.display='none';
+  logTable.style.display='table';
+
+  const file = state.files[state.activeIdx];
+  const {lines} = file;
+  const total = lines.length;
+
+  // Count levels
+  let errCnt=0, warnCnt=0, infoCnt=0;
+
+  // Build search pattern
+  let searchPat = null;
+  const searchTerm = state.search.trim();
+  if(searchTerm) {
+    try {
+      if(state.useRegex) searchPat = new RegExp(searchTerm, state.caseSensitive?'':'i');
+      else searchPat = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), state.caseSensitive?'':'i');
+    } catch(e) { matchLabel.textContent='⚠ Invalid regex'; }
+  }
+
+  // Virtual rendering: filter first, then generate HTML
+  const rows = [];
+  const errorRows = [], warnRows = [];
+  let matchCount = 0;
+  state.visibleLines = [];
+
+  for(let i=0;i<total;i++) {
+    const line = lines[i];
+    const lvl = detectLevel(line);
+
+    if(lvl==='error') errCnt++;
+    else if(lvl==='warn') warnCnt++;
+    else if(lvl==='info') infoCnt++;
+
+    // Level filter
+    if(!state.levels[lvl]) continue;
+
+    // Search filter
+    let isMatch = false;
+    if(searchPat) {
+      if(!searchPat.test(line)) continue;
+      isMatch = true;
+      matchCount++;
+    }
+
+    state.visibleLines.push(i);
+
+    let rowClass = '';
+    if(lvl==='error') { rowClass='row-error'; errorRows.push(rows.length); }
+    else if(lvl==='warn') { rowClass='row-warn'; warnRows.push(rows.length); }
+    else if(lvl==='info') rowClass='row-info';
+    else if(lvl==='debug') rowClass='row-debug';
+    else if(lvl==='success') rowClass='row-success';
+    if(isMatch) rowClass+=' row-match';
+
+    let lineHtml = state.highlight ? highlight(line) : escape(line);
+    if(searchTerm) lineHtml = applySearchMark(lineHtml, searchTerm, state.caseSensitive, state.useRegex);
+
+    const lnCell = state.lineNos
+      ? `<td class="ln-col">${i+1}</td>`
+      : '';
+
+    const style = state.wrap ? '' : ' style="white-space:pre;"';
+    rows.push(`<tr class="${rowClass}"><td style="display:${state.lineNos?'':'none'}" class="ln-col">${i+1}</td><td${style}>${lineHtml}</td></tr>`);
+  }
+
+  // Chunk rendering for large files
+  logBody.innerHTML = rows.join('');
+
+  // Stats
+  updateStats({total, shown:rows.length, errCnt, warnCnt, infoCnt, filename:file.name, size:file.size});
+
+  if(searchPat) matchLabel.textContent = `${matchCount.toLocaleString()} match${matchCount!==1?'es':''}`;
+
+  // Jump nav
+  buildJumpNav(errorRows, warnRows, rows.length);
+
+  // Tail
+  if(state.tail) scrollBottom();
+}
+
+function scrollBottom() {
+  logWrapper.scrollTop = logWrapper.scrollHeight;
+}
+
+// ─── Stats bar ────────────────────────────────────────────────────────────
+function updateStats(data) {
+  if(!data) {
+    $('st-total').textContent='—'; $('st-shown').textContent='—';
+    $('st-errors').textContent='0'; $('st-warns').textContent='0';
+    $('st-infos').textContent='0'; $('st-filename').textContent='—'; $('st-size').textContent='—';
+    return;
+  }
+  $('st-total').textContent   = data.total.toLocaleString();
+  $('st-shown').textContent   = data.shown.toLocaleString();
+  $('st-errors').textContent  = data.errCnt.toLocaleString();
+  $('st-warns').textContent   = data.warnCnt.toLocaleString();
+  $('st-infos').textContent   = data.infoCnt.toLocaleString();
+  $('st-filename').textContent= data.filename;
+  $('st-size').textContent    = humanSize(data.size);
+}
+
+// ─── Jump nav (error/warn markers) ───────────────────────────────────────
+function buildJumpNav(errorRows, warnRows, totalVisible) {
+  if(!totalVisible) return;
+  const ticks = [];
+  const h = logWrapper.clientHeight;
+
+  errorRows.forEach(r => {
+    const pct = (r/totalVisible)*100;
+    ticks.push(`<div class="jump-tick" style="background:var(--red);top:${pct}%" title="Error at row ${r+1}" onclick="jumpToRow(${r})"></div>`);
+  });
+  warnRows.forEach(r => {
+    const pct = (r/totalVisible)*100;
+    ticks.push(`<div class="jump-tick" style="background:var(--amber);top:${pct}%" title="Warning at row ${r+1}" onclick="jumpToRow(${r})"></div>`);
+  });
+
+  jumpNav.style.height = h+'px';
+  jumpNav.innerHTML = ticks.join('');
+}
+
+window.jumpToRow = function(rowIdx) {
+  const rows = logBody.querySelectorAll('tr');
+  if(rows[rowIdx]) rows[rowIdx].scrollIntoView({block:'center', behavior:'smooth'});
+};
+
+// ─── Toolbar controls ─────────────────────────────────────────────────────
+$('btn-case').addEventListener('click', function() {
+  state.caseSensitive = !state.caseSensitive;
+  this.classList.toggle('active', state.caseSensitive);
+  debounceRender();
+});
+$('btn-regex').addEventListener('click', function() {
+  state.useRegex = !state.useRegex;
+  this.classList.toggle('active', state.useRegex);
+  debounceRender();
+});
+$('btn-linenos').addEventListener('click', function() {
+  state.lineNos = !state.lineNos;
+  this.classList.toggle('active', state.lineNos);
+  debounceRender();
+});
+$('btn-highlight').addEventListener('click', function() {
+  state.highlight = !state.highlight;
+  this.classList.toggle('active', state.highlight);
+  debounceRender();
+});
+$('btn-wrap').addEventListener('click', function() {
+  state.wrap = !state.wrap;
+  this.classList.toggle('active', state.wrap);
+  debounceRender();
+});
+$('btn-filter-levels').addEventListener('click', function() {
+  state.filterOpen = !state.filterOpen;
+  filterPanel.classList.toggle('open', state.filterOpen);
+});
+$('btn-tail').addEventListener('click', function() {
+  state.tail = !state.tail;
+  this.classList.toggle('active', state.tail);
+  tailIndicator.classList.toggle('visible', state.tail);
+  if(state.tail) scrollBottom();
+});
+
+// Level pills
+document.querySelectorAll('.level-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    const lvl = this.dataset.level;
+    state.levels[lvl] = !state.levels[lvl];
+    this.classList.toggle('active', state.levels[lvl]);
+    this.classList.toggle('inactive', !state.levels[lvl]);
+    debounceRender();
+  });
+});
+$('btn-levels-all').addEventListener('click', ()=>{
+  Object.keys(state.levels).forEach(k=>state.levels[k]=true);
+  document.querySelectorAll('.level-pill').forEach(p=>{ p.classList.add('active'); p.classList.remove('inactive'); });
+  debounceRender();
+});
+$('btn-levels-errors').addEventListener('click', ()=>{
+  Object.keys(state.levels).forEach(k=>state.levels[k]=k==='error');
+  document.querySelectorAll('.level-pill').forEach(p=>{
+    const on = p.dataset.level==='error';
+    p.classList.toggle('active',on); p.classList.toggle('inactive',!on);
+  });
+  debounceRender();
+});
+
+// Search
+searchInput.addEventListener('input', ()=>{ state.search=searchInput.value; debounceRender(); });
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='f') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
+  if(e.key==='Escape' && document.activeElement===searchInput) searchInput.blur();
+});
+
+function debounceRender() {
+  clearTimeout(state.renderTimeout);
+  state.renderTimeout = setTimeout(renderLog, 80);
+}
+
+// ─── Export ───────────────────────────────────────────────────────────────
+$('btn-export').addEventListener('click', ()=>{
+  if(state.activeIdx<0) { toast('No file open', 'error'); return; }
+  const file = state.files[state.activeIdx];
+  const outLines = state.visibleLines.map(i => file.lines[i]);
+  if(!outLines.length) { toast('No lines to export', 'error'); return; }
+  const blob = new Blob([outLines.join('\n')], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`filtered_${file.name}`; a.click();
+  URL.revokeObjectURL(url);
+  toast(`Exported ${outLines.length.toLocaleString()} lines`, 'success');
+});
+
+// ─── File input handlers ──────────────────────────────────────────────────
+fileInput.addEventListener('change', e=>{ loadFiles(e.target.files); e.target.value=''; });
+dzInput.addEventListener('change', e=>{ loadFiles(e.target.files); e.target.value=''; });
+$('btn-demo').addEventListener('click', loadDemoLog);
+
+// ─── Drag & drop ─────────────────────────────────────────────────────────
+const dz = document.getElementById('log-wrapper');
+dz.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.classList.add('over'); });
+dz.addEventListener('dragleave', ()=>dropZone.classList.remove('over'));
+dz.addEventListener('drop', e=>{ e.preventDefault(); dropZone.classList.remove('over'); if(e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
+document.body.addEventListener('dragover', e=>e.preventDefault());
+document.body.addEventListener('drop', e=>{ e.preventDefault(); if(e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
+
+// ─── Scroll → disable tail ────────────────────────────────────────────────
+logWrapper.addEventListener('scroll', ()=>{
+  if(!state.tail) return;
+  const atBottom = logWrapper.scrollHeight - logWrapper.scrollTop - logWrapper.clientHeight < 40;
+  if(!atBottom) {
+    state.tail=false;
+    $('btn-tail').classList.remove('active');
+    tailIndicator.classList.remove('visible');
+  }
+});
+
+// ─── Demo log ─────────────────────────────────────────────────────────────
+function loadDemoLog() {
+  const now = new Date();
+  const ts = (offsetMs=0) => {
+    const d = new Date(now.getTime()-offsetMs);
+    return d.toISOString().replace('T',' ').slice(0,23);
+  };
+
+  const lines = [
+    `${ts(600000)} INFO  [main] Tech & Electrical Services LLC — Log Viewer Demo`,
+    `${ts(595000)} INFO  [system] Starting application server on 0.0.0.0:8080`,
+    `${ts(590000)} INFO  [db] Database connection established — host=192.168.1.50 db=tesdb user=admin`,
+    `${ts(585000)} DEBUG [config] Loading configuration from /etc/tes/config.yml`,
+    `${ts(580000)} INFO  [cache] Redis cache connected — 127.0.0.1:6379`,
+    `${ts(575000)} INFO  [api] API routes registered: /api/v1/tickets /api/v1/clients /api/v1/invoices`,
+    `${ts(570000)} INFO  [health] Health check PASSED — all services nominal`,
+    `${ts(565000)} DEBUG [scheduler] Cron job started: backup_check every 300s`,
+    `${ts(560000)} INFO  [network] Listening for connections — status=READY`,
+    ``,
+    `${ts(540000)} INFO  [access] GET /api/v1/clients 200 OK 12ms — ip=10.0.1.45 user=irvin`,
+    `${ts(535000)} INFO  [access] POST /api/v1/tickets 201 Created 34ms — ip=10.0.1.45`,
+    `${ts(530000)} WARN  [auth] Login attempt for unknown user 'baduser' — ip=203.0.113.42`,
+    `${ts(525000)} DEBUG [db] Query: SELECT * FROM tickets WHERE status='open' LIMIT 100 — 8ms`,
+    `${ts(520000)} INFO  [access] GET /api/v1/invoices 200 OK 9ms`,
+    `${ts(515000)} ERROR [db] Connection pool exhausted — max_connections=20 current=20`,
+    `${ts(514000)} WARN  [db] Retrying database connection (attempt 1/3)`,
+    `${ts(513500)} WARN  [db] Retrying database connection (attempt 2/3)`,
+    `${ts(513000)} INFO  [db] Database connection restored — pool_size=20`,
+    `${ts(510000)} DEBUG [cache] Cache miss for key=client:1042 — fetching from DB`,
+    ``,
+    `${ts(490000)} INFO  [backup] Starting scheduled backup — target=/mnt/backup/daily`,
+    `${ts(489000)} INFO  [backup] Compressing log archive: /var/log/tes/2026-03-18.log.gz`,
+    `${ts(487000)} INFO  [backup] Uploading to S3 — bucket=tes-backups path=2026/03/19/`,
+    `${ts(485000)} SUCCESS [backup] Backup completed successfully — size=142MB duration=5.2s`,
+    `${ts(480000)} INFO  [monitor] Client check: Barney's Tire Shop — status=ONLINE latency=12ms`,
+    `${ts(479000)} WARN  [monitor] Client check: Desert Dental — disk usage 87% on C:\\ — threshold=80%`,
+    `${ts(478000)} ERROR [monitor] Client check: High Desert Realty — RDP service not responding — ip=192.168.5.10`,
+    `${ts(477500)} INFO  [alert] Sending alert email to irvin@techelectrical.com`,
+    `${ts(477000)} DEBUG [smtp] SMTP connection established — host=smtp.gmail.com:587`,
+    `${ts(476000)} SUCCESS [alert] Alert email delivered — ticket=TKT-0892 auto-created`,
+    ``,
+    `${ts(450000)} INFO  [access] POST /api/v1/tickets 201 Created — priority=CRITICAL client="High Desert Realty"`,
+    `${ts(449000)} INFO  [routing] Ticket TKT-0892 routed to tier2 queue — SLA P1: respond in 1h`,
+    `${ts(445000)} WARN  [sla] Ticket TKT-0887 approaching SLA breach — due in 15 minutes`,
+    `${ts(440000)} ERROR [sla] SLA BREACH: Ticket TKT-0885 exceeded response SLA — client="Barney's Tire" priority=HIGH`,
+    `${ts(439000)} INFO  [escalation] Auto-escalating TKT-0885 to senior tech`,
+    ``,
+    `${ts(400000)} DEBUG [firewall] Checkpoint: pfSense rule table sync — rules=142 time=0.3s`,
+    `${ts(395000)} INFO  [vpn] WireGuard tunnel established — peer=irvin-laptop endpoint=73.44.12.89:51820`,
+    `${ts(390000)} WARN  [vpn] Certificate expiry warning — cert=client-vpn expires_in=14d`,
+    `${ts(385000)} INFO  [inventory] Asset scan complete — 47 devices discovered on 192.168.0.0/24`,
+    `${ts(380000)} DEBUG [inventory] New device detected — mac=AA:BB:CC:DD:EE:FF ip=192.168.0.112 vendor=Apple`,
+    `${ts(375000)} INFO  [patch] Windows Update check — 3 critical, 7 optional — host=BARNEYS-SRV01`,
+    `${ts(370000)} WARN  [patch] Host BARNEYS-SRV01 has 3 CRITICAL security patches pending — CVE-2024-1234 CVE-2024-5678 CVE-2024-9012`,
+    ``,
+    `${ts(300000)} ERROR [auth] Failed login: 5 consecutive failures — user=admin ip=45.12.88.200 ACCOUNT_LOCKED`,
+    `${ts(299000)} WARN  [security] Brute force detected from 45.12.88.200 — adding to blocklist`,
+    `${ts(298000)} INFO  [firewall] Rule added: DENY ALL from 45.12.88.200`,
+    `${ts(297000)} INFO  [alert] Security alert sent — threat=brute_force source_ip=45.12.88.200`,
+    ``,
+    `${ts(200000)} INFO  [access] GET /api/v1/stats 200 OK 5ms`,
+    `${ts(195000)} DEBUG [gc] Garbage collection — freed=24MB heap_used=186MB`,
+    `${ts(190000)} INFO  [scheduler] Running hourly report generation`,
+    `${ts(185000)} SUCCESS [report] Monthly billing report generated — invoices=12 total=$14,580.00`,
+    `${ts(180000)} INFO  [access] GET /api/v1/invoices?month=2026-03 200 OK 18ms`,
+    ``,
+    `${ts(60000)}  INFO  [heartbeat] All systems operational`,
+    `${ts(50000)}  DEBUG [metrics] cpu=12% mem=62% disk_root=44% disk_data=71%`,
+    `${ts(40000)}  WARN  [disk] /data partition at 71% — warn threshold=70%`,
+    `${ts(30000)}  INFO  [access] POST /api/v1/tickets 201 — client="Desert Dental" subject="Printer offline"`,
+    `${ts(20000)}  ERROR [printer] Failed to connect to DENTAL-PRINTER01 — ip=192.168.2.55 timeout after 30s`,
+    `${ts(10000)}  INFO  [ticket] TKT-0893 created — priority=MEDIUM assigned=tech_queue`,
+    `${ts(2000)}   INFO  [system] Application running — uptime=10h pid=1234 version=2.4.1`,
+    `${ts(1000)}   DEBUG [watchdog] Watchdog ping OK`,
+    `${ts(0)}      INFO  [system] Ready — awaiting connections`,
+  ];
+
+  const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  const file = new File([blob], 'demo-tes-server.log', {type:'text/plain'});
+  loadFiles([file]);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+renderLog();
+</script>
+</body>
+</html>

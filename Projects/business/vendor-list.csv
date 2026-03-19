@@ -1,0 +1,66 @@
+Category,Vendor Name,Website,Contact Email,Phone,Notes
+Hardware,CDW,cdw.com,sales@cdw.com,800-800-4239,Enterprise IT hardware distributor
+Hardware,Newegg Business,newegg.com,business@newegg.com,800-800-0000,Business-focused IT hardware
+Hardware,Amazon Business,amazon.com,business@amazon.com,N/A,General hardware procurement
+Hardware,B&H Photo,bhphoto.com,sales@bhphoto.com,800-606-6969,Computing and electronics
+Hardware,Lenovo,lenovo.com,sales@lenovo.com,855-253-6686,Commercial laptops/servers
+Hardware,Dell Technologies,dell.com,sales@dell.com,800-456-3355,Enterprise hardware and services
+Hardware,HP Enterprise,hpe.com,sales@hpe.com,800-447-6738,Servers, networking, storage
+Hardware,Cisco,cisco.com,sales@cisco.com,800-553-6387,Networking equipment
+Hardware,Ubiquiti,ui.com,support@ui.com,800-958-3311,Networking (SMB focused)
+Hardware,ASUS Pro,asus.com,prosupport@asus.com,888-678-3688,Commercial motherboards/workstations
+Software,Microsoft,microsoft.com,commercialsales@microsoft.com,800-426-9400,365, Azure, Windows
+Software,Adobe,adobe.com,sales@adobe.com,800-585-0774,Creative Cloud, Acrobat
+Software,Autodesk,autodesk.com,sales@autodesk.com,800-864-0424,CAD, design software
+Software,VMWare,vmware.com,sales@vmware.com,877-486-9273,Virtualization
+Software,Slack,slack.com,sales@slack.com,N/A,Team collaboration
+Software,Atlassian,atlassian.com,sales@atlassian.com,800-804-2400,Jira, Confluence, Trello
+Software,JetBrains,jetbrains.com,sales@jetbrains.com,N/A,Dev tools (IntelliJ, etc)
+Software,GitHub,github.com,sales@github.com,877-448-4820,Dev collaboration and CI/CD
+Software,Tableau,tableau.com,sales@tableau.com,855-592-7438,Data visualization
+Software,Malwarebytes,malwarebytes.com,sales@malwarebytes.com,800-519-2133,Endpoint protection
+Software,SentinelOne,sentinelone.com,sales@sentinelone.com,855-870-0300,EDR/XDR
+Software,CrowdStrike,crowdstrike.com,sales@crowdstrike.com,888-415-4447,Cybersecurity platform
+Software,Splunk,splunk.com,info@splunk.com,866-778-7569,SIEM and logging
+Software,ManageEngine,manageengine.com,sales@manageengine.com,408-271-1000,IT management tools
+Software,ConnectWise,connectwise.com,sales@connectwise.com,800-671-6897,PSA and RMM (MSP tools)
+Software,Autotask,autotask.com,sales@autotask.com,866-663-8725,PSA (Datto)
+Software,Kaseya,kaseya.com,sales@kaseya.com,877-452-7392,IT management, RMM
+Software,TeamViewer,teamviewer.com,sales@teamviewer.com,800-638-9257,Remote support
+Software,WinZip,winzip.com,sales@winzip.com,800-831-5891,Compression and file sharing
+Cloud Provider,Amazon Web Services (AWS),aws.amazon.com,aws-sales@amazon.com,866-728-7353,IaaS/PaaS
+Cloud Provider,Microsoft Azure,azure.microsoft.com,sales@microsoft.com,800-867-1389,IaaS/PaaS
+Cloud Provider,Google Cloud,cloud.google.com,sales@google.com,855-837-2997,IaaS/PaaS
+Cloud Provider,DigitalOcean,digitalocean.com,sales@digitalocean.com,562-399-3670,Developer cloud
+Cloud Provider,Linode,linode.com,sales@linode.com,609-380-7100,Linux cloud hosting
+Cloud Provider,Vultr,vultr.com,sales@vultr.com,usa@vultr.com,Global cloud
+Cloud Provider,Backblaze,backblaze.com,sales@backblaze.com,877-392-8209,Backup and B2 cloud storage
+Cloud Provider,Wasabi,wasabi.com,sales@wasabi.com,844-492-7224,Cloud storage
+Cloud Provider,Cloudflare,cloudflare.com,sales@cloudflare.com,888-993-5275,CDN, security, DNS
+Cloud Provider,Fastly,fastly.com,sales@fastly.com,512-510-3000,Edge cloud
+Distributor,TechData (TD SYNNEX),tdsynnex.com,sales@tdsynnex.com,800-367-6950,Large distributor
+Distributor,Ingram Micro,ingrammicro.com,sales@ingrammicro.com,800-456-4822,Global distributor
+Distributor,Synnex,synnex.com,info@synnex.com,800-756-9888,Now TD SYNNEX
+Distributor,Arrow Electronics,arrow.com,sales@arrow.com,800-777-2776,Enterprise components
+Distributor,D&H Distributing,dh.com,sales@dh.com,800-877-1200,Consumer tech distributor
+Distributor,MA Laboratories,malabs.com,sales@malabs.com,408-941-0500,California-based
+Distributor,ASI Computer Technologies,asipartner.com,sales@asipartner.com,510-979-5515,Components and systems
+Distributor,Westell,westell.com,sales@westell.com,630-235-2300,Networking distributor
+Distributor,Raritan,raritan.com,sales@raritan.com,800-724-8090,PDU and KVM
+Distributor,ACR Distribution,acrdistribution.com,orders@acrdistribution.com,800-422-6191,Embedded and IoT
+Cybersecurity,KnowBe4,knowbe4.com,sales@knowbe4.com,855-566-9234,Security awareness training
+Cybersecurity,Tripwire,tripwire.com,sales@tripwire.com,800-774-9793,File integrity monitoring
+Cybersecurity,Tenable,tenable.com,sales@tenable.com,800-887-7500,Vulnerability management
+Cybersecurity,Rapid7,rapid7.com,sales@rapid7.com,866-380-8113,SecOps platform
+Cybersecurity,Qualys,qualys.com,sales@qualys.com,800-745-4355,Cloud security
+Cybersecurity,Fortinet,fortinet.com,sales@fortinet.com,866-868-3678,Firewall/UTM
+Cybersecurity,Palo Alto Networks,paloaltonetworks.com,sales@paloaltonetworks.com,408-753-4000,Next-gen firewall
+Cybersecurity,Check Point,checkpoint.com,sales@checkpoint.com,800-429-4391,Security solutions
+Cybersecurity,Sophos,sophos.com,sales@sophos.com,888-767-4678,Endpoint and network security
+Cybersecurity,ESET,eset.com,sales@eset.com,866-343-3738,Endpoint protection
+Electrical,Home Depot Pro,homedepot.com,proaccounts@homedepot.com,800-553-3199,Commercial electrical supplies
+Electrical,Grainger,grainger.com,sales@grainger.com,800-723-1524,Industrial electrical
+Electrical,McMaster-Carr,mcmaster.com,sales@mcmaster.com,630-833-0300,Fast industrial supply
+Electrical,Digikey,digikey.com,sales@digikey.com,800-344-4539,Electronic components
+Electrical,Mouser Electronics,mouser.com,sales@mouser.com,800-346-6873,Semiconductors
+Electrical,Arrow Components,arrow.com,sales@arrow.com,800-777-2776,Electronic components

@@ -1,0 +1,51 @@
+{
+  "allocations": [
+    {
+      "id": "alloc-001",
+      "ip": "192.168.1.1",
+      "hostname": "gateway",
+      "network_id": "net-001",
+      "type": "static",
+      "status": "reserved",
+      "mac": null,
+      "owner": "Router",
+      "description": "Default gateway",
+      "tags": [
+        "infrastructure"
+      ],
+      "created": "2026-03-19T00:00:00Z",
+      "updated": "2026-03-19T00:00:00Z"
+    },
+    {
+      "id": "alloc-002",
+      "ip": "192.168.1.100",
+      "hostname": "home-server",
+      "network_id": "net-001",
+      "type": "static",
+      "status": "active",
+      "mac": "aa:bb:cc:dd:ee:ff",
+      "owner": "Irvin",
+      "description": "Primary home server",
+      "tags": [
+        "server",
+        "ssh"
+      ],
+      "created": "2026-03-19T00:00:00Z",
+      "updated": "2026-03-19T00:00:00Z"
+    },
+    {
+      "id": "alloc-003",
+      "ip": "10.10.0.10",
+      "hostname": "printer01",
+      "network_id": "net-002",
+      "type": "static",
+      "status": "active",
+      "mac": "aa:bb:cc:11:22:33",
+      "owner": "IT Dept",
+      "description": null,
+      "tags": [],
+      "created": "2026-03-19T16:59:53Z",
+      "updated": "2026-03-19T16:59:54Z"
+    }
+  ]
+}

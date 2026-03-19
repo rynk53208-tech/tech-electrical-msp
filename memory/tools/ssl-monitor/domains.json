@@ -1,0 +1,17 @@
+{
+  "domains": [
+    {
+      "domain": "google.com",
+      "port": 443,
+      "label": "Google",
+      "alertDays": 30
+    },
+    {
+      "domain": "github.com",
+      "port": 443,
+      "label": "GitHub",
+      "alertDays": 30
+    }
+  ],
+  "_comment": "Each entry: { domain (required), port (default 443), label (display name), alertDays (warn threshold, default 30) }"
+}

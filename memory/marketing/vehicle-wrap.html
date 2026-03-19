@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehicle Wrap Design — Tech & Electrical Services LLC</title>
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0f1e;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 32px 16px;
+    }
+
+    /* ─── Page Layout ─── */
+    .page-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-title h1 {
+      font-size: 2rem;
+      color: #00d4ff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .page-title p {
+      color: #94a3b8;
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 16px;
+    }
+    .section-label h2 {
+      font-size: 1.1rem;
+      color: #f59e0b;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1e2d4a;
+    }
+
+    /* ─── Panel Containers ─── */
+    .panel {
+      background: #111827;
+      border: 1px solid #1e2d4a;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 24px rgba(0, 212, 255, 0.06);
+    }
+    .panel-header {
+      background: #0d1b2e;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e2d4a;
+      font-size: 0.85rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .panel-body { padding: 24px; }
+
+    /* ─── Spec Grid ─── */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .spec-card {
+      background: #0d1b2e;
+      border: 1px solid #1e2d4a;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .spec-card .label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+    .spec-card .value { font-size: 0.95rem; color: #e2e8f0; margin-top: 4px; font-weight: 500; }
+
+    /* ─── Color Palette ─── */
+    .palette {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch-block {
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+    .swatch span { font-size: 0.72rem; color: #94a3b8; text-align: center; }
+    .swatch code { font-size: 0.68rem; color: #64748b; font-family: monospace; }
+
+    /* ─── SVG Wrapper ─── */
+    .svg-view {
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #060d1a;
+      border: 1px solid #1e2d4a;
+    }
+    .svg-view svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── Tags / Pills ─── */
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .pill-cyan { background: rgba(0,212,255,0.12); color: #00d4ff; border: 1px solid rgba(0,212,255,0.25); }
+    .pill-amber { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+    .pill-green { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+
+    /* ─── Typography helpers ─── */
+    .note { font-size: 0.82rem; color: #64748b; line-height: 1.6; margin-top: 8px; }
+    .note strong { color: #94a3b8; }
+
+    /* ─── Notes list ─── */
+    ul.notes-list { padding-left: 20px; }
+    ul.notes-list li { font-size: 0.85rem; color: #94a3b8; line-height: 1.8; }
+    ul.notes-list li strong { color: #e2e8f0; }
+
+    /* ─── Print ─── */
+    @media print {
+      body { background: #fff; color: #000; }
+      .panel { border-color: #ccc; background: #fff; }
+      .panel-header { background: #f5f5f5; }
+      .spec-card { background: #f9f9f9; border-color: #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       PAGE HEADER
+  ══════════════════════════════════════ -->
+  <div class="page-title">
+    <h1>⚡ Vehicle Wrap Design Specs</h1>
+    <p>Tech &amp; Electrical Services LLC &nbsp;·&nbsp; Full Wrap — Passenger Van / Work Truck</p>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 1 — SPECIFICATIONS OVERVIEW
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>📋 General Specifications</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#00d4ff"></div>
+      Wrap Production Specs — Reference for Print Shop
+    </div>
+    <div class="panel-body">
+      <div class="spec-grid">
+        <div class="spec-card">
+          <div class="label">Vehicle Type</div>
+          <div class="value">Full-size Cargo Van / Work Truck</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Wrap Type</div>
+          <div class="value">Full Wrap (all panels)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Material</div>
+          <div class="value">3M 1080 Series or Avery SW900</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Laminate</div>
+          <div class="value">Gloss or Satin Overlaminate (3M 8518)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Print Resolution</div>
+          <div class="value">1200 dpi minimum</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Bleed</div>
+          <div class="value">1 inch all edges</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Safe Zone</div>
+          <div class="value">2 inches from panel edges</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Color Mode</div>
+          <div class="value">CMYK (Pantone match preferred)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">File Format</div>
+          <div class="value">PDF/X-4 or layered AI/PSD</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Warranty</div>
+          <div class="value">5-year outdoor rated (3M warranty)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Application</div>
+          <div class="value">Professional wrap installer only</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Est. Cost Range</div>
+          <div class="value">$2,500 – $4,500 installed</div>
+        </div>
+      </div>
+      <p class="note">⚠️ <strong>Before sending to print:</strong> Update phone, email, website, and license number. Request a proof PDF and physical sample swatch before final production.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 2 — COLOR SCHEME
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🎨 Color Scheme</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#f59e0b"></div>
+      Brand Palette — TES LLC Identity Colors
+    </div>
+    <div class="panel-body">
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch-block" style="background:#0a0f1e; border-color:#1e2d4a;"></div>
+          <span>Deep Navy</span>
+          <code>#0A0F1E</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#0d1b2e;"></div>
+          <span>Dark Slate</span>
+          <code>#0D1B2E</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#00d4ff;"></div>
+          <span>Electric Cyan</span>
+          <code>#00D4FF</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#f59e0b;"></div>
+          <span>Amber Gold</span>
+          <code>#F59E0B</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#10b981;"></div>
+          <span>Emerald</span>
+          <code>#10B981</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#ffffff;"></div>
+          <span>White</span>
+          <code>#FFFFFF</code>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#e2e8f0;"></div>
+          <span>Light Gray</span>
+          <code>#E2E8F0</code>
+        </div>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-card">
+          <div class="label">Base / Background</div>
+          <div class="value">Deep Navy #0A0F1E</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Primary Accent</div>
+          <div class="value">Electric Cyan #00D4FF</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Secondary Accent</div>
+          <div class="value">Amber Gold #F59E0B</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Text Primary</div>
+          <div class="value">White #FFFFFF</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Text Secondary</div>
+          <div class="value">Light Gray #E2E8F0</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Electrical Accent</div>
+          <div class="value">Emerald #10B981</div>
+        </div>
+      </div>
+      <p class="note"><strong>Pantone equivalents:</strong> Cyan ≈ Pantone 299C / Process Blue C · Amber ≈ Pantone 130C · Navy ≈ Pantone 2767C</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 3 — LOGO SVG
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🔷 Logo Mark</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#10b981"></div>
+      TES LLC — Primary Logo (SVG, scalable)
+    </div>
+    <div class="panel-body">
+      <p class="note" style="margin-bottom:16px;">Hex badge with lightning bolt — use on hood, doors, and rear. Scale freely — vector SVG never pixelates.</p>
+
+      <!-- Logo SVG -->
+      <div class="svg-view" style="background:#0a0f1e; padding: 32px; display:flex; justify-content:center;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="TES LLC Logo">
+          <defs>
+            <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#0d1b2e"/>
+              <stop offset="100%" style="stop-color:#1a2f4e"/>
+            </linearGradient>
+            <linearGradient id="boltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="100%" style="stop-color:#f59e0b"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Hexagon outer ring -->
+          <polygon points="100,10 178,55 178,145 100,190 22,145 22,55"
+                   fill="url(#hexGrad)" stroke="#00d4ff" stroke-width="3" filter="url(#glow)"/>
+          <!-- Inner hex trim -->
+          <polygon points="100,22 166,61 166,139 100,178 34,139 34,61"
+                   fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+          <!-- Lightning bolt -->
+          <polygon points="112,36 82,100 104,100 88,164 118,96 96,96"
+                   fill="url(#boltGrad)" filter="url(#glow)"/>
+          <!-- TES text under bolt -->
+          <text x="100" y="197" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="11" font-weight="700"
+                fill="#00d4ff" letter-spacing="4">TES LLC</text>
+        </svg>
+      </div>
+
+      <div class="spec-grid" style="margin-top:16px;">
+        <div class="spec-card">
+          <div class="label">Logo Min Size</div>
+          <div class="value">3" diameter (vehicle)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Hood Logo Size</div>
+          <div class="value">14"–18" diameter</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Door Logo Size</div>
+          <div class="value">10"–14" diameter</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Rear Logo Size</div>
+          <div class="value">8"–12" diameter</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Clear Space</div>
+          <div class="value">1× logo height on all sides</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Format</div>
+          <div class="value">SVG vector (export as PDF for print)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 4 — FULL WRAP OVERVIEW
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🚐 Full Wrap — Overview Diagram</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#00d4ff"></div>
+      Complete Vehicle — All Panels (Schematic View)
+    </div>
+    <div class="panel-body">
+      <div class="svg-view">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" role="img" aria-label="Full Wrap Overview">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#060d1a"/>
+              <stop offset="40%" style="stop-color:#0a0f1e"/>
+              <stop offset="100%" style="stop-color:#060d1a"/>
+            </linearGradient>
+            <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0"/>
+              <stop offset="30%" style="stop-color:#00d4ff;stop-opacity:0.9"/>
+              <stop offset="70%" style="stop-color:#00d4ff;stop-opacity:0.9"/>
+              <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+            </linearGradient>
+            <linearGradient id="boltG2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="100%" style="stop-color:#f59e0b"/>
+            </linearGradient>
+            <filter id="glow2">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softglow">
+              <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- ─── Vehicle body silhouette ─── -->
+          <!-- Background body fill -->
+          <rect x="0" y="0" width="960" height="400" fill="#060d1a"/>
+
+          <!-- Van body -->
+          <rect x="60" y="100" width="840" height="220" rx="18" fill="url(#bodyGrad)" stroke="#1e2d4a" stroke-width="2"/>
+
+          <!-- Cab window area -->
+          <rect x="70" y="110" width="180" height="110" rx="10" fill="#0a1628" stroke="#1e2d4a" stroke-width="1.5"/>
+          <!-- Windshield glass -->
+          <rect x="80" y="118" width="160" height="85" rx="6" fill="#0d2040" opacity="0.9" stroke="#00d4ff" stroke-width="1"/>
+          <text x="160" y="163" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" fill="#00d4ff" opacity="0.5">WINDSHIELD</text>
+
+          <!-- Rear doors -->
+          <rect x="840" y="110" width="48" height="200" rx="4" fill="#0a1628" stroke="#1e2d4a" stroke-width="1.5"/>
+          <line x1="864" y1="110" x2="864" y2="310" stroke="#1e2d4a" stroke-width="1"/>
+
+          <!-- Wheel arches -->
+          <ellipse cx="210" cy="325" rx="60" ry="22" fill="#060d1a" stroke="#1e2d4a" stroke-width="2"/>
+          <ellipse cx="750" cy="325" rx="60" ry="22" fill="#060d1a" stroke="#1e2d4a" stroke-width="2"/>
+          <!-- Wheels -->
+          <ellipse cx="210" cy="328" rx="42" ry="18" fill="#111827" stroke="#2d3748" stroke-width="2"/>
+          <ellipse cx="210" cy="328" rx="22" ry="9" fill="#1a202c" stroke="#4a5568" stroke-width="1.5"/>
+          <ellipse cx="750" cy="328" rx="42" ry="18" fill="#111827" stroke="#2d3748" stroke-width="2"/>
+          <ellipse cx="750" cy="328" rx="22" ry="9" fill="#1a202c" stroke="#4a5568" stroke-width="1.5"/>
+
+          <!-- ─── DIAGONAL CYAN SPEED STRIPE ─── -->
+          <polygon points="250,100 960,100 960,195 850,195" fill="#00d4ff" opacity="0.06"/>
+          <!-- Cyan line top edge -->
+          <line x1="250" y1="145" x2="900" y2="145" stroke="url(#cyanGrad)" stroke-width="3" filter="url(#glow2)"/>
+          <!-- Amber stripe below -->
+          <line x1="270" y1="155" x2="900" y2="155" stroke="#f59e0b" stroke-width="1.5" opacity="0.7" filter="url(#softglow)"/>
+
+          <!-- ─── DIAGONAL SLASH DECORATION (FRONT) ─── -->
+          <polygon points="240,100 300,100 270,200 210,200" fill="#00d4ff" opacity="0.08"/>
+          <line x1="240" y1="100" x2="210" y2="200" stroke="#00d4ff" stroke-width="2" opacity="0.6" filter="url(#glow2)"/>
+
+          <!-- ─── CIRCUIT TRACE PATTERN (side) ─── -->
+          <g opacity="0.12" stroke="#00d4ff" stroke-width="1" fill="none">
+            <line x1="300" y1="270" x2="380" y2="270"/>
+            <line x1="380" y1="270" x2="380" y2="250"/>
+            <line x1="380" y1="250" x2="440" y2="250"/>
+            <circle cx="380" cy="270" r="3" fill="#00d4ff"/>
+            <line x1="440" y1="250" x2="440" y2="280"/>
+            <line x1="440" y1="280" x2="520" y2="280"/>
+            <circle cx="440" cy="250" r="3" fill="#00d4ff"/>
+            <line x1="520" y1="280" x2="580" y2="280"/>
+            <line x1="580" y1="280" x2="580" y2="260"/>
+            <line x1="580" y1="260" x2="650" y2="260"/>
+            <circle cx="580" cy="280" r="3" fill="#00d4ff"/>
+            <line x1="650" y1="260" x2="700" y2="260"/>
+          </g>
+
+          <!-- ─── LOGO (center-left side) ─── -->
+          <g transform="translate(310,145)" filter="url(#glow2)">
+            <polygon points="40,4 72,22 72,58 40,76 8,58 8,22"
+                     fill="#0d1b2e" stroke="#00d4ff" stroke-width="2.5"/>
+            <polygon points="40,10 66,26 66,54 40,70 14,54 14,26"
+                     fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.4"/>
+            <polygon points="45,15 33,40 42,40 35,66 47,38 38,38"
+                     fill="url(#boltG2)"/>
+          </g>
+
+          <!-- ─── COMPANY NAME (large, side) ─── -->
+          <text x="415" y="190" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="38" font-weight="900" fill="#ffffff" letter-spacing="2"
+                filter="url(#softglow)">Tech &amp; Electrical Services</text>
+          <text x="415" y="214" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="14" font-weight="400" fill="#00d4ff" letter-spacing="6">LLC  ·  TEMECULA, CA</text>
+
+          <!-- ─── TAGLINE ─── -->
+          <text x="415" y="240" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="11" font-weight="300" fill="#94a3b8" letter-spacing="2"
+                font-style="italic">Defense-Grade IT + Electrical · One Call, Every Solution</text>
+
+          <!-- ─── SERVICE PILLS (side) ─── -->
+          <g transform="translate(415, 256)">
+            <!-- Pill 1: Cybersecurity -->
+            <rect x="0" y="0" width="108" height="22" rx="11" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1"/>
+            <text x="54" y="15" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9.5" fill="#00d4ff" font-weight="600">⚡ CYBERSECURITY</text>
+            <!-- Pill 2: Managed IT -->
+            <rect x="116" y="0" width="92" height="22" rx="11" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1"/>
+            <text x="162" y="15" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9.5" fill="#00d4ff" font-weight="600">🖥 MANAGED IT</text>
+            <!-- Pill 3: Electrical -->
+            <rect x="216" y="0" width="88" height="22" rx="11" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1"/>
+            <text x="260" y="15" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9.5" fill="#f59e0b" font-weight="600">⚡ ELECTRICAL</text>
+            <!-- Pill 4: Repair -->
+            <rect x="312" y="0" width="96" height="22" rx="11" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1"/>
+            <text x="360" y="15" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9.5" fill="#10b981" font-weight="600">🔧 BOARD REPAIR</text>
+          </g>
+
+          <!-- ─── PHONE NUMBER (large, bottom strip) ─── -->
+          <rect x="60" y="338" width="840" height="44" rx="4" fill="#00d4ff" opacity="0.08"/>
+          <line x1="60" y1="338" x2="900" y2="338" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+          <text x="480" y="365" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif" font-size="18"
+                font-weight="700" fill="#00d4ff" letter-spacing="4"
+                filter="url(#glow2)">📞 (951) 555-0199  ·  techandelectricalservices.com  ·  info@tesllc.com</text>
+
+          <!-- ─── SECTION LABELS ─── -->
+          <text x="160" y="92" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b">CAB / FRONT SECTION</text>
+          <text x="530" y="92" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b">DRIVER SIDE PANEL (mirrored on passenger side)</text>
+          <text x="864" y="92" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b">REAR</text>
+          <text x="480" y="396" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b">ROCKER PANEL — Contact / Phone Strip</text>
+        </svg>
+      </div>
+      <p class="note" style="margin-top:12px;">
+        <strong>Design intent:</strong> Dark navy base with electric cyan speed stripe and diagonal slash. Company name dominates the side panel at ~38pt scale. Service pills use brand-colored badges. Full contact strip runs rocker panel length.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 5 — DRIVER SIDE PANEL
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🚗 Driver Side Panel — Detail</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#00d4ff"></div>
+      Side Panel — 1:1 Design Mockup (scale to vehicle dimensions)
+    </div>
+    <div class="panel-body">
+      <div class="svg-view">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-label="Driver Side Panel">
+          <defs>
+            <linearGradient id="sideBg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#060d1a"/>
+              <stop offset="50%" style="stop-color:#0a0f1e"/>
+              <stop offset="100%" style="stop-color:#060d1a"/>
+            </linearGradient>
+            <linearGradient id="boltSide" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="100%" style="stop-color:#f59e0b"/>
+            </linearGradient>
+            <filter id="sideGlow">
+              <feGaussianBlur stdDeviation="3" result="cb"/>
+              <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="sideSoftGlow">
+              <feGaussianBlur stdDeviation="8" result="cb"/>
+              <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Background -->
+          <rect width="900" height="260" fill="url(#sideBg)"/>
+
+          <!-- ─── CYAN SPEED STRIPE (angled top) ─── -->
+          <!-- Main stripe band -->
+          <polygon points="0,40 900,40 900,80 0,80" fill="#00d4ff" opacity="0.04"/>
+          <line x1="0" y1="58" x2="900" y2="58" stroke="#00d4ff" stroke-width="3" filter="url(#sideGlow)" opacity="0.9"/>
+          <line x1="0" y1="66" x2="900" y2="66" stroke="#f59e0b" stroke-width="1.5" opacity="0.6" filter="url(#sideGlow)"/>
+
+          <!-- ─── DIAGONAL SLASH (front of panel) ─── -->
+          <polygon points="0,0 80,0 50,260 0,260" fill="#00d4ff" opacity="0.05"/>
+          <line x1="80" y1="0" x2="50" y2="260" stroke="#00d4ff" stroke-width="2" opacity="0.5" filter="url(#sideGlow)"/>
+
+          <!-- ─── CIRCUIT TRACE BACKGROUND ─── -->
+          <g opacity="0.07" stroke="#00d4ff" stroke-width="1" fill="none">
+            <line x1="100" y1="190" x2="200" y2="190"/>
+            <line x1="200" y1="190" x2="200" y2="170"/>
+            <line x1="200" y1="170" x2="280" y2="170"/>
+            <circle cx="200" cy="190" r="3" fill="#00d4ff"/>
+            <line x1="280" y1="170" x2="280" y2="200"/>
+            <line x1="280" y1="200" x2="360" y2="200"/>
+            <circle cx="280" cy="170" r="3" fill="#00d4ff"/>
+            <line x1="360" y1="200" x2="420" y2="200"/>
+            <line x1="420" y1="200" x2="420" y2="175"/>
+            <line x1="420" y1="175" x2="500" y2="175"/>
+            <circle cx="420" cy="200" r="3" fill="#00d4ff"/>
+          </g>
+
+          <!-- ─── HEX LOGO ─── -->
+          <g transform="translate(88,80)" filter="url(#sideGlow)">
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28"
+                     fill="#0d1b2e" stroke="#00d4ff" stroke-width="3"/>
+            <polygon points="50,14 80,32 80,68 50,86 20,68 20,32"
+                     fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.4"/>
+            <!-- Lightning bolt inside hex -->
+            <polygon points="56,20 41,50 53,50 44,82 59,48 47,48"
+                     fill="url(#boltSide)"/>
+          </g>
+
+          <!-- ─── COMPANY NAME ─── -->
+          <text x="200" y="118" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="42" font-weight="900" fill="#ffffff" letter-spacing="1"
+                filter="url(#sideSoftGlow)">Tech &amp; Electrical Services</text>
+          <text x="200" y="140" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="15" font-weight="600" fill="#00d4ff" letter-spacing="8">LLC</text>
+
+          <!-- ─── TAGLINE ─── -->
+          <text x="200" y="164" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="12.5" font-weight="300" fill="#94a3b8" letter-spacing="2"
+                font-style="italic">Defense-Grade IT + Electrical  ·  Temecula, CA  ·  Same-Day Response</text>
+
+          <!-- ─── SERVICE TAGS ─── -->
+          <!-- Cybersecurity -->
+          <rect x="200" y="176" width="120" height="24" rx="12" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="1.2"/>
+          <text x="260" y="192" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#00d4ff" font-weight="600" letter-spacing="0.5">⚡ CYBERSECURITY</text>
+
+          <!-- Managed IT -->
+          <rect x="330" y="176" width="104" height="24" rx="12" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="1.2"/>
+          <text x="382" y="192" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#00d4ff" font-weight="600" letter-spacing="0.5">🖥 MANAGED IT</text>
+
+          <!-- Electrical -->
+          <rect x="444" y="176" width="100" height="24" rx="12" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1.2"/>
+          <text x="494" y="192" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#f59e0b" font-weight="600" letter-spacing="0.5">⚡ ELECTRICAL</text>
+
+          <!-- Hardware Repair -->
+          <rect x="554" y="176" width="112" height="24" rx="12" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.2"/>
+          <text x="610" y="192" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#10b981" font-weight="600" letter-spacing="0.5">🔧 BOARD REPAIR</text>
+
+          <!-- Dev -->
+          <rect x="676" y="176" width="104" height="24" rx="12" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="1.2"/>
+          <text x="728" y="192" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#00d4ff" font-weight="600" letter-spacing="0.5">💻 SOFTWARE DEV</text>
+
+          <!-- ─── PHONE STRIP (bottom) ─── -->
+          <rect x="0" y="220" width="900" height="40" fill="rgba(0,212,255,0.07)"/>
+          <line x1="0" y1="220" x2="900" y2="220" stroke="#00d4ff" stroke-width="1" opacity="0.35"/>
+          <text x="450" y="246" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="16" font-weight="700" fill="#00d4ff" letter-spacing="3"
+                filter="url(#sideGlow)">(951) 555-0199  ·  techandelectricalservices.com</text>
+
+          <!-- ─── WEBSITE / SOCIAL CORNER (top right) ─── -->
+          <text x="884" y="20" text-anchor="end" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b" letter-spacing="1">@TechElecServices</text>
+          <text x="884" y="34" text-anchor="end" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="10" fill="#64748b" letter-spacing="1">Licensed · Bonded · Insured  |  CA Lic #XXXXXXX</text>
+        </svg>
+      </div>
+
+      <div class="spec-grid" style="margin-top:16px;">
+        <div class="spec-card">
+          <div class="label">Top stripe</div>
+          <div class="value">Cyan glow line at ~22% height</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Logo placement</div>
+          <div class="value">Left of center, vertically aligned to company name</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Company name size</div>
+          <div class="value">~42pt (exact size scales to print)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Service pills</div>
+          <div class="value">Below tagline, left-aligned, 5 pills</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Bottom strip</div>
+          <div class="value">Phone + website — full width, cyan text</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Credentials (top right)</div>
+          <div class="value">Licensed · Bonded · Insured · CA Lic #</div>
+        </div>
+      </div>
+      <p class="note"><strong>Note:</strong> Passenger side mirrors the driver side layout. Both sides use identical design for 360° brand impact at any viewing angle.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 6 — REAR DESIGN
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🚘 Rear Door Design</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#f59e0b"></div>
+      Rear Panel — Dual Door Design (split at center seam)
+    </div>
+    <div class="panel-body">
+      <div class="svg-view">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" role="img" aria-label="Rear Panel Design">
+          <defs>
+            <linearGradient id="rearBg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#0d1b2e"/>
+              <stop offset="100%" style="stop-color:#060d1a"/>
+            </linearGradient>
+            <linearGradient id="boltRear" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="100%" style="stop-color:#f59e0b"/>
+            </linearGradient>
+            <radialGradient id="rearGlow" cx="50%" cy="45%" r="40%">
+              <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.12"/>
+              <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+            </radialGradient>
+            <filter id="rGlow">
+              <feGaussianBlur stdDeviation="4" result="cb"/>
+              <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Background -->
+          <rect width="600" height="420" fill="url(#rearBg)"/>
+
+          <!-- Radial glow center -->
+          <ellipse cx="300" cy="190" rx="220" ry="180" fill="url(#rearGlow)"/>
+
+          <!-- ─── DOOR SEAM (center) ─── -->
+          <line x1="300" y1="0" x2="300" y2="420" stroke="#1e2d4a" stroke-width="3" stroke-dasharray="8,4"/>
+
+          <!-- ─── AMBER BORDER (top + bottom bands) ─── -->
+          <rect x="0" y="0" width="600" height="20" fill="#f59e0b" opacity="0.08"/>
+          <line x1="0" y1="20" x2="600" y2="20" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+          <rect x="0" y="400" width="600" height="20" fill="#f59e0b" opacity="0.08"/>
+          <line x1="0" y1="400" x2="600" y2="400" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+
+          <!-- ─── CORNER BRACKETS ─── -->
+          <g stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.6">
+            <path d="M 16,40 L 16,16 L 40,16"/>
+            <path d="M 560,40 L 560,16 L 584,16"/>
+            <path d="M 16,380 L 16,404 L 40,404"/>
+            <path d="M 560,380 L 560,404 L 584,404"/>
+          </g>
+
+          <!-- ─── LARGE HEXAGON LOGO (center) ─── -->
+          <g transform="translate(180,80)" filter="url(#rGlow)">
+            <polygon points="120,10 214,62 214,164 120,216 26,164 26,62"
+                     fill="#0d1b2e" stroke="#00d4ff" stroke-width="3.5"/>
+            <polygon points="120,24 198,72 198,154 120,200 42,154 42,72"
+                     fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+            <!-- Big lightning bolt -->
+            <polygon points="132,36 98,118 124,118 104,196 140,110 114,110"
+                     fill="url(#boltRear)" filter="url(#rGlow)"/>
+          </g>
+
+          <!-- ─── COMPANY NAME (below logo) ─── -->
+          <text x="300" y="328" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="24" font-weight="900" fill="#ffffff" letter-spacing="2"
+                filter="url(#rGlow)">Tech &amp; Electrical Services LLC</text>
+
+          <!-- ─── TAGLINE ─── -->
+          <text x="300" y="352" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="11" font-weight="300" fill="#94a3b8" letter-spacing="3"
+                font-style="italic">Defense-Grade IT + Electrical</text>
+
+          <!-- ─── PHONE + WEBSITE (large, high contrast) ─── -->
+          <text x="300" y="380" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="19" font-weight="700" fill="#00d4ff" letter-spacing="3"
+                filter="url(#rGlow)">(951) 555-0199</text>
+
+          <text x="300" y="398" text-anchor="middle"
+                font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="11" font-weight="400" fill="#64748b" letter-spacing="2">techandelectricalservices.com</text>
+
+          <!-- ─── QR CODE PLACEHOLDER (bottom left of logo area) ─── -->
+          <g transform="translate(28,300)">
+            <rect width="72" height="72" rx="6" fill="#0d1b2e" stroke="#00d4ff" stroke-width="1.5"/>
+            <!-- QR finder corners -->
+            <rect x="6" y="6" width="18" height="18" rx="2" fill="none" stroke="#00d4ff" stroke-width="2"/>
+            <rect x="9" y="9" width="12" height="12" rx="1" fill="#00d4ff"/>
+            <rect x="48" y="6" width="18" height="18" rx="2" fill="none" stroke="#00d4ff" stroke-width="2"/>
+            <rect x="51" y="9" width="12" height="12" rx="1" fill="#00d4ff"/>
+            <rect x="6" y="48" width="18" height="18" rx="2" fill="none" stroke="#00d4ff" stroke-width="2"/>
+            <rect x="9" y="51" width="12" height="12" rx="1" fill="#00d4ff"/>
+            <!-- QR data cells -->
+            <rect x="30" y="30" width="12" height="12" fill="#00d4ff" opacity="0.7"/>
+            <rect x="30" y="8" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+            <rect x="8" y="30" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+            <rect x="45" y="30" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+            <rect x="30" y="45" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+            <rect x="50" y="50" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+            <rect x="56" y="38" width="5" height="5" fill="#00d4ff" opacity="0.5"/>
+          </g>
+          <text x="64" y="386" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="7.5" fill="#64748b">FREE ASSESSMENT</text>
+          <text x="64" y="396" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="7.5" fill="#64748b">Scan to Book</text>
+
+          <!-- ─── LICENSE / CREDENTIAL STRIP (top) ─── -->
+          <text x="300" y="14" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+                font-size="8.5" fill="#64748b" letter-spacing="1">Licensed · Bonded · Insured · CA Electrical Lic #XXXXXXX</text>
+        </svg>
+      </div>
+
+      <div class="spec-grid" style="margin-top:16px;">
+        <div class="spec-card">
+          <div class="label">Center seam</div>
+          <div class="value">Split logo centered across both rear doors</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Logo size (rear)</div>
+          <div class="value">Large hex — ~200px diameter at scale</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Phone emphasis</div>
+          <div class="value">Largest element besides logo — high contrast cyan</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">QR code</div>
+          <div class="value">Bottom left — links to free assessment booking page</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Border treatment</div>
+          <div class="value">Amber top/bottom bands + cyan corner brackets</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Viewing distance</div>
+          <div class="value">Phone readable at 40ft+ (min 3" print size)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 7 — CONTACT INFO PLACEMENT
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>📞 Contact Info Placement Guide</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#10b981"></div>
+      Where Each Contact Element Appears on the Wrap
+    </div>
+    <div class="panel-body">
+      <div class="spec-grid">
+        <div class="spec-card">
+          <div class="label">Phone Number</div>
+          <div class="value">(951) 555-0199</div>
+          <div class="note">Side strip + rear (large) — update before print</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Email</div>
+          <div class="value">info@tesllc.com</div>
+          <div class="note">Side strip only — secondary placement</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Website</div>
+          <div class="value">techandelectricalservices.com</div>
+          <div class="note">Side strip + rear — always paired with phone</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Location</div>
+          <div class="value">Temecula, CA</div>
+          <div class="note">Tagline line on side panel</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Social Handle</div>
+          <div class="value">@TechElecServices</div>
+          <div class="note">Top-right corner of side panel</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">License #</div>
+          <div class="value">CA Lic #XXXXXXX</div>
+          <div class="note">Side top-right + rear top strip — update before print</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">QR Code</div>
+          <div class="value">Free Assessment Booking</div>
+          <div class="note">Rear bottom-left — replace placeholder with real QR</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Credentials line</div>
+          <div class="value">Licensed · Bonded · Insured</div>
+          <div class="note">Both side + rear — builds trust at a glance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 8 — PRINT / PRODUCTION NOTES
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🖨️ Production Checklist</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#f59e0b"></div>
+      Before Sending to Wrap Shop — Action Items
+    </div>
+    <div class="panel-body">
+      <ul class="notes-list">
+        <li>☐ <strong>Update phone number</strong> — (951) 555-0199 is placeholder; confirm before printing</li>
+        <li>☐ <strong>Update email address</strong> — info@tesllc.com placeholder; update to real email</li>
+        <li>☐ <strong>Update website URL</strong> — confirm domain is live and resolves correctly</li>
+        <li>☐ <strong>Add CA electrical contractor license number</strong> — replace #XXXXXXX on all panels</li>
+        <li>☐ <strong>Generate real QR code</strong> — link to free assessment booking page; replace rear door placeholder</li>
+        <li>☐ <strong>Export final SVG as high-res PDF/X-4</strong> — or supply to wrap shop as layered AI file</li>
+        <li>☐ <strong>Request vehicle-specific template</strong> — ask wrap shop for die-cut template for your exact make/model (Ford Transit, Sprinter, etc.)</li>
+        <li>☐ <strong>Request physical swatch approval</strong> — verify cyan/amber colors on chosen vinyl before full print run</li>
+        <li>☐ <strong>Pantone approval</strong> — Cyan → 299C, Amber → 130C, Navy → 2767C (or closest vinyl match)</li>
+        <li>☐ <strong>Proofreading pass</strong> — verify all text on every panel for typos before sending files</li>
+        <li>☐ <strong>Request wrap installer photo documentation</strong> — before/during/after install for portfolio content</li>
+        <li>☐ <strong>Budget</strong> — Full van wrap budget $2,500–$4,500 installed (premium shops); partial/sides-only $800–$1,500</li>
+      </ul>
+      <div style="margin-top:20px; display:flex; gap:8px; flex-wrap:wrap;">
+        <span class="pill pill-cyan">Material: 3M 1080</span>
+        <span class="pill pill-amber">Laminate: 3M 8518 Gloss</span>
+        <span class="pill pill-green">5-Year Outdoor Warranty</span>
+        <span class="pill pill-cyan">1200 DPI Minimum</span>
+        <span class="pill pill-amber">CMYK Color Mode</span>
+        <span class="pill pill-green">1" Bleed · 2" Safe Zone</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 9 — HOOD / ROOF DESIGN
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🚐 Hood &amp; Roof Panel</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#10b981"></div>
+      Hood + Roof — Aerial / Overhead View (optional panels)
+    </div>
+    <div class="panel-body">
+      <div class="svg-view">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" role="img" aria-label="Hood and Roof Design">
+          <defs>
+            <radialGradient id="hoodBg" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" style="stop-color:#0d1b2e"/>
+              <stop offset="100%" style="stop-color:#060d1a"/>
+            </radialGradient>
+            <linearGradient id="boltHood" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="100%" style="stop-color:#f59e0b"/>
+            </linearGradient>
+            <filter id="hGlow">
+              <feGaussianBlur stdDeviation="5" result="cb"/>
+              <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Vehicle outline aerial view -->
+          <!-- Roof/body shape -->
+          <rect x="40" y="20" width="620" height="280" rx="40" fill="url(#hoodBg)" stroke="#1e2d4a" stroke-width="2"/>
+
+          <!-- Hood area (front left) -->
+          <rect x="40" y="20" width="200" height="280" rx="40" fill="#0a1020" stroke="#1e2d4a" stroke-width="1"/>
+          <text x="140" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#64748b">HOOD</text>
+
+          <!-- Roof area (center) -->
+          <rect x="240" y="20" width="220" height="280" rx="0" fill="#0d1628" stroke="#1e2d4a" stroke-width="1"/>
+          <text x="350" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#64748b">ROOF</text>
+
+          <!-- Rear area -->
+          <rect x="460" y="20" width="200" height="280" rx="40" fill="#0a1020" stroke="#1e2d4a" stroke-width="1"/>
+          <text x="560" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#64748b">REAR ROOF</text>
+
+          <!-- ─── HOOD: Large hex logo centered ─── -->
+          <g transform="translate(60,85)" filter="url(#hGlow)">
+            <polygon points="80,8 144,46 144,122 80,160 16,122 16,46"
+                     fill="#0d1b2e" stroke="#00d4ff" stroke-width="3"/>
+            <polygon points="80,20 130,50 130,114 80,144 30,114 30,50"
+                     fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.4"/>
+            <polygon points="88,30 66,82 84,82 72,130 94,78 76,78"
+                     fill="url(#boltHood)"/>
+          </g>
+          <!-- "TES LLC" below hood logo -->
+          <text x="140" y="260" text-anchor="middle" font-family="'Segoe UI',sans-serif"
+                font-size="13" font-weight="700" fill="#00d4ff" letter-spacing="4" filter="url(#hGlow)">TES LLC</text>
+
+          <!-- ─── ROOF: Company name + website ─── -->
+          <!-- Cyan centerline stripe -->
+          <line x1="240" y1="160" x2="460" y2="160" stroke="#00d4ff" stroke-width="2" opacity="0.4" stroke-dasharray="12,6"/>
+
+          <!-- Company name on roof -->
+          <text x="350" y="135" text-anchor="middle" font-family="'Segoe UI',sans-serif"
+                font-size="15" font-weight="900" fill="#ffffff" letter-spacing="1"
+                transform="rotate(-0,350,135)" filter="url(#hGlow)">Tech &amp; Electrical Services</text>
+          <text x="350" y="155" text-anchor="middle" font-family="'Segoe UI',sans-serif"
+                font-size="10" font-weight="600" fill="#00d4ff" letter-spacing="5">LLC</text>
+
+          <!-- Phone on roof -->
+          <text x="350" y="185" text-anchor="middle" font-family="'Segoe UI',sans-serif"
+                font-size="13" font-weight="700" fill="#f59e0b" letter-spacing="2"
+                filter="url(#hGlow)">(951) 555-0199</text>
+          <text x="350" y="204" text-anchor="middle" font-family="'Segoe UI',sans-serif"
+                font-size="10" fill="#64748b" letter-spacing="1">techandelectricalservices.com</text>
+
+          <!-- ─── REAR ROOF: Hex logo small ─── -->
+          <g transform="translate(500,100)" filter="url(#hGlow)">
+            <polygon points="60,6 108,34 108,90 60,118 12,90 12,34"
+                     fill="#0d1b2e" stroke="#00d4ff" stroke-width="2.5"/>
+            <polygon points="60,16 96,38 96,82 60,104 24,82 24,38"
+                     fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.35"/>
+            <polygon points="66,22 50,60 62,60 54,98 70,56 58,56"
+                     fill="url(#boltHood)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="spec-grid" style="margin-top:16px;">
+        <div class="spec-card">
+          <div class="label">Hood logo</div>
+          <div class="value">Large hex — 14–18" recommended</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Roof text</div>
+          <div class="value">Company name + phone (visible from overhead, drones, parking garages)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Rear roof</div>
+          <div class="value">Smaller hex logo — visible from elevated angles</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Why hood/roof?</div>
+          <div class="value">Google Maps satellite, parking garages, security cams — free impressions</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Hood vinyl</div>
+          <div class="value">Requires pre-punched air-release film (3M 1080 series)</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Heat resistance</div>
+          <div class="value">Confirm 3M 1080 hood-rated variant — engine heat can bubble low-grade films</div>
+        </div>
+      </div>
+      <p class="note"><strong>Pro tip:</strong> Roof graphics get viewed by clients from above in parking lots, parking structures, and drone/satellite imagery. Your phone number on the roof = free recurring exposure with zero extra cost if adding to a full wrap.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 10 — LOCAL PRINT SHOP REFERENCE
+  ══════════════════════════════════════ -->
+  <div class="section-label"><h2>🏪 Local Wrap Shops — Temecula / IE Area</h2></div>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#00d4ff"></div>
+      Vendor Reference — Get 3 Quotes Before Committing
+    </div>
+    <div class="panel-body">
+      <div class="spec-grid">
+        <div class="spec-card">
+          <div class="label">Search Terms (Google)</div>
+          <div class="value">"vehicle wrap shop Temecula CA"</div>
+          <div class="note">Filter by 4.5+ stars, check wrap portfolio photos</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Nearby Markets</div>
+          <div class="value">Murrieta · Hemet · Menifee · Riverside · San Marcos</div>
+          <div class="note">30-60 min radius worth checking for price vs. quality</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">What to Ask</div>
+          <div class="value">3M certified installer? Show recent fleet wrap portfolio?</div>
+          <div class="note">3M certified = warranty backed by 3M, not just shop</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Price Range Check</div>
+          <div class="value">Full van: $2,500–$4,500 · Sides only: $800–$1,500</div>
+          <div class="note">If quoted under $1,800 full wrap → ask what material they use</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Files to Bring</div>
+          <div class="value">PDF/X-4 or layered .AI / .PSD from this spec</div>
+          <div class="note">Ask for their vehicle template first — avoid reprints due to panel mismatch</div>
+        </div>
+        <div class="spec-card">
+          <div class="label">Timeline</div>
+          <div class="value">Design finalization: 1 week · Install: 1–2 days</div>
+          <div class="note">Rush = premium. Plan 2–3 weeks ahead for best pricing</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <p class="note"><strong>⚡ Tax tip:</strong> Vehicle wraps for advertising your business are <strong>100% tax deductible</strong> as a business advertising expense (IRS Section 162). Keep receipt + dated photos.</p>
+        <p class="note" style="margin-top:8px;"><strong>📸 Photo op:</strong> Coordinate with the shop for a clean-background install photo — use it on LinkedIn, Google Business Profile, and the website portfolio page for social proof.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; margin-top:48px; color:#1e2d4a; font-size:0.78rem; letter-spacing:1px;">
+    Tech &amp; Electrical Services LLC — Vehicle Wrap Design v1.1 — Generated by Axiom ⚡ LeadGenerator — 2026-03-19
+  </div>
+
+</body>
+</html>

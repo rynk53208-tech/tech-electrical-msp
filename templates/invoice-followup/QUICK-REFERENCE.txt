@@ -1,0 +1,107 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    INVOICE FOLLOW-UP EMAIL TEMPLATES                           ║
+║                           QUICK REFERENCE GUIDE                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📂 TEMPLATE FILES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  01-reminder-7-days.html
+   └─ 7 days BEFORE due date
+   └─ Tone: Friendly, helpful
+   └─ Color: Blue (calm)
+   └─ CTA: "Pay Now"
+
+2️⃣  02-due-today.html
+   └─ On the DUE DATE
+   └─ Tone: Professional, appreciative
+   └─ Color: Orange (attention)
+   └─ CTA: "Pay Now" (with emphasis on keeping account active)
+
+3️⃣  03-overdue-1st-notice.html
+   └─ 1-5 days OVERDUE
+   └─ Tone: Professional, urgent
+   └─ Color: Red (urgent)
+   └─ CTA: "Pay Now" (with 30-day deadline)
+
+4️⃣  04-overdue-2nd-notice.html
+   └─ 15-20 days OVERDUE
+   └─ Tone: Very urgent, firm
+   └─ Color: Dark red (very urgent)
+   └─ Includes late fees warning
+   └─ CTA: "Pay Now – Avoid Collections"
+
+5️⃣  05-final-notice.html
+   └─ 30+ days OVERDUE
+   └─ Tone: Critical, legal language
+   └─ Color: Very dark red (critical)
+   └─ Last chance before collections
+   └─ CTA: "PAY NOW – 48 HOURS REMAINING"
+
+📊 TRACKING DASHBOARD:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   tracking.html - Visual overview of all invoices and their status
+
+🔄 RECOMMENDED SENDING SCHEDULE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Day    -7  →  Send Template #1: Reminder 7 days before
+Day     0  →  Send Template #2: Due today  
+Day    +3  →  Send Template #3: Overdue - 1st notice
+Day   +15  →  Send Template #4: Overdue - 2nd notice
+Day   +30  →  Send Template #5: Final notice
+Day   +33  →  Escalate to collections
+
+🔤 KEY PLACEHOLDER VARIABLES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{{CLIENT_NAME}}        - Customer's name/company
+{{INVOICE_NUMBER}}     - Invoice ID (e.g., INV-2026-001)
+{{AMOUNT}}             - Original invoice amount
+{{DUE_DATE}}           - Original due date
+{{DAYS_OVERDUE}}       - Days past due
+{{LATE_FEES}}          - Late fees/interest charged
+{{TOTAL_AMOUNT}}       - Amount due including fees
+{{PAYMENT_LINK}}       - Link to payment portal
+{{COMPANY_NAME}}       - Your company name
+{{CONTACT_PHONE}}      - Your phone number
+{{CONTACT_EMAIL}}      - Your email address
+
+💡 USAGE TIPS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Each template is STANDALONE - no context needed from previous emails
+✓ All templates are RESPONSIVE - work on mobile, tablet, desktop
+✓ Replace ALL {{PLACEHOLDERS}} with actual data before sending
+✓ Test in multiple email clients before sending to real clients
+✓ Keep records of all emails sent for legal protection
+✓ Customize text/tone to match your business voice
+✓ Integrate with invoicing software (Wave, FreshBooks, Stripe) if possible
+
+📋 FILE CONTENTS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/invoice-followup/
+  ├─ 01-reminder-7-days.html          (3.8 KB)
+  ├─ 02-due-today.html                (4.0 KB)
+  ├─ 03-overdue-1st-notice.html       (4.6 KB)
+  ├─ 04-overdue-2nd-notice.html       (5.1 KB)
+  ├─ 05-final-notice.html             (6.9 KB)
+  ├─ tracking.html                    (17 KB)  - Status dashboard
+  ├─ README.md                        (6.3 KB) - Full documentation
+  └─ QUICK-REFERENCE.txt              (this file)
+
+🎨 DESIGN NOTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Navy gradient header (matches other company templates)
+• Color-coded urgency levels (blue → orange → red → dark red)
+• Professional sans-serif typography
+• Clear visual hierarchy
+• Mobile-responsive layout
+• Print-friendly
+• Compatible with all major email clients
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Ready to use! Open README.md for detailed instructions.

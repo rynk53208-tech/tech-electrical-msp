@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice Generator — Tech & Electrical Services LLC</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    /* ── Reset & Variables ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #21262d;
+      --border:   #30363d;
+      --cyan:     #00d4ff;
+      --amber:    #f59e0b;
+      --green:    #22c55e;
+      --red:      #ef4444;
+      --blue:     #3b82f6;
+      --gray:     #8b949e;
+      --text:     #e6edf3;
+      --text2:    #b1bac4;
+      --radius:   8px;
+      --shadow:   0 4px 24px rgba(0,0,0,.5);
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    header .logo { font-size: 1.4rem; font-weight: 700; color: var(--cyan); letter-spacing: -.5px; }
+    header .sub  { font-size: .8rem; color: var(--gray); }
+    header nav   { margin-left: auto; display: flex; gap: 8px; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* ── Tabs ────────────────────────────────────────────────── */
+    .tabs { display: flex; gap: 2px; margin-bottom: 24px; background: var(--surface); border-radius: var(--radius); padding: 4px; width: fit-content; }
+    .tab  { padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: .875rem; color: var(--gray); border: none; background: none; transition: all .2s; }
+    .tab.active { background: var(--cyan); color: #000; font-weight: 600; }
+
+    /* ── Cards ───────────────────────────────────────────────── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+    .card h2 { font-size: 1rem; font-weight: 600; color: var(--cyan); margin-bottom: 16px; letter-spacing: .3px; }
+
+    /* ── Forms ───────────────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-grid.full  { grid-template-columns: 1fr; }
+    label { font-size: .8rem; color: var(--gray); display: block; margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; padding: 9px 12px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text); font-size: .9rem; outline: none; transition: border-color .2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--cyan); }
+    select option { background: var(--surface2); }
+
+    /* ── Status Badge ─────────────────────────────────────────── */
+    .status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600; }
+    .status-draft    { background: rgba(139,148,158,.15); color: var(--gray); }
+    .status-sent     { background: rgba(59,130,246,.15);  color: var(--blue); }
+    .status-paid     { background: rgba(34,197,94,.15);   color: var(--green); }
+    .status-overdue  { background: rgba(239,68,68,.15);   color: var(--red); }
+
+    /* ── Line Items ───────────────────────────────────────────── */
+    .items-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    .items-table th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--gray); font-weight: 500; font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; }
+    .items-table td { padding: 6px 6px; vertical-align: middle; }
+    .items-table td input { padding: 7px 9px; font-size: .875rem; }
+    .items-table td.total-cell { font-weight: 600; color: var(--cyan); min-width: 90px; text-align: right; padding-right: 10px; }
+    .items-table .del-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.1rem; padding: 4px 8px; border-radius: 4px; }
+    .items-table .del-btn:hover { background: rgba(239,68,68,.12); }
+
+    /* ── Totals ───────────────────────────────────────────────── */
+    .totals { display: flex; justify-content: flex-end; }
+    .totals-box { min-width: 300px; }
+    .totals-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: .9rem; }
+    .totals-row.grand { border-top: 2px solid var(--cyan); margin-top: 8px; padding-top: 10px; font-size: 1.1rem; font-weight: 700; color: var(--cyan); }
+    .totals-row span:first-child { color: var(--gray); }
+
+    /* ── Buttons ─────────────────────────────────────────────── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 6px; border: none; cursor: pointer; font-size: .875rem; font-weight: 600; transition: all .2s; }
+    .btn-primary { background: var(--cyan); color: #000; }
+    .btn-primary:hover { background: #00b8d9; }
+    .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-amber   { background: var(--amber); color: #000; }
+    .btn-amber:hover { background: #d97706; }
+    .btn-green   { background: var(--green); color: #000; }
+    .btn-green:hover { background: #16a34a; }
+    .btn-red     { background: var(--red); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: .8rem; }
+    .action-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+
+    /* ── Invoice List ─────────────────────────────────────────── */
+    .invoice-list { display: flex; flex-direction: column; gap: 10px; }
+    .invoice-card {
+      display: grid; grid-template-columns: 100px 1fr 120px 110px 130px 130px;
+      align-items: center; gap: 12px; padding: 14px 20px;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+      cursor: pointer; transition: border-color .2s;
+    }
+    .invoice-card:hover { border-color: var(--cyan); }
+    .invoice-card .inv-num { font-weight: 700; color: var(--cyan); font-size: .9rem; }
+    .invoice-card .inv-client { font-weight: 500; }
+    .invoice-card .inv-amount { font-weight: 700; text-align: right; }
+    .invoice-card .inv-due { font-size: .8rem; color: var(--gray); }
+    .invoice-card .inv-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+    .list-header {
+      display: grid; grid-template-columns: 100px 1fr 120px 110px 130px 130px;
+      gap: 12px; padding: 8px 20px; font-size: .75rem; color: var(--gray);
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .list-header span:nth-child(3), .list-header span:nth-child(4) { text-align: right; }
+
+    /* ── Preview Modal ────────────────────────────────────────── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 95%; max-width: 760px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+    .modal-header { display: flex; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); gap: 12px; }
+    .modal-header h2 { font-size: 1rem; flex: 1; }
+    .modal-body { overflow-y: auto; padding: 30px 40px; flex: 1; background: #fff; color: #111; }
+    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+    .close-btn { background: none; border: none; color: var(--gray); font-size: 1.4rem; cursor: pointer; padding: 2px 6px; }
+    .close-btn:hover { color: var(--text); }
+
+    /* ── Print Preview Invoice Styles ────────────────────────── */
+    #printPreview { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; }
+    #printPreview .pv-header { display: flex; justify-content: space-between; margin-bottom: 30px; }
+    #printPreview .pv-company { }
+    #printPreview .pv-company h1 { font-size: 20px; color: #00b8c4; margin-bottom: 4px; }
+    #printPreview .pv-company p { font-size: 12px; color: #555; line-height: 1.6; }
+    #printPreview .pv-meta { text-align: right; }
+    #printPreview .pv-meta .inv-title { font-size: 28px; font-weight: 700; color: #111; letter-spacing: -1px; }
+    #printPreview .pv-meta table { margin-left: auto; margin-top: 8px; font-size: 12px; }
+    #printPreview .pv-meta table td { padding: 2px 6px; }
+    #printPreview .pv-meta table td:first-child { color: #888; text-align: right; }
+    #printPreview hr { border: none; border-top: 2px solid #00b8c4; margin: 20px 0; }
+    #printPreview .pv-bill { margin-bottom: 24px; }
+    #printPreview .pv-bill h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 6px; }
+    #printPreview .pv-bill p  { font-size: 13px; line-height: 1.6; }
+    #printPreview table.pv-items { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    #printPreview table.pv-items th { background: #f0f9fa; padding: 8px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #555; border-bottom: 2px solid #00b8c4; }
+    #printPreview table.pv-items td { padding: 8px 10px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+    #printPreview table.pv-items td.num { text-align: right; }
+    #printPreview .pv-totals { display: flex; justify-content: flex-end; margin-bottom: 24px; }
+    #printPreview .pv-totals table { min-width: 260px; font-size: 13px; }
+    #printPreview .pv-totals td { padding: 4px 8px; }
+    #printPreview .pv-totals td:first-child { color: #888; text-align: right; }
+    #printPreview .pv-totals td:last-child { text-align: right; font-weight: 600; }
+    #printPreview .pv-totals .grand td { font-size: 15px; font-weight: 700; color: #00b8c4; border-top: 2px solid #00b8c4; padding-top: 8px; }
+    #printPreview .pv-notes { background: #f8f8f8; border-left: 3px solid #00b8c4; padding: 12px 16px; font-size: 12px; color: #555; margin-bottom: 20px; border-radius: 0 4px 4px 0; }
+    #printPreview .pv-footer { text-align: center; font-size: 11px; color: #aaa; border-top: 1px solid #e8e8e8; padding-top: 16px; margin-top: 20px; }
+    #printPreview .pv-status-stamp { display: inline-block; padding: 4px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
+    #printPreview .stamp-draft   { background: #f0f0f0; color: #888; }
+    #printPreview .stamp-sent    { background: #dbeafe; color: #1d4ed8; }
+    #printPreview .stamp-paid    { background: #dcfce7; color: #15803d; }
+    #printPreview .stamp-overdue { background: #fee2e2; color: #b91c1c; }
+
+    /* ── Misc ─────────────────────────────────────────────────── */
+    .empty { text-align: center; padding: 60px 20px; color: var(--gray); }
+    .empty h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+    .text-right { text-align: right; }
+    .text-gray   { color: var(--gray); font-size: .8rem; }
+    .flex { display: flex; }
+    .gap-2 { gap: 8px; }
+    .ml-auto { margin-left: auto; }
+    .mt-4 { margin-top: 16px; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 700px) {
+      .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+      .invoice-card { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; }
+      .list-header { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">⚡ Tech & Electrical Services LLC</div>
+    <div class="sub">Invoice Generator — MSP Client Billing</div>
+  </div>
+  <nav>
+    <button class="btn btn-ghost btn-sm" onclick="showTab('list')">📋 All Invoices</button>
+    <button class="btn btn-primary btn-sm" onclick="newInvoice()">＋ New Invoice</button>
+  </nav>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" id="tab-list"   onclick="showTab('list')">All Invoices</button>
+    <button class="tab"        id="tab-editor"  onclick="showTab('editor')">Invoice Editor</button>
+  </div>
+
+  <!-- ═══════════════════ LIST VIEW ═══════════════════ -->
+  <div id="view-list">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <h2 style="font-size:1.1rem;font-weight:600;">Invoices</h2>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="filterStatus" onchange="renderList()" style="width:130px;">
+          <option value="">All Statuses</option>
+          <option value="Draft">Draft</option>
+          <option value="Sent">Sent</option>
+          <option value="Paid">Paid</option>
+          <option value="Overdue">Overdue</option>
+        </select>
+        <input id="filterSearch" type="text" placeholder="Search client..." oninput="renderList()" style="width:170px;" />
+      </div>
+    </div>
+    <div class="list-header">
+      <span>Invoice #</span><span>Client</span><span style="text-align:right">Amount</span><span>Due Date</span><span>Status</span><span></span>
+    </div>
+    <div id="invoiceList" class="invoice-list"></div>
+    <div id="listEmpty" class="empty hidden">
+      <h3>No Invoices Yet</h3>
+      <p>Click <strong>+ New Invoice</strong> to get started.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ EDITOR VIEW ═══════════════════ -->
+  <div id="view-editor" class="hidden">
+
+    <!-- Invoice Meta -->
+    <div class="card">
+      <h2>Invoice Details</h2>
+      <div class="form-grid three">
+        <div>
+          <label>Invoice #</label>
+          <input id="invNumber" type="text" placeholder="INV-0001" readonly style="color:var(--cyan);font-weight:700;" />
+        </div>
+        <div>
+          <label>Invoice Date</label>
+          <input id="invDate" type="date" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="invStatus">
+            <option value="Draft">Draft</option>
+            <option value="Sent">Sent</option>
+            <option value="Paid">Paid</option>
+            <option value="Overdue">Overdue</option>
+          </select>
+        </div>
+        <div>
+          <label>Due Date</label>
+          <input id="invDueDate" type="date" />
+        </div>
+        <div>
+          <label>Payment Terms</label>
+          <select id="invTerms" onchange="calcDueDate()">
+            <option value="Due on Receipt">Due on Receipt</option>
+            <option value="Net 15">Net 15</option>
+            <option value="Net 30" selected>Net 30</option>
+            <option value="Net 45">Net 45</option>
+            <option value="Net 60">Net 60</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+        <div>
+          <label>PO / Reference #</label>
+          <input id="invPO" type="text" placeholder="Optional" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Client Selection -->
+    <div class="card">
+      <h2>Bill To</h2>
+      <div class="form-grid">
+        <div>
+          <label>Select Client</label>
+          <select id="clientSelect" onchange="fillClient()">
+            <option value="">— Choose existing client —</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn btn-ghost btn-sm" onclick="toggleNewClient()">＋ New Client</button>
+        </div>
+      </div>
+      <div id="newClientFields" class="hidden mt-4">
+        <hr class="divider" />
+        <div class="form-grid">
+          <div><label>Company Name *</label><input id="clientCompany" type="text" placeholder="Barney's Tire Shop" /></div>
+          <div><label>Contact Name</label><input id="clientContact" type="text" placeholder="John Smith" /></div>
+          <div><label>Email</label><input id="clientEmail" type="email" placeholder="john@example.com" /></div>
+          <div><label>Phone</label><input id="clientPhone" type="tel" placeholder="(951) 555-0000" /></div>
+          <div style="grid-column:span 2;"><label>Address</label><input id="clientAddress" type="text" placeholder="123 Main St, Temecula, CA 92590" /></div>
+        </div>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-green btn-sm" onclick="saveNewClient()">✓ Save Client</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleNewClient()">Cancel</button>
+        </div>
+      </div>
+      <!-- Read-only display when client selected -->
+      <div id="clientDisplay" class="mt-4 hidden text-gray"></div>
+    </div>
+
+    <!-- Line Items -->
+    <div class="card">
+      <h2>Line Items</h2>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th style="width:40%">Description / Service</th>
+            <th style="width:15%">Qty</th>
+            <th style="width:17%">Rate ($)</th>
+            <th style="width:15%;text-align:right">Total</th>
+            <th style="width:5%"></th>
+          </tr>
+        </thead>
+        <tbody id="lineItems"></tbody>
+      </table>
+      <div class="action-row">
+        <button class="btn btn-ghost btn-sm" onclick="addLine()">＋ Add Line Item</button>
+        <button class="btn btn-ghost btn-sm" onclick="addPreset()">📋 Add from Presets</button>
+      </div>
+    </div>
+
+    <!-- Totals & Tax -->
+    <div class="card">
+      <h2>Totals</h2>
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;">
+        <div>
+          <label>Tax Rate (%)</label>
+          <input id="taxRate" type="number" value="0" min="0" max="100" step="0.1" style="width:120px;" oninput="recalc()" />
+          <p class="text-gray mt-4">California sales tax on taxable items. Services may be exempt — consult your accountant.</p>
+          <div class="mt-4">
+            <label>Notes / Payment Instructions</label>
+            <textarea id="invNotes" rows="4" placeholder="Payment via check, Zelle, or bank transfer. Checks payable to: Tech & Electrical Services LLC"></textarea>
+          </div>
+        </div>
+        <div class="totals-box" style="margin-left:auto">
+          <div class="totals-row"><span>Subtotal</span><span id="totalSubtotal">$0.00</span></div>
+          <div class="totals-row"><span>Tax (<span id="taxPct">0</span>%)</span><span id="totalTax">$0.00</span></div>
+          <div class="totals-row grand"><span>Total Due</span><span id="totalGrand">$0.00</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="saveInvoice()">💾 Save Invoice</button>
+      <button class="btn btn-ghost"   onclick="previewInvoice()">👁 Preview</button>
+      <button class="btn btn-amber"   onclick="exportPDF()">📄 Export PDF</button>
+      <button class="btn btn-ghost"   onclick="printInvoice()">🖨️ Print</button>
+      <div class="ml-auto flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="markStatus('Sent')" title="Mark as Sent">✉️ Mark Sent</button>
+        <button class="btn btn-green btn-sm" onclick="markStatus('Paid')" title="Mark as Paid">✓ Mark Paid</button>
+        <button class="btn btn-red btn-sm"   id="deleteBtn" onclick="deleteInvoice()" title="Delete Invoice">🗑 Delete</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════════════ PREVIEW MODAL ═══════════════════ -->
+<div class="modal-bg" id="previewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Invoice Preview</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="printPreview"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost"   onclick="closeModal()">Close</button>
+      <button class="btn btn-ghost"   onclick="printInvoice()">🖨️ Print</button>
+      <button class="btn btn-amber"   onclick="exportPDF()">📄 Export PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PRESETS MODAL ═══════════════════ -->
+<div class="modal-bg" id="presetsModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <h2>Service Presets</h2>
+      <button class="close-btn" onclick="closePresets()">✕</button>
+    </div>
+    <div class="modal-body" style="background:var(--surface);color:var(--text);padding:20px;">
+      <div id="presetList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let invoices  = JSON.parse(localStorage.getItem('tes_invoices') || '[]');
+let clients   = JSON.parse(localStorage.getItem('tes_clients')  || '[]');
+let currentId = null;  // editing invoice id (null = new)
+
+// Default clients
+if (!clients.length) {
+  clients = [
+    { id: 'c1', company: "Barney's Tire Shop",    contact: 'Barney',       email: 'barney@barneys.com',    phone: '(951) 555-0101', address: '1234 Auto Blvd, Temecula, CA 92590' },
+    { id: 'c2', company: 'Temecula Dental Group',  contact: 'Dr. Reynolds', email: 'info@temeculadental.com', phone: '(951) 555-0202', address: '456 Smile Ave, Temecula, CA 92591' },
+    { id: 'c3', company: 'Southwest Law Partners', contact: 'Maria Gomez',  email: 'mgomez@swlaw.com',      phone: '(951) 555-0303', address: '789 Legal Ln, Murrieta, CA 92562' },
+  ];
+  save();
+}
+
+const PRESETS = [
+  { desc: 'Managed IT Support (Monthly)',        qty: 1,   rate: 800  },
+  { desc: 'Network Assessment & Documentation',  qty: 1,   rate: 350  },
+  { desc: 'Cybersecurity Audit',                 qty: 1,   rate: 1200 },
+  { desc: 'Firewall Installation & Config',      qty: 1,   rate: 450  },
+  { desc: 'Workstation Setup (per unit)',         qty: 1,   rate: 125  },
+  { desc: 'On-Site Labor (per hour)',             qty: 1,   rate: 95   },
+  { desc: 'Remote Support (per hour)',            qty: 1,   rate: 75   },
+  { desc: 'Board-Level Repair / Micro-Soldering', qty: 1,  rate: 250  },
+  { desc: 'Data Recovery Service',               qty: 1,   rate: 300  },
+  { desc: 'Server Rack Build & Cable Mgmt',      qty: 1,   rate: 600  },
+  { desc: 'Electrical Panel Inspection',         qty: 1,   rate: 200  },
+  { desc: 'EV Charger Installation',             qty: 1,   rate: 850  },
+  { desc: 'Security Camera System Installation', qty: 1,   rate: 1500 },
+  { desc: 'Wi-Fi Site Survey & Optimization',    qty: 1,   rate: 400  },
+  { desc: 'vCISO Monthly Retainer',              qty: 1,   rate: 2000 },
+  { desc: 'Custom Software Development (hr)',    qty: 1,   rate: 120  },
+];
+
+function save() {
+  localStorage.setItem('tes_invoices', JSON.stringify(invoices));
+  localStorage.setItem('tes_clients',  JSON.stringify(clients));
+}
+
+function nextInvNum() {
+  if (!invoices.length) return 'INV-0001';
+  const nums = invoices.map(i => parseInt(i.number?.replace(/\D/g,'') || 0));
+  const n = Math.max(...nums) + 1;
+  return 'INV-' + String(n).padStart(4, '0');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════
+function showTab(tab) {
+  document.getElementById('view-list').classList.toggle('hidden', tab !== 'list');
+  document.getElementById('view-editor').classList.toggle('hidden', tab !== 'editor');
+  document.getElementById('tab-list').classList.toggle('active', tab === 'list');
+  document.getElementById('tab-editor').classList.toggle('active', tab === 'editor');
+  if (tab === 'list') renderList();
+}
+
+// ═══════════════════════════════════════════════════════
+//  CLIENT MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function populateClientSelect() {
+  const sel = document.getElementById('clientSelect');
+  sel.innerHTML = '<option value="">— Choose existing client —</option>';
+  clients.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id;
+    o.textContent = c.company;
+    sel.appendChild(o);
+  });
+}
+
+function fillClient() {
+  const id = document.getElementById('clientSelect').value;
+  const display = document.getElementById('clientDisplay');
+  if (!id) { display.classList.add('hidden'); return; }
+  const c = clients.find(x => x.id === id);
+  if (!c) return;
+  display.classList.remove('hidden');
+  display.innerHTML = `<strong>${c.company}</strong><br>${c.contact ? c.contact + '<br>' : ''}${c.email ? c.email + '<br>' : ''}${c.phone ? c.phone + '<br>' : ''}${c.address || ''}`;
+}
+
+function toggleNewClient() {
+  document.getElementById('newClientFields').classList.toggle('hidden');
+}
+
+function saveNewClient() {
+  const company = document.getElementById('clientCompany').value.trim();
+  if (!company) { alert('Company name is required.'); return; }
+  const c = {
+    id: 'c' + Date.now(),
+    company,
+    contact: document.getElementById('clientContact').value.trim(),
+    email:   document.getElementById('clientEmail').value.trim(),
+    phone:   document.getElementById('clientPhone').value.trim(),
+    address: document.getElementById('clientAddress').value.trim(),
+  };
+  clients.push(c);
+  save();
+  populateClientSelect();
+  document.getElementById('clientSelect').value = c.id;
+  fillClient();
+  toggleNewClient();
+  // Clear fields
+  ['clientCompany','clientContact','clientEmail','clientPhone','clientAddress'].forEach(id => document.getElementById(id).value='');
+}
+
+// ═══════════════════════════════════════════════════════
+//  LINE ITEMS
+// ═══════════════════════════════════════════════════════
+function addLine(desc='', qty=1, rate=0) {
+  const tbody = document.getElementById('lineItems');
+  const tr = document.createElement('tr');
+  tr.dataset.id = Date.now() + Math.random();
+  tr.innerHTML = `
+    <td><input type="text"   class="li-desc"  value="${esc(desc)}"   placeholder="Service description" oninput="recalc()" /></td>
+    <td><input type="number" class="li-qty"   value="${qty}"  min="0" step="0.5" style="width:100%" oninput="recalc()" /></td>
+    <td><input type="number" class="li-rate"  value="${rate}" min="0" step="0.01" style="width:100%" oninput="recalc()" /></td>
+    <td class="total-cell">$0.00</td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove();recalc()">✕</button></td>`;
+  tbody.appendChild(tr);
+  recalc();
+}
+
+function getLines() {
+  return [...document.querySelectorAll('#lineItems tr')].map(tr => ({
+    desc: tr.querySelector('.li-desc')?.value || '',
+    qty:  parseFloat(tr.querySelector('.li-qty')?.value) || 0,
+    rate: parseFloat(tr.querySelector('.li-rate')?.value) || 0,
+  }));
+}
+
+function recalc() {
+  let sub = 0;
+  document.querySelectorAll('#lineItems tr').forEach(tr => {
+    const qty  = parseFloat(tr.querySelector('.li-qty')?.value) || 0;
+    const rate = parseFloat(tr.querySelector('.li-rate')?.value) || 0;
+    const tot  = qty * rate;
+    tr.querySelector('.total-cell').textContent = fmt(tot);
+    sub += tot;
+  });
+  const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+  const tax   = sub * taxRate / 100;
+  const grand = sub + tax;
+  document.getElementById('totalSubtotal').textContent = fmt(sub);
+  document.getElementById('totalTax').textContent      = fmt(tax);
+  document.getElementById('totalGrand').textContent    = fmt(grand);
+  document.getElementById('taxPct').textContent        = taxRate;
+}
+
+// ═══════════════════════════════════════════════════════
+//  PRESETS
+// ═══════════════════════════════════════════════════════
+function addPreset() {
+  const div = document.getElementById('presetList');
+  div.innerHTML = '';
+  PRESETS.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML = `<span style="flex:1;font-size:.9rem;">${p.desc}</span><span style="color:var(--gray);font-size:.85rem;min-width:80px;text-align:right;">${fmt(p.rate)}</span><button class="btn btn-ghost btn-sm" onclick="addLine('${esc(p.desc)}',${p.qty},${p.rate});closePresets();">Add</button>`;
+    div.appendChild(row);
+  });
+  document.getElementById('presetsModal').classList.add('open');
+}
+function closePresets() { document.getElementById('presetsModal').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════════════
+//  DUE DATE CALC
+// ═══════════════════════════════════════════════════════
+function calcDueDate() {
+  const terms = document.getElementById('invTerms').value;
+  const dateVal = document.getElementById('invDate').value;
+  if (!dateVal || terms === 'Custom') return;
+  const days = { 'Due on Receipt': 0, 'Net 15': 15, 'Net 30': 30, 'Net 45': 45, 'Net 60': 60 };
+  const d = new Date(dateVal + 'T00:00:00');
+  d.setDate(d.getDate() + (days[terms] || 0));
+  document.getElementById('invDueDate').value = d.toISOString().substring(0,10);
+}
+
+// ═══════════════════════════════════════════════════════
+//  NEW / EDIT INVOICE
+// ═══════════════════════════════════════════════════════
+function newInvoice() {
+  currentId = null;
+  populateClientSelect();
+  document.getElementById('invNumber').value  = nextInvNum();
+  document.getElementById('invDate').value    = today();
+  document.getElementById('invTerms').value   = 'Net 30';
+  document.getElementById('invStatus').value  = 'Draft';
+  document.getElementById('invPO').value      = '';
+  document.getElementById('invNotes').value   = 'Payment accepted via check, Zelle, or bank transfer.\nMake checks payable to: Tech & Electrical Services LLC\nThank you for your business!';
+  document.getElementById('taxRate').value    = '0';
+  document.getElementById('clientSelect').value = '';
+  document.getElementById('clientDisplay').classList.add('hidden');
+  document.getElementById('deleteBtn').classList.add('hidden');
+  document.getElementById('lineItems').innerHTML = '';
+  calcDueDate();
+  addLine('', 1, 0);
+  recalc();
+  showTab('editor');
+}
+
+function editInvoice(id) {
+  const inv = invoices.find(i => i.id === id);
+  if (!inv) return;
+  currentId = id;
+  populateClientSelect();
+  document.getElementById('invNumber').value  = inv.number;
+  document.getElementById('invDate').value    = inv.date;
+  document.getElementById('invDueDate').value = inv.dueDate;
+  document.getElementById('invTerms').value   = inv.terms;
+  document.getElementById('invStatus').value  = inv.status;
+  document.getElementById('invPO').value      = inv.po || '';
+  document.getElementById('invNotes').value   = inv.notes || '';
+  document.getElementById('taxRate').value    = inv.taxRate || 0;
+  document.getElementById('clientSelect').value = inv.clientId || '';
+  document.getElementById('deleteBtn').classList.remove('hidden');
+  fillClient();
+  // Line items
+  document.getElementById('lineItems').innerHTML = '';
+  (inv.lines || []).forEach(l => addLine(l.desc, l.qty, l.rate));
+  recalc();
+  showTab('editor');
+}
+
+// ═══════════════════════════════════════════════════════
+//  SAVE / DELETE
+// ═══════════════════════════════════════════════════════
+function saveInvoice() {
+  const number   = document.getElementById('invNumber').value.trim();
+  const clientId = document.getElementById('clientSelect').value;
+  const lines    = getLines().filter(l => l.desc || l.rate);
+  if (!clientId) { alert('Please select or create a client.'); return; }
+  if (!lines.length) { alert('Please add at least one line item.'); return; }
+
+  const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+  const sub     = lines.reduce((s,l) => s + l.qty*l.rate, 0);
+  const tax     = sub * taxRate / 100;
+  const total   = sub + tax;
+
+  const inv = {
+    id:       currentId || ('inv-' + Date.now()),
+    number,
+    clientId,
+    date:     document.getElementById('invDate').value,
+    dueDate:  document.getElementById('invDueDate').value,
+    terms:    document.getElementById('invTerms').value,
+    status:   document.getElementById('invStatus').value,
+    po:       document.getElementById('invPO').value.trim(),
+    notes:    document.getElementById('invNotes').value.trim(),
+    taxRate,
+    lines,
+    subtotal: sub,
+    tax,
+    total,
+  };
+
+  if (currentId) {
+    const idx = invoices.findIndex(i => i.id === currentId);
+    invoices[idx] = inv;
+  } else {
+    invoices.push(inv);
+    currentId = inv.id;
+    document.getElementById('deleteBtn').classList.remove('hidden');
+  }
+  save();
+  showNotice('Invoice saved ✓');
+}
+
+function deleteInvoice() {
+  if (!currentId) return;
+  if (!confirm('Delete this invoice? This cannot be undone.')) return;
+  invoices = invoices.filter(i => i.id !== currentId);
+  currentId = null;
+  save();
+  showTab('list');
+}
+
+function markStatus(s) {
+  document.getElementById('invStatus').value = s;
+  saveInvoice();
+  showNotice(`Marked as ${s} ✓`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  LIST VIEW
+// ═══════════════════════════════════════════════════════
+function renderList() {
+  const filter = document.getElementById('filterStatus').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase();
+  const list   = document.getElementById('invoiceList');
+  const empty  = document.getElementById('listEmpty');
+  list.innerHTML = '';
+
+  // Auto-overdue check
+  const now = new Date(); now.setHours(0,0,0,0);
+  invoices.forEach(inv => {
+    if (inv.status === 'Sent' && inv.dueDate) {
+      const due = new Date(inv.dueDate + 'T00:00:00');
+      if (due < now) inv.status = 'Overdue';
+    }
+  });
+  save();
+
+  let shown = invoices.filter(inv => {
+    const c = clients.find(x => x.id === inv.clientId);
+    const name = c?.company || '';
+    return (!filter || inv.status === filter) && (!search || name.toLowerCase().includes(search) || inv.number.toLowerCase().includes(search));
+  }).sort((a,b) => b.number.localeCompare(a.number));
+
+  if (!shown.length) { list.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+  list.classList.remove('hidden'); empty.classList.add('hidden');
+
+  shown.forEach(inv => {
+    const c = clients.find(x => x.id === inv.clientId);
+    const card = document.createElement('div');
+    card.className = 'invoice-card';
+    card.innerHTML = `
+      <span class="inv-num">${inv.number}</span>
+      <span class="inv-client">${c?.company || 'Unknown Client'}</span>
+      <span class="inv-amount">${fmt(inv.total)}</span>
+      <span class="inv-due">${inv.dueDate ? fmtDate(inv.dueDate) : '—'}</span>
+      <span>${statusBadge(inv.status)}</span>
+      <span class="inv-actions">
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();editInvoice('${inv.id}')">✏️ Edit</button>
+        <button class="btn btn-amber btn-sm" onclick="event.stopPropagation();currentId='${inv.id}';previewFromList('${inv.id}')">👁 View</button>
+      </span>`;
+    card.onclick = () => editInvoice(inv.id);
+    list.appendChild(card);
+  });
+}
+
+function previewFromList(id) {
+  const inv = invoices.find(i => i.id === id);
+  if (!inv) return;
+  // populate editor fields temporarily for preview
+  currentId = id;
+  renderPreview(inv);
+  document.getElementById('previewModal').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════════════════════
+function previewInvoice() {
+  const inv = buildInvObj();
+  if (!inv) return;
+  renderPreview(inv);
+  document.getElementById('previewModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('previewModal').classList.remove('open'); }
+
+function renderPreview(inv) {
+  const c = clients.find(x => x.id === inv.clientId) || {};
+  const rows = (inv.lines||[]).filter(l => l.desc||l.rate).map(l => `
+    <tr>
+      <td>${esc(l.desc)}</td>
+      <td class="num">${l.qty}</td>
+      <td class="num">${fmt(l.rate)}</td>
+      <td class="num">${fmt(l.qty*l.rate)}</td>
+    </tr>`).join('');
+
+  const stampCls = { Draft:'stamp-draft', Sent:'stamp-sent', Paid:'stamp-paid', Overdue:'stamp-overdue' };
+  document.getElementById('printPreview').innerHTML = `
+    <div id="printPreview">
+      <div class="pv-header">
+        <div class="pv-company">
+          <h1>⚡ Tech & Electrical Services LLC</h1>
+          <p>Temecula, CA 92590 &nbsp;|&nbsp; (951) 555-0100<br>info@techandelectrical.com &nbsp;|&nbsp; www.techandelectrical.com<br>CA Contractor License #XXXXXXX</p>
+          <div class="pv-status-stamp ${stampCls[inv.status]||'stamp-draft'}">${inv.status}</div>
+        </div>
+        <div class="pv-meta">
+          <div class="inv-title">INVOICE</div>
+          <table><tbody>
+            <tr><td>Invoice #:</td><td><strong>${inv.number}</strong></td></tr>
+            <tr><td>Date:</td><td>${fmtDate(inv.date)}</td></tr>
+            <tr><td>Due Date:</td><td><strong>${inv.dueDate ? fmtDate(inv.dueDate) : '—'}</strong></td></tr>
+            <tr><td>Terms:</td><td>${inv.terms}</td></tr>
+            ${inv.po ? `<tr><td>PO #:</td><td>${esc(inv.po)}</td></tr>` : ''}
+          </tbody></table>
+        </div>
+      </div>
+      <hr />
+      <div class="pv-bill">
+        <h3>Bill To</h3>
+        <p><strong>${c.company||'—'}</strong><br>
+          ${c.contact ? c.contact + '<br>' : ''}
+          ${c.email ? c.email + '<br>' : ''}
+          ${c.phone ? c.phone + '<br>' : ''}
+          ${c.address || ''}</p>
+      </div>
+      <table class="pv-items">
+        <thead><tr><th>Description</th><th class="num" style="text-align:right">Qty</th><th class="num" style="text-align:right">Rate</th><th class="num" style="text-align:right">Amount</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="pv-totals">
+        <table><tbody>
+          <tr><td>Subtotal:</td><td>${fmt(inv.subtotal)}</td></tr>
+          <tr><td>Tax (${inv.taxRate||0}%):</td><td>${fmt(inv.tax)}</td></tr>
+          <tr class="grand"><td>Total Due:</td><td>${fmt(inv.total)}</td></tr>
+        </tbody></table>
+      </div>
+      ${inv.notes ? `<div class="pv-notes">${esc(inv.notes).replace(/\n/g,'<br>')}</div>` : ''}
+      <div class="pv-footer">Thank you for your business! · Tech & Electrical Services LLC · Temecula, CA</div>
+    </div>`;
+}
+
+function buildInvObj() {
+  const clientId = document.getElementById('clientSelect').value;
+  if (!clientId) { alert('Please select a client first.'); return null; }
+  const lines = getLines();
+  const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+  const sub  = lines.reduce((s,l) => s + l.qty*l.rate, 0);
+  const tax  = sub * taxRate / 100;
+  return {
+    id:       currentId || '',
+    number:   document.getElementById('invNumber').value,
+    clientId,
+    date:     document.getElementById('invDate').value,
+    dueDate:  document.getElementById('invDueDate').value,
+    terms:    document.getElementById('invTerms').value,
+    status:   document.getElementById('invStatus').value,
+    po:       document.getElementById('invPO').value,
+    notes:    document.getElementById('invNotes').value,
+    taxRate,
+    lines,
+    subtotal: sub,
+    tax,
+    total:    sub + tax,
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+//  PRINT
+// ═══════════════════════════════════════════════════════
+function printInvoice() {
+  const inv = currentId ? (invoices.find(i => i.id === currentId) || buildInvObj()) : buildInvObj();
+  if (!inv) return;
+  renderPreview(inv);
+  const content = document.getElementById('printPreview').innerHTML;
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>${inv.number}</title><style>
+    body{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;margin:0;padding:30px;}
+    ${document.querySelector('style').textContent}
+  </style></head><body>${content}</body></html>`);
+  win.document.close();
+  win.onload = () => { win.focus(); win.print(); };
+}
+
+// ═══════════════════════════════════════════════════════
+//  PDF EXPORT (jsPDF + autoTable)
+// ═══════════════════════════════════════════════════════
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const inv = currentId ? (invoices.find(i => i.id === currentId) || buildInvObj()) : buildInvObj();
+  if (!inv) return;
+  const c = clients.find(x => x.id === inv.clientId) || {};
+
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const W = doc.internal.pageSize.getWidth();
+  const margin = 50;
+
+  // Header bar
+  doc.setFillColor(0, 184, 212);
+  doc.rect(0, 0, W, 6, 'F');
+
+  // Company name
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(0, 184, 212);
+  doc.text('Tech & Electrical Services LLC', margin, 50);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(120, 120, 120);
+  doc.text('Temecula, CA 92590  |  (951) 555-0100', margin, 64);
+  doc.text('info@techandelectrical.com  |  www.techandelectrical.com', margin, 76);
+
+  // INVOICE title (right)
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(30);
+  doc.setTextColor(30, 30, 30);
+  doc.text('INVOICE', W - margin, 50, { align: 'right' });
+
+  // Meta table (right)
+  const meta = [
+    ['Invoice #:', inv.number],
+    ['Date:', fmtDate(inv.date)],
+    ['Due Date:', inv.dueDate ? fmtDate(inv.dueDate) : '—'],
+    ['Terms:', inv.terms],
+  ];
+  if (inv.po) meta.push(['PO #:', inv.po]);
+  doc.autoTable({
+    startY: 60,
+    tableWidth: 230,
+    margin: { left: W - margin - 230 },
+    head: [],
+    body: meta,
+    styles: { fontSize: 9, cellPadding: 3 },
+    columnStyles: { 0: { textColor: [120,120,120], halign: 'right' }, 1: { fontStyle: 'bold' } },
+    theme: 'plain',
+  });
+
+  // Status stamp
+  const statusColors = {
+    Draft:   [200,200,200],
+    Sent:    [59,130,246],
+    Paid:    [34,197,94],
+    Overdue: [239,68,68],
+  };
+  const sc = statusColors[inv.status] || [200,200,200];
+  doc.setFillColor(...sc);
+  doc.roundedRect(margin, 88, 60, 16, 4, 4, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255,255,255);
+  doc.text(inv.status.toUpperCase(), margin + 30, 100, { align: 'center' });
+
+  // Divider
+  let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 14 : 110;
+  y = Math.max(y, 116);
+  doc.setDrawColor(0, 184, 212);
+  doc.setLineWidth(1.5);
+  doc.line(margin, y, W - margin, y);
+  y += 14;
+
+  // Bill To
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('BILL TO', margin, y);
+  y += 12;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(30, 30, 30);
+  doc.text(c.company || '—', margin, y);
+  y += 14;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(80, 80, 80);
+  [c.contact, c.email, c.phone, c.address].filter(Boolean).forEach(line => {
+    doc.text(line, margin, y); y += 13;
+  });
+  y += 10;
+
+  // Line items table
+  const rows = (inv.lines||[]).filter(l => l.desc||l.rate).map(l => [
+    l.desc,
+    String(l.qty),
+    fmt(l.rate),
+    fmt(l.qty * l.rate),
+  ]);
+  doc.autoTable({
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [['Description', 'Qty', 'Rate', 'Amount']],
+    body: rows,
+    styles: { fontSize: 9, cellPadding: 6 },
+    headStyles: { fillColor: [240, 249, 250], textColor: [80,80,80], fontStyle: 'bold', fontSize: 8 },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { halign: 'right', cellWidth: 40 },
+      2: { halign: 'right', cellWidth: 70 },
+      3: { halign: 'right', cellWidth: 80 },
+    },
+    alternateRowStyles: { fillColor: [250,250,250] },
+    theme: 'grid',
+  });
+
+  y = doc.lastAutoTable.finalY + 14;
+
+  // Totals
+  doc.autoTable({
+    startY: y,
+    tableWidth: 220,
+    margin: { left: W - margin - 220 },
+    head: [],
+    body: [
+      ['Subtotal:', fmt(inv.subtotal)],
+      [`Tax (${inv.taxRate||0}%):`, fmt(inv.tax)],
+      ['TOTAL DUE:', fmt(inv.total)],
+    ],
+    styles: { fontSize: 9, cellPadding: 4 },
+    columnStyles: { 0: { textColor:[120,120,120], halign:'right' }, 1: { fontStyle:'bold', halign:'right' } },
+    bodyStyles: { lineColor:[230,230,230], lineWidth:.5 },
+    didParseCell(data) {
+      if (data.row.index === 2) {
+        data.cell.styles.fontSize = 11;
+        data.cell.styles.textColor = [0, 184, 212];
+        data.cell.styles.fontStyle = 'bold';
+      }
+    },
+    theme: 'grid',
+  });
+
+  // Notes
+  if (inv.notes) {
+    y = doc.lastAutoTable.finalY + 20;
+    doc.setFillColor(248, 248, 248);
+    doc.setDrawColor(0, 184, 212);
+    doc.setLineWidth(3);
+    const noteLines = doc.splitTextToSize(inv.notes, W - margin*2 - 20);
+    const noteH = noteLines.length * 13 + 16;
+    doc.roundedRect(margin, y, W - margin*2, noteH, 4, 4, 'FD');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80,80,80);
+    doc.text(noteLines, margin + 12, y + 12);
+    y += noteH;
+  }
+
+  // Footer
+  const pageH = doc.internal.pageSize.getHeight();
+  doc.setFillColor(0, 184, 212);
+  doc.rect(0, pageH - 5, W, 5, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180,180,180);
+  doc.text('Thank you for your business!  ·  Tech & Electrical Services LLC  ·  Temecula, CA', W/2, pageH - 15, { align:'center' });
+
+  doc.save(`${inv.number}-${(c.company||'invoice').replace(/\s+/g,'-')}.pdf`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════
+function fmt(n) { return '$' + (n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y,m,day] = d.split('-');
+  return new Date(+y, +m-1, +day).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+}
+function today() { return new Date().toISOString().substring(0,10); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function statusBadge(s) {
+  const cls = {Draft:'status-draft',Sent:'status-sent',Paid:'status-paid',Overdue:'status-overdue'};
+  const icon = {Draft:'○',Sent:'✉',Paid:'✓',Overdue:'⚠'};
+  return `<span class="status ${cls[s]||'status-draft'}">${icon[s]||'○'} ${s}</span>`;
+}
+function showNotice(msg) {
+  const n = document.createElement('div');
+  n.textContent = msg;
+  n.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--green);color:#000;padding:10px 20px;border-radius:8px;font-weight:600;z-index:999;font-size:.9rem;box-shadow:0 4px 20px rgba(0,0,0,.4);';
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2800);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+(function init() {
+  renderList();
+  showTab('list');
+  // Keyboard: Escape closes modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closePresets(); }
+  });
+})();
+</script>
+</body>
+</html>

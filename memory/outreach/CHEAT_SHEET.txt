@@ -1,0 +1,206 @@
+═════════════════════════════════════════════════════════════════
+TECH & ELECTRICAL SERVICES LLC - COLD OUTREACH CHEAT SHEET
+═════════════════════════════════════════════════════════════════
+
+WEEK 1: EMAIL → CALL → FOLLOW-UP
+─────────────────────────────────────────────────────────────────
+
+DAY 1 (Monday 9 AM)
+  → Send Email #2 (Medium template) to 10 prospects
+  → Personalize: name, company, industry angle
+  → Subject: "Cyber risk + Infrastructure audit (free)"
+  
+DAY 2 (Tuesday 10 AM)
+  → Call 6-7 prospects
+  → Use 60-second script (practice 3x first!)
+  → Log: Booked? Warm? Hard no?
+  
+DAY 3 (Wednesday 9 AM)
+  → Send Email #2 follow-up (value-add resource)
+  → Target those who didn't answer Day 2
+  
+DAY 5 (Friday 10 AM)
+  → Send Email #3 (urgency) — "2 slots left"
+
+WEEK 2: HARD CLOSE → EXECUTE
+─────────────────────────────────────────────────────────────────
+
+DAY 8 (Monday 2 PM)
+  → Call #2 — GET YES OR NO
+  → Book immediately if interested
+  
+DAY 9-10 (Tue-Wed)
+  → Execute booked 30-minute audit calls
+  → Use structure in README.md
+  
+DAY 12 (Friday 4 PM)
+  → Breakup email to unresponsive (keep in DB 6 months)
+
+═════════════════════════════════════════════════════════════════
+YOUR CREDIBILITY STACK (USE IN EVERY CALL)
+═════════════════════════════════════════════════════════════════
+
+1. Cyber Systems Engineer @ Northrop Grumman (DoD-level security)
+2. Board-level repair + micro-soldering (70% cost savings vs new)
+3. IT + Electrical combo (unique, nobody else offers)
+4. Local to Temecula (same-day response, not remote)
+5. Free $500 audit (low friction, high barrier)
+
+USE IN CALL: "I was a Cyber Systems Engineer at Northrop Grumman, 
+now we help practices like yours get infrastructure right—plus we 
+do the electrical side, which most IT shops can't."
+
+═════════════════════════════════════════════════════════════════
+60-SECOND CALL STRUCTURE
+═════════════════════════════════════════════════════════════════
+
+[0-3 sec] INTRO
+  "Hi [NAME], this is Irvin. Do you have 60 seconds?"
+
+[3-12 sec] CREDIBILITY HOOK
+  "[Northrop background + your unique combo]"
+
+[12-25 sec] THEIR PAIN (pick ONE)
+  Medical: "HIPAA is a nightmare. Most MSPs check a box; we audit."
+  Auto:    "Your diagnostic tools are only as good as your network."
+  Rest:    "When POS goes down, you lose $1,000+ an hour."
+
+[25-50 sec] OFFER
+  "30 minutes next week, I'll show 2-3 specific risks + savings. 
+   $500 value, free. No pitch—just clarity."
+
+[50-55 sec] CLOSE
+  If yes: "Perfect. Tuesday or Wednesday?"
+  If no:  "Worst case you learn something. Worth 30 min?"
+
+[55-60 sec] CONFIRM
+  "Great. I'll email you times. Thanks."
+
+═════════════════════════════════════════════════════════════════
+OBJECTION HANDLERS (SAY BACK)
+═════════════════════════════════════════════════════════════════
+
+"We already have IT support"
+→ "Quick Q—are they handling [SPECIFIC THING]? Most generic MSPs miss 
+   [security/electrical/repair]. 30-min audit shows you if there's gaps."
+
+"Not interested"
+→ "If your systems went down tomorrow, how long to get back up? What's 
+   that cost you?" [Listen] "That's exactly what we prevent."
+
+"I don't make those decisions"
+→ "Who's the right person? Can I reach them or loop them on my email?"
+   [GET NAME - reference it in follow-up]
+
+"Send me something"
+→ "I will. Real quick—worried about compliance, uptime, or costs most?" 
+   [Customize follow-up based on answer]
+
+═════════════════════════════════════════════════════════════════
+CONVERSION TARGETS (EXPECTATIONS)
+═════════════════════════════════════════════════════════════════
+
+Per 10 Prospects:
+  → 6-7 calls answered (60-70%)
+  → 2-3 initial interest (20-30%)
+  → 1-2 booked audits (10-15%)
+  → 1 completed audit call (10%)
+  → 0-1 qualified prospect (0-10%)
+
+At Scale (50-100 prospects):
+  → 30-35 calls answered
+  → 10-15 initial interest
+  → 5-10 booked audits
+  → 5-10 audit calls completed
+  → 1-2 new MSP clients ($700-1,200/mo each = $7k-12k recurring)
+
+═════════════════════════════════════════════════════════════════
+DO'S & DON'TS (QUICK REFERENCE)
+═════════════════════════════════════════════════════════════════
+
+✅ DO:
+  - Personalize every email (name + industry angle)
+  - Email 24 hours before calling (warm up prospect)
+  - Practice script 3x before calling
+  - Use prospect's name 1-2x per call
+  - Book calls immediately (same day if yes)
+  - Stay under 60 seconds on first call
+  - Log every outcome in CRM
+
+❌ DON'T:
+  - Cold call without email first (5% answer rate)
+  - Send generic templates (looks like spam)
+  - Call outside 9am-5pm (lower answer rate)
+  - Stay on phone >2 minutes (they say no faster)
+  - Follow up >3 times (Email + 2 calls = enough)
+  - Promise things you can't deliver
+  - Give up after 1 no (ask why, try alternative)
+
+═════════════════════════════════════════════════════════════════
+EMAIL TEMPLATE QUICK PICK
+═════════════════════════════════════════════════════════════════
+
+Template #1 (SHORT) — If you want super low-pressure, conversational
+Template #2 (MEDIUM) ← USE THIS ONE (best conversion)
+Template #3 (DETAILED) — If they're already warm/interested
+
+All 3 in: memory/outreach/02_EMAIL_TEMPLATES.md
+
+═════════════════════════════════════════════════════════════════
+CRM STATUSES (TRACK THESE)
+═════════════════════════════════════════════════════════════════
+
+Cold Prospect
+  → Sent – Email 1
+  → [Called?]
+  → Warm Lead / Booked / Hard No
+
+Warm Lead
+  → Sent – Email 2 (value-add)
+  → [Called again?]
+  → Booked / Unresponsive
+
+Booked
+  → Scheduled – Waiting for audit call
+  → [Call happened?]
+  → Prospect – Qualified / Warm Lead – Recycle
+
+═════════════════════════════════════════════════════════════════
+FIRST 24 HOURS (YOUR CHECKLIST)
+═════════════════════════════════════════════════════════════════
+
+☐ Read 03_CALL_SCRIPT.md (5 min)
+☐ Practice script aloud 3x (10 min)
+☐ Copy 10 prospect emails to CRM (5 min)
+☐ Personalize Email #2 template (10 min)
+☐ Send emails by 9 AM (2 min)
+☐ Log in CRM as "Sent – Email 1"
+☐ Schedule call block for Tuesday 10 AM (sacred time)
+☐ Review script one more time Tuesday morning
+☐ Make calls 10am-12pm (30-40 min for 6-7 calls)
+☐ Log outcomes immediately after each call
+
+DONE = 1-2 booked audits by end of week
+
+═════════════════════════════════════════════════════════════════
+FILES REFERENCE
+═════════════════════════════════════════════════════════════════
+
+README.md                  ← Full guide + quick-start
+EXEC_SUMMARY.md           ← This in 5 pages
+CHEAT_SHEET.txt           ← You are here (print this)
+01_PROSPECT_LIST.md       ← Copy emails to CRM
+02_EMAIL_TEMPLATES.md     ← Use Template #2
+03_CALL_SCRIPT.md         ← Practice before Day 2
+04_FOLLOWUP_SEQUENCE.md   ← Day-by-day timeline
+
+═════════════════════════════════════════════════════════════════
+MONTH 1 GOAL: 1 NEW MSP CLIENT ($7k-12k RECURRING)
+═════════════════════════════════════════════════════════════════
+
+Execute campaign exactly as written.
+Measure. Adjust. Scale.
+
+Start Tuesday. Execute perfectly. Watch conversion happen.
+
+═════════════════════════════════════════════════════════════════

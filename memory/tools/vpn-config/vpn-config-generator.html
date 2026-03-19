@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPN Config Generator — Tech & Electrical Services LLC</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --accent: #238636;
+      --accent-hover: #2ea043;
+      --blue: #1f6feb;
+      --blue-hover: #388bfd;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --danger: #da3633;
+      --warn: #e3b341;
+      --success: #3fb950;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo { font-size: 24px; }
+    .brand h1 { font-size: 18px; font-weight: 700; }
+    .brand p  { font-size: 12px; color: var(--text-muted); }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-body { padding: 18px; }
+
+    /* ── Protocol Tabs ── */
+    .proto-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .proto-tab {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .2s;
+    }
+    .proto-tab:hover { border-color: var(--blue); color: var(--text); }
+    .proto-tab.active { border-color: var(--blue); background: rgba(31,111,235,.15); color: var(--blue-hover); }
+    .proto-tab .badge {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Form ── */
+    .form-section { margin-bottom: 22px; }
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    input, select, textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 10px;
+      width: 100%;
+      transition: border-color .2s;
+      font-family: var(--font);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+    input::placeholder { color: var(--text-muted); }
+    textarea { resize: vertical; min-height: 70px; font-family: monospace; font-size: 12px; }
+    select option { background: var(--surface2); }
+
+    /* ── Toggle ── */
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    .toggle-label { font-size: 13px; }
+    .toggle-sub  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .toggle {
+      position: relative;
+      width: 40px; height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 2px; top: 2px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: .2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--blue); border-color: var(--blue); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(18px); background: white; }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn-blue:hover { background: var(--blue-hover); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { filter: brightness(1.1); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-block { width: 100%; justify-content: center; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      padding-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Config Output ── */
+    .config-output {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #a5d6ff;
+      white-space: pre;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .config-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .config-empty .icon { font-size: 40px; margin-bottom: 8px; }
+
+    /* ── QR Code ── */
+    #qr-container {
+      text-align: center;
+      padding: 16px;
+    }
+    #qr-container canvas, #qr-container img {
+      border-radius: 8px;
+      background: white;
+      padding: 12px;
+    }
+    .qr-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+    /* ── History ── */
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .history-item:hover { border-color: var(--blue); }
+    .history-proto {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .proto-ovpn  { background: rgba(63,185,80,.2); color: #3fb950; }
+    .proto-wg    { background: rgba(31,111,235,.2); color: #79c0ff; }
+    .proto-ipsec { background: rgba(227,179,65,.2); color: #e3b341; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-meta { font-size: 11px; color: var(--text-muted); }
+    .history-actions { display: flex; gap: 4px; }
+    .history-actions .btn { padding: 4px 8px; font-size: 11px; }
+
+    /* ── Notifications ── */
+    .toast-container {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 9999;
+    }
+    .toast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--success);
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 13px;
+      animation: slideIn .3s ease;
+      min-width: 240px;
+    }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warn  { border-left-color: var(--warn); }
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+
+    /* ── Misc ── */
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .empty-history {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+      color: var(--text-muted);
+    }
+    .stat-row span:last-child { color: var(--text); font-weight: 500; }
+    .section-hidden { display: none; }
+
+    /* Key display */
+    .key-display {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--success);
+      word-break: break-all;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .key-display:hover { border-color: var(--blue); }
+    .key-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🔐</div>
+  <div class="brand">
+    <h1>VPN Config Generator</h1>
+    <p>Tech &amp; Electrical Services LLC — Internal Tool</p>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- LEFT: FORM -->
+  <div>
+    <!-- Protocol Selection -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">⚡ Protocol</div>
+      <div class="card-body">
+        <div class="proto-tabs">
+          <div class="proto-tab active" data-proto="wireguard" onclick="setProtocol('wireguard')">
+            WireGuard
+            <span class="badge">Modern · Fast</span>
+          </div>
+          <div class="proto-tab" data-proto="openvpn" onclick="setProtocol('openvpn')">
+            OpenVPN
+            <span class="badge">Universal</span>
+          </div>
+          <div class="proto-tab" data-proto="ipsec" onclick="setProtocol('ipsec')">
+            IPSec / IKEv2
+            <span class="badge">Native iOS/Windows</span>
+          </div>
+        </div>
+
+        <!-- Protocol Info Banner -->
+        <div id="proto-info" style="font-size:12px;color:var(--text-muted);padding:8px 12px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--blue)"></div>
+      </div>
+    </div>
+
+    <!-- Client Info -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">👤 Client Information</div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Client Name *</label>
+              <input type="text" id="client-name" placeholder="e.g. John Smith" />
+            </div>
+            <div class="form-group">
+              <label>Device / Hostname</label>
+              <input type="text" id="device-name" placeholder="e.g. johns-laptop" />
+            </div>
+            <div class="form-group">
+              <label>Client VPN IP</label>
+              <input type="text" id="client-ip" placeholder="10.8.0.2" />
+            </div>
+            <div class="form-group">
+              <label>Client Subnet</label>
+              <input type="text" id="client-subnet" value="32" placeholder="32" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Server Settings -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">🖥️ Server Settings</div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Server Hostname / IP *</label>
+              <input type="text" id="server-host" placeholder="vpn.techelectrical.com" />
+            </div>
+            <div class="form-group">
+              <label>Server Port</label>
+              <input type="text" id="server-port" placeholder="51820" />
+            </div>
+            <div class="form-group">
+              <label>Server VPN IP</label>
+              <input type="text" id="server-ip" placeholder="10.8.0.1" />
+            </div>
+            <div class="form-group">
+              <label>VPN Subnet</label>
+              <input type="text" id="vpn-subnet" value="10.8.0.0/24" placeholder="10.8.0.0/24" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Protocol-specific sections -->
+
+    <!-- WireGuard Keys -->
+    <div class="card section-wg" style="margin-bottom:16px">
+      <div class="card-header">🔑 WireGuard Keys</div>
+      <div class="card-body">
+        <div class="form-section">
+          <div style="margin-bottom:12px">
+            <div class="key-label">Server Public Key</div>
+            <input type="text" id="wg-server-pubkey" placeholder="Paste server public key (base64)" style="font-family:monospace;font-size:11px" />
+          </div>
+          <div style="margin-bottom:12px">
+            <div class="key-label">Client Private Key</div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <div id="wg-client-privkey-display" class="key-display" style="flex:1" onclick="copyKey('wg-privkey')" title="Click to copy">—</div>
+              <button class="btn btn-ghost btn-sm" onclick="generateWGKeys()">Generate</button>
+            </div>
+          </div>
+          <div>
+            <div class="key-label">Client Public Key (share with server)</div>
+            <div id="wg-client-pubkey-display" class="key-display" onclick="copyKey('wg-pubkey')" title="Click to copy">—</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:8px">⚠️ Key generation is simulated here — use <code>wg genkey</code> on the server for production keys.</p>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">Options</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>DNS Server(s)</label>
+              <input type="text" id="wg-dns" value="1.1.1.1, 8.8.8.8" />
+            </div>
+            <div class="form-group">
+              <label>Persistent Keepalive (s)</label>
+              <input type="text" id="wg-keepalive" value="25" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Allowed IPs (routes)</label>
+              <input type="text" id="wg-allowed" value="0.0.0.0/0, ::/0" />
+            </div>
+          </div>
+          <div class="toggle-group" style="margin-top:10px">
+            <div>
+              <div class="toggle-label">Split Tunnel</div>
+              <div class="toggle-sub">Route only VPN subnet (not all traffic)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="wg-split" onchange="onSplitToggle()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-group">
+            <div>
+              <div class="toggle-label">Pre-shared Key (PSK)</div>
+              <div class="toggle-sub">Extra layer of symmetric encryption</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="wg-psk-enable" onchange="togglePSK()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div id="wg-psk-row" style="display:none;margin-top:8px">
+            <div style="display:flex;gap:8px">
+              <input type="text" id="wg-psk" placeholder="Pre-shared key (base64)" style="font-family:monospace;font-size:11px;flex:1" />
+              <button class="btn btn-ghost btn-sm" onclick="generatePSK()">Generate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenVPN Settings -->
+    <div class="card section-ovpn section-hidden" style="margin-bottom:16px">
+      <div class="card-header">🔒 OpenVPN Settings</div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Protocol</label>
+              <select id="ovpn-proto">
+                <option value="udp">UDP (faster)</option>
+                <option value="tcp">TCP (more reliable)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cipher</label>
+              <select id="ovpn-cipher">
+                <option value="AES-256-GCM">AES-256-GCM (recommended)</option>
+                <option value="AES-128-GCM">AES-128-GCM</option>
+                <option value="AES-256-CBC">AES-256-CBC (legacy)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Auth Digest</label>
+              <select id="ovpn-auth">
+                <option value="SHA256">SHA256</option>
+                <option value="SHA512">SHA512</option>
+                <option value="SHA1">SHA1 (legacy)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>TLS Version Min</label>
+              <select id="ovpn-tls">
+                <option value="1.2">TLS 1.2</option>
+                <option value="1.3">TLS 1.3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>DNS Server</label>
+              <input type="text" id="ovpn-dns" value="1.1.1.1" />
+            </div>
+            <div class="form-group">
+              <label>Compression</label>
+              <select id="ovpn-compress">
+                <option value="none">None (recommended)</option>
+                <option value="lz4">LZ4</option>
+                <option value="lzo">LZO (legacy)</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-group" style="margin-top:12px">
+            <div>
+              <div class="toggle-label">Redirect All Traffic</div>
+              <div class="toggle-sub">Full tunnel — all traffic via VPN</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="ovpn-redirect" checked />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-group">
+            <div>
+              <div class="toggle-label">Include Inline Certificates</div>
+              <div class="toggle-sub">Embed CA/cert placeholders in config</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="ovpn-inline-certs" checked />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-group">
+            <div>
+              <div class="toggle-label">Client Auth (user/pass)</div>
+              <div class="toggle-sub">Require username + password in addition to cert</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="ovpn-auth-user" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">Certificates</div>
+          <div class="form-group form-grid single">
+            <label>CA Certificate (paste PEM)</label>
+            <textarea id="ovpn-ca" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
+          </div>
+          <div class="form-group form-grid single" style="margin-top:8px">
+            <label>Client Certificate (PEM)</label>
+            <textarea id="ovpn-cert" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
+          </div>
+          <div class="form-group form-grid single" style="margin-top:8px">
+            <label>Client Private Key (PEM)</label>
+            <textarea id="ovpn-key" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
+          </div>
+          <div class="form-group form-grid single" style="margin-top:8px">
+            <label>TLS Auth / TLS Crypt Key (ta.key)</label>
+            <textarea id="ovpn-ta" placeholder="-----BEGIN OpenVPN Static key V1-----&#10;...&#10;-----END OpenVPN Static key V1-----"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IPSec Settings -->
+    <div class="card section-ipsec section-hidden" style="margin-bottom:16px">
+      <div class="card-header">🛡️ IPSec / IKEv2 Settings</div>
+      <div class="card-body">
+        <div class="form-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>IKE Version</label>
+              <select id="ike-version">
+                <option value="2">IKEv2 (recommended)</option>
+                <option value="1">IKEv1</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Auth Method</label>
+              <select id="ike-auth">
+                <option value="eap-mschapv2">EAP-MSCHAPv2</option>
+                <option value="eap-tls">EAP-TLS (cert-based)</option>
+                <option value="psk">Pre-Shared Key</option>
+                <option value="pubkey">Public Key</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>IKE Proposals</label>
+              <input type="text" id="ike-proposals" value="aes256-sha256-modp2048" />
+            </div>
+            <div class="form-group">
+              <label>ESP Proposals</label>
+              <input type="text" id="esp-proposals" value="aes256gcm16-sha256-modp2048" />
+            </div>
+            <div class="form-group">
+              <label>Local Identity</label>
+              <input type="text" id="ike-local-id" placeholder="client@techelectrical.com" />
+            </div>
+            <div class="form-group">
+              <label>Remote Identity</label>
+              <input type="text" id="ike-remote-id" placeholder="vpn.techelectrical.com" />
+            </div>
+          </div>
+          <div id="ike-psk-row" style="display:none;margin-top:12px">
+            <div class="form-group">
+              <label>Pre-Shared Key</label>
+              <input type="password" id="ike-psk" placeholder="Strong shared secret" />
+            </div>
+          </div>
+          <div id="ike-user-row" style="margin-top:12px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>EAP Username</label>
+                <input type="text" id="ike-username" placeholder="client-username" />
+              </div>
+              <div class="form-group">
+                <label>EAP Password</label>
+                <input type="password" id="ike-password" placeholder="••••••••" />
+              </div>
+            </div>
+          </div>
+          <div class="toggle-group" style="margin-top:12px">
+            <div>
+              <div class="toggle-label">DPD (Dead Peer Detection)</div>
+              <div class="toggle-sub">Automatically reconnect on timeout</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="ike-dpd" checked />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-group">
+            <div>
+              <div class="toggle-label">Aggressive Mode (IKEv1 only)</div>
+              <div class="toggle-sub">Faster but less secure handshake</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="ike-aggressive" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">strongSwan / Platform</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Config Format</label>
+              <select id="ipsec-format">
+                <option value="strongswan">strongSwan (ipsec.conf)</option>
+                <option value="mobileconfig">Apple Mobileconfig</option>
+                <option value="windows">Windows CMAK / rasphone</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Virtual IP Pool</label>
+              <input type="text" id="ike-vip-pool" value="10.8.0.0/24" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Button -->
+    <div class="card">
+      <div class="card-body">
+        <div class="actions">
+          <button class="btn btn-primary" onclick="generateConfig()" style="flex:2">
+            ⚡ Generate Config
+          </button>
+          <button class="btn btn-ghost" onclick="clearForm()">
+            🗑️ Clear
+          </button>
+          <button class="btn btn-ghost" onclick="loadDefaults()">
+            ↺ Defaults
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Output Panel -->
+  <div>
+    <!-- Output -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        📄 Generated Config
+        <span id="output-proto-badge" style="margin-left:auto;font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(31,111,235,.2);color:#79c0ff;display:none"></span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div id="config-output-wrap">
+          <div class="config-empty">
+            <div class="icon">🔐</div>
+            Fill in the form and click <strong>Generate Config</strong>
+          </div>
+        </div>
+      </div>
+      <div id="output-actions" style="display:none;padding:12px;border-top:1px solid var(--border)">
+        <div class="actions">
+          <button class="btn btn-primary btn-sm" onclick="downloadConfig()">⬇️ Download</button>
+          <button class="btn btn-blue btn-sm" onclick="copyConfig()">📋 Copy</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveToHistory()">💾 Save</button>
+        </div>
+        <div style="margin-top:8px" id="filename-display" style="font-size:11px;color:var(--text-muted)"></div>
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">📱 Mobile QR Code</div>
+      <div class="card-body" style="padding:0">
+        <div id="qr-container">
+          <div class="config-empty" style="padding:24px">
+            <div class="icon">📱</div>
+            Generate a WireGuard config to get a QR code for mobile import
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">📊 Config Stats</div>
+      <div class="card-body">
+        <div id="stats-panel">
+          <div class="stat-row"><span>Protocol</span><span id="stat-proto">—</span></div>
+          <div class="stat-row"><span>Config Size</span><span id="stat-size">—</span></div>
+          <div class="stat-row"><span>Generated</span><span id="stat-time">—</span></div>
+          <div class="stat-row"><span>Client</span><span id="stat-client">—</span></div>
+          <div class="stat-row"><span>Server</span><span id="stat-server">—</span></div>
+          <div class="stat-row"><span>Tunnel Mode</span><span id="stat-tunnel">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <div class="card-header">
+        🕑 Config History
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="clearHistory()">Clear</button>
+      </div>
+      <div class="card-body" style="padding:8px">
+        <div id="history-list">
+          <div class="empty-history">No configs saved yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- QR Library (qrcode.js via CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let currentProto = 'wireguard';
+let currentConfig = '';
+let currentFilename = '';
+let wgPrivKey = '';
+let wgPubKey  = '';
+let configHistory = JSON.parse(localStorage.getItem('vpn_config_history') || '[]');
+
+const PROTO_INFO = {
+  wireguard: 'WireGuard is a modern, fast VPN using state-of-the-art cryptography. Produces a .conf file importable on all platforms. Best for most use cases.',
+  openvpn:   'OpenVPN is the most compatible protocol. Produces a .ovpn file. Requires OpenVPN client software. Supports UDP or TCP.',
+  ipsec:     'IPSec/IKEv2 is natively supported on iOS, macOS, Windows. No client app needed. Best for mobile device deployment.'
+};
+
+const DEFAULT_PORTS = {
+  wireguard: '51820',
+  openvpn: '1194',
+  ipsec: '500'
+};
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  setProtocol('wireguard');
+  renderHistory();
+
+  // IKE auth change handler
+  document.getElementById('ike-auth').addEventListener('change', () => {
+    const v = document.getElementById('ike-auth').value;
+    document.getElementById('ike-psk-row').style.display = v === 'psk' ? 'block' : 'none';
+    document.getElementById('ike-user-row').style.display = (v === 'eap-mschapv2') ? 'block' : 'none';
+  });
+});
+
+// ══════════════════════════════════════════════
+//  PROTOCOL
+// ══════════════════════════════════════════════
+function setProtocol(proto) {
+  currentProto = proto;
+
+  // Tabs
+  document.querySelectorAll('.proto-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.proto === proto);
+  });
+
+  // Sections
+  document.querySelectorAll('.section-wg').forEach(el => {
+    el.classList.toggle('section-hidden', proto !== 'wireguard');
+  });
+  document.querySelectorAll('.section-ovpn').forEach(el => {
+    el.classList.toggle('section-hidden', proto !== 'openvpn');
+  });
+  document.querySelectorAll('.section-ipsec').forEach(el => {
+    el.classList.toggle('section-hidden', proto !== 'ipsec');
+  });
+
+  // Port default
+  const portEl = document.getElementById('server-port');
+  if (!portEl.value || Object.values(DEFAULT_PORTS).includes(portEl.value)) {
+    portEl.value = DEFAULT_PORTS[proto];
+  }
+
+  // Info
+  document.getElementById('proto-info').textContent = PROTO_INFO[proto];
+}
+
+// ══════════════════════════════════════════════
+//  WIREGUARD KEY GENERATION (simulated)
+// ══════════════════════════════════════════════
+function b64(bytes) {
+  return btoa(String.fromCharCode(...bytes));
+}
+
+function randBytes(n) {
+  return crypto.getRandomValues(new Uint8Array(n));
+}
+
+function generateWGKeys() {
+  // Real Curve25519 key gen requires wasm or server-side.
+  // We generate cryptographically random bytes as realistic-looking placeholders.
+  const privRaw = randBytes(32);
+  // Clamp for Curve25519
+  privRaw[0]  &= 248;
+  privRaw[31] &= 127;
+  privRaw[31] |= 64;
+
+  wgPrivKey = b64(privRaw);
+  // "Public key" placeholder — in reality derived via x25519(privkey, basepoint)
+  wgPubKey  = b64(randBytes(32));
+
+  document.getElementById('wg-client-privkey-display').textContent = wgPrivKey;
+  document.getElementById('wg-client-pubkey-display').textContent  = wgPubKey;
+
+  toast('WireGuard keypair generated (use wg genkey in production)');
+}
+
+function generatePSK() {
+  document.getElementById('wg-psk').value = b64(randBytes(32));
+}
+
+function togglePSK() {
+  const enabled = document.getElementById('wg-psk-enable').checked;
+  document.getElementById('wg-psk-row').style.display = enabled ? 'block' : 'none';
+}
+
+function onSplitToggle() {
+  const split = document.getElementById('wg-split').checked;
+  const subnet = document.getElementById('vpn-subnet').value || '10.8.0.0/24';
+  document.getElementById('wg-allowed').value = split ? subnet : '0.0.0.0/0, ::/0';
+}
+
+function copyKey(which) {
+  const val = which === 'wg-privkey' ? wgPrivKey : wgPubKey;
+  if (!val) return toast('Generate keys first', 'warn');
+  navigator.clipboard.writeText(val).then(() => toast('Key copied to clipboard'));
+}
+
+// ══════════════════════════════════════════════
+//  GENERATE CONFIG
+// ══════════════════════════════════════════════
+function generateConfig() {
+  const clientName = v('client-name');
+  const serverHost = v('server-host');
+
+  if (!clientName) return toast('Client name is required', 'error');
+  if (!serverHost) return toast('Server hostname/IP is required', 'error');
+
+  let config = '';
+
+  if      (currentProto === 'wireguard') config = generateWireGuard();
+  else if (currentProto === 'openvpn')   config = generateOpenVPN();
+  else if (currentProto === 'ipsec')     config = generateIPSec();
+
+  currentConfig = config;
+  currentFilename = buildFilename();
+
+  // Display
+  const wrap = document.getElementById('config-output-wrap');
+  wrap.innerHTML = `<pre class="config-output">${escHtml(config)}</pre>`;
+  document.getElementById('output-actions').style.display = 'block';
+
+  // Badge
+  const badge = document.getElementById('output-proto-badge');
+  badge.textContent = currentProto.toUpperCase();
+  badge.style.display = 'inline';
+
+  // Stats
+  updateStats();
+
+  // QR (WireGuard only)
+  renderQR();
+
+  toast('Config generated!');
+}
+
+// ── WireGuard ──
+function generateWireGuard() {
+  const clientIP   = v('client-ip')     || '10.8.0.2';
+  const subnet     = v('client-subnet') || '32';
+  const dns        = v('wg-dns')        || '1.1.1.1';
+  const serverHost = v('server-host');
+  const serverPort = v('server-port')   || '51820';
+  const serverPub  = v('wg-server-pubkey') || '<SERVER_PUBLIC_KEY>';
+  const privKey    = wgPrivKey           || '<CLIENT_PRIVATE_KEY>';
+  const allowed    = v('wg-allowed')    || '0.0.0.0/0, ::/0';
+  const keepalive  = v('wg-keepalive')  || '25';
+  const usePSK     = document.getElementById('wg-psk-enable').checked;
+  const psk        = v('wg-psk');
+  const clientName = v('client-name');
+
+  let cfg = `# WireGuard Client Config
+# Generated by Tech & Electrical Services LLC VPN Tool
+# Client : ${clientName}
+# Device : ${v('device-name') || 'N/A'}
+# Date   : ${new Date().toISOString()}
+
+[Interface]
+Address    = ${clientIP}/${subnet}
+PrivateKey = ${privKey}
+DNS        = ${dns}
+
+[Peer]
+PublicKey  = ${serverPub}
+Endpoint   = ${serverHost}:${serverPort}
+AllowedIPs = ${allowed}
+PersistentKeepalive = ${keepalive}`;
+
+  if (usePSK && psk) {
+    cfg += `\nPresharedKey = ${psk}`;
+  }
+
+  return cfg;
+}
+
+// ── OpenVPN ──
+function generateOpenVPN() {
+  const clientName = v('client-name');
+  const serverHost = v('server-host');
+  const serverPort = v('server-port') || '1194';
+  const proto      = v('ovpn-proto')  || 'udp';
+  const cipher     = v('ovpn-cipher') || 'AES-256-GCM';
+  const auth       = v('ovpn-auth')   || 'SHA256';
+  const tlsVer     = v('ovpn-tls')    || '1.2';
+  const dns        = v('ovpn-dns')    || '1.1.1.1';
+  const redirect   = document.getElementById('ovpn-redirect').checked;
+  const inlineCerts= document.getElementById('ovpn-inline-certs').checked;
+  const authUser   = document.getElementById('ovpn-auth-user').checked;
+  const compress   = v('ovpn-compress');
+
+  let cfg = `# OpenVPN Client Config
+# Generated by Tech & Electrical Services LLC VPN Tool
+# Client : ${clientName}
+# Date   : ${new Date().toISOString()}
+
+client
+dev tun
+proto ${proto}
+remote ${serverHost} ${serverPort}
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+
+# Crypto
+cipher ${cipher}
+auth ${auth}
+tls-version-min ${tlsVer}
+tls-client
+`;
+
+  if (compress && compress !== 'none') {
+    cfg += `compress ${compress}\n`;
+  }
+
+  if (redirect) {
+    cfg += `redirect-gateway def1 bypass-dhcp\n`;
+    cfg += `dhcp-option DNS ${dns}\n`;
+  }
+
+  if (authUser) {
+    cfg += `auth-user-pass\n`;
+  }
+
+  cfg += `\n# Verification\nremote-cert-tls server\nverify-x509-name ${serverHost} name\n`;
+
+  if (inlineCerts) {
+    const ca   = v('ovpn-ca')   || '# Paste CA certificate here';
+    const cert = v('ovpn-cert') || '# Paste client certificate here';
+    const key  = v('ovpn-key')  || '# Paste client private key here';
+    const ta   = v('ovpn-ta')   || '';
+
+    cfg += `\n<ca>\n${ca}\n</ca>\n`;
+    cfg += `\n<cert>\n${cert}\n</cert>\n`;
+    cfg += `\n<key>\n${key}\n</key>\n`;
+
+    if (ta) {
+      cfg += `\n<tls-auth>\n${ta}\n</tls-auth>\nkey-direction 1\n`;
+    }
+  } else {
+    cfg += `\nca   ca.crt\ncert client.crt\nkey  client.key\n`;
+  }
+
+  cfg += `\nverb 3\nmute 10\n`;
+
+  return cfg;
+}
+
+// ── IPSec ──
+function generateIPSec() {
+  const fmt        = v('ipsec-format') || 'strongswan';
+  const clientName = v('client-name');
+  const serverHost = v('server-host');
+  const ikeVer     = v('ike-version')  || '2';
+  const authMethod = v('ike-auth')     || 'eap-mschapv2';
+  const ikeProps   = v('ike-proposals')|| 'aes256-sha256-modp2048';
+  const espProps   = v('esp-proposals')|| 'aes256gcm16-sha256-modp2048';
+  const localId    = v('ike-local-id') || clientName;
+  const remoteId   = v('ike-remote-id')|| serverHost;
+  const dpd        = document.getElementById('ike-dpd').checked;
+  const pool       = v('ike-vip-pool') || '10.8.0.0/24';
+  const username   = v('ike-username') || '';
+  const psk        = v('ike-psk')      || '';
+
+  if (fmt === 'strongswan') {
+    let cfg = `# strongSwan IPSec Config
+# Generated by Tech & Electrical Services LLC VPN Tool
+# Client : ${clientName}
+# Date   : ${new Date().toISOString()}
+
+# /etc/ipsec.conf
+config setup
+    charondebug="ike 1, knl 1, cfg 0"
+
+conn %default
+    ikelifetime=60m
+    keylife=20m
+    rekeymargin=3m
+    keyingtries=1
+    keyexchange=ikev${ikeVer}
+    ike=${ikeProps}!
+    esp=${espProps}!
+
+conn vpn-client
+    left=%any
+    leftid=${localId}
+    leftauth=${authMethod}
+    leftsourceip=%config
+    right=${serverHost}
+    rightid=${remoteId}
+    rightauth=pubkey
+    rightsubnet=0.0.0.0/0
+    auto=start
+`;
+    if (dpd) {
+      cfg += `    dpdaction=restart\n    dpddelay=30s\n    dpdtimeout=90s\n`;
+    }
+    if (authMethod === 'psk') {
+      cfg += `\n# /etc/ipsec.secrets\n# ${localId} ${remoteId} : PSK "${psk || '<YOUR_PSK>'}"\n`;
+    } else if (authMethod === 'eap-mschapv2') {
+      cfg += `\n# /etc/ipsec.secrets\n# ${localId} : EAP "${username ? username : '<USERNAME>'}" "${username ? '••••••' : '<PASSWORD>'}"\n`;
+    }
+    return cfg;
+  } else if (fmt === 'mobileconfig') {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Apple Mobileconfig — IPSec/IKEv2 -->
+<!-- Generated by Tech & Electrical Services LLC -->
+<!-- Client: ${clientName} | Date: ${new Date().toISOString()} -->
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadType</key><string>com.apple.vpn.managed</string>
+      <key>PayloadVersion</key><integer>1</integer>
+      <key>PayloadIdentifier</key><string>com.techelectrical.vpn.${clientName.replace(/\s+/g,'').toLowerCase()}</string>
+      <key>PayloadUUID</key><string>${uuid()}</string>
+      <key>UserDefinedName</key><string>Tech &amp; Electrical VPN</string>
+      <key>VPNType</key><string>IKEv2</string>
+      <key>IKEv2</key>
+      <dict>
+        <key>RemoteAddress</key><string>${serverHost}</string>
+        <key>RemoteIdentifier</key><string>${remoteId}</string>
+        <key>LocalIdentifier</key><string>${localId}</string>
+        <key>AuthenticationMethod</key><string>${authMethod === 'eap-mschapv2' ? 'None' : 'Certificate'}</string>
+        <key>ExtendedAuthEnabled</key><${authMethod === 'eap-mschapv2' ? 'true' : 'false'}/>
+        ${authMethod === 'eap-mschapv2' ? `<key>AuthName</key><string>${username || 'username'}</string>` : ''}
+        <key>DeadPeerDetectionRate</key><string>${dpd ? 'Medium' : 'None'}</string>
+        <key>UseConfigurationAttributeInternalIPSubnet</key><integer>0</integer>
+      </dict>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key><string>Tech &amp; Electrical VPN — ${clientName}</string>
+  <key>PayloadIdentifier</key><string>com.techelectrical.vpn</string>
+  <key>PayloadUUID</key><string>${uuid()}</string>
+  <key>PayloadVersion</key><integer>1</integer>
+</dict>
+</plist>`;
+  } else {
+    return `; Windows rasphone.pbk / CMAK entry
+; Generated by Tech & Electrical Services LLC
+; Client: ${clientName} | Date: ${new Date().toISOString()}
+
+[${clientName} VPN]
+Type=4
+PhoneNumber=${serverHost}
+Device=
+Encoding=1
+VpnStrategy=7
+PreviewPhoneNumber=0
+PreviewUserPw=0
+PreviewDomain=0
+RedialCount=3
+RedialPause=60
+UseCountryAndAreaCodes=0
+CountryCode=0
+AreaCode=
+PrefixSuffix=
+SharedPhoneNumbers=0
+LocalPhoneNumber=
+AltPhoneNumber=
+AltHangUpMod=0
+AltSecAuto=0
+DialMode=0
+DialPercent=75
+DialSeconds=120
+HangUpPercent=10
+HangUpSeconds=120
+OverridePref=0
+IdleDisconnectSeconds=0
+RedialOnLinkFailure=1
+AuthRestrictions=0
+DefaultAuth=0
+UseLogonCredentials=0
+TcpWindowSize=0
+`;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function v(id) { return (document.getElementById(id)?.value || '').trim(); }
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function uuid() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+}
+
+function buildFilename() {
+  const name = v('client-name').replace(/\s+/g,'-').toLowerCase() || 'client';
+  const ext = { wireguard: 'conf', openvpn: 'ovpn', ipsec: 'conf' }[currentProto];
+  return `${name}-${currentProto}.${ext}`;
+}
+
+// ══════════════════════════════════════════════
+//  DOWNLOAD / COPY
+// ══════════════════════════════════════════════
+function downloadConfig() {
+  if (!currentConfig) return;
+  const blob = new Blob([currentConfig], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: currentFilename });
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`Downloaded ${currentFilename}`);
+}
+
+function copyConfig() {
+  if (!currentConfig) return;
+  navigator.clipboard.writeText(currentConfig).then(() => toast('Config copied to clipboard'));
+}
+
+// ══════════════════════════════════════════════
+//  QR CODE
+// ══════════════════════════════════════════════
+function renderQR() {
+  const container = document.getElementById('qr-container');
+  container.innerHTML = '';
+
+  if (currentProto !== 'wireguard' || !currentConfig) {
+    container.innerHTML = `<div class="config-empty" style="padding:24px">
+      <div class="icon">📱</div>
+      QR available for WireGuard configs only
+    </div>`;
+    return;
+  }
+
+  if (currentConfig.length > 2048) {
+    container.innerHTML = `<div class="config-empty" style="padding:24px">
+      <div class="icon">⚠️</div>
+      Config too large for QR code — use file import instead
+    </div>`;
+    return;
+  }
+
+  try {
+    const wrapper = document.createElement('div');
+    container.appendChild(wrapper);
+    new QRCode(wrapper, {
+      text: currentConfig,
+      width: 220,
+      height: 220,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    const note = document.createElement('p');
+    note.className = 'qr-note';
+    note.textContent = 'Scan with WireGuard mobile app';
+    container.appendChild(note);
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'btn btn-ghost btn-sm';
+    dlBtn.style.marginTop = '8px';
+    dlBtn.textContent = '📷 Download QR';
+    dlBtn.onclick = downloadQR;
+    container.appendChild(dlBtn);
+  } catch(e) {
+    container.innerHTML = `<div class="config-empty" style="padding:24px"><div class="icon">⚠️</div>QR library not loaded</div>`;
+  }
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qr-container canvas');
+  if (!canvas) return;
+  const a = Object.assign(document.createElement('a'), {
+    href: canvas.toDataURL('image/png'),
+    download: currentFilename.replace(/\.[^.]+$/, '') + '-qr.png'
+  });
+  a.click();
+  toast('QR code downloaded');
+}
+
+// ══════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════
+function updateStats() {
+  document.getElementById('stat-proto').textContent  = currentProto.toUpperCase();
+  document.getElementById('stat-size').textContent   = `${currentConfig.length} bytes`;
+  document.getElementById('stat-time').textContent   = new Date().toLocaleString();
+  document.getElementById('stat-client').textContent = v('client-name') || '—';
+  document.getElementById('stat-server').textContent = v('server-host') || '—';
+
+  let tunnel = 'Full Tunnel';
+  if (currentProto === 'wireguard') {
+    const allowed = v('wg-allowed');
+    tunnel = document.getElementById('wg-split').checked ? 'Split Tunnel' : 'Full Tunnel';
+  } else if (currentProto === 'openvpn') {
+    tunnel = document.getElementById('ovpn-redirect').checked ? 'Full Tunnel' : 'Split Tunnel';
+  }
+  document.getElementById('stat-tunnel').textContent = tunnel;
+}
+
+// ══════════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════════
+function saveToHistory() {
+  if (!currentConfig) return;
+  const entry = {
+    id: Date.now(),
+    name: v('client-name') || 'Unnamed',
+    proto: currentProto,
+    server: v('server-host'),
+    filename: currentFilename,
+    config: currentConfig,
+    created: new Date().toISOString()
+  };
+  configHistory.unshift(entry);
+  if (configHistory.length > 20) configHistory = configHistory.slice(0, 20);
+  localStorage.setItem('vpn_config_history', JSON.stringify(configHistory));
+  renderHistory();
+  toast('Saved to history');
+}
+
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!configHistory.length) {
+    el.innerHTML = '<div class="empty-history">No configs saved yet</div>';
+    return;
+  }
+  el.innerHTML = configHistory.map(e => `
+    <div class="history-item" title="${e.filename}">
+      <span class="history-proto proto-${e.proto === 'wireguard' ? 'wg' : e.proto === 'openvpn' ? 'ovpn' : 'ipsec'}">
+        ${e.proto === 'wireguard' ? 'WG' : e.proto === 'openvpn' ? 'OVPN' : 'IPSEC'}
+      </span>
+      <div class="history-info">
+        <div class="history-name">${escHtml(e.name)}</div>
+        <div class="history-meta">${e.server || '—'} · ${new Date(e.created).toLocaleDateString()}</div>
+      </div>
+      <div class="history-actions">
+        <button class="btn btn-ghost btn-sm" onclick="loadHistory(${e.id})" title="Load">Load</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadHistoryItem(${e.id})" title="Download">⬇️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteHistory(${e.id})" title="Delete">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(id) {
+  const entry = configHistory.find(e => e.id === id);
+  if (!entry) return;
+  currentConfig = entry.config;
+  currentFilename = entry.filename;
+  currentProto = entry.proto;
+
+  const wrap = document.getElementById('config-output-wrap');
+  wrap.innerHTML = `<pre class="config-output">${escHtml(entry.config)}</pre>`;
+  document.getElementById('output-actions').style.display = 'block';
+
+  setProtocol(entry.proto);
+  updateStats();
+  renderQR();
+  toast(`Loaded: ${entry.name}`);
+}
+
+function downloadHistoryItem(id) {
+  const entry = configHistory.find(e => e.id === id);
+  if (!entry) return;
+  const blob = new Blob([entry.config], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: entry.filename });
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`Downloaded ${entry.filename}`);
+}
+
+function deleteHistory(id) {
+  configHistory = configHistory.filter(e => e.id !== id);
+  localStorage.setItem('vpn_config_history', JSON.stringify(configHistory));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (!confirm('Clear all saved configs?')) return;
+  configHistory = [];
+  localStorage.removeItem('vpn_config_history');
+  renderHistory();
+  toast('History cleared', 'warn');
+}
+
+// ══════════════════════════════════════════════
+//  FORM UTILS
+// ══════════════════════════════════════════════
+function clearForm() {
+  document.querySelectorAll('input[type="text"], input[type="password"], textarea')
+    .forEach(el => { el.value = ''; });
+  document.getElementById('wg-client-privkey-display').textContent = '—';
+  document.getElementById('wg-client-pubkey-display').textContent  = '—';
+  wgPrivKey = ''; wgPubKey = '';
+  document.getElementById('config-output-wrap').innerHTML = `
+    <div class="config-empty">
+      <div class="icon">🔐</div>
+      Fill in the form and click <strong>Generate Config</strong>
+    </div>`;
+  document.getElementById('output-actions').style.display = 'none';
+  document.getElementById('output-proto-badge').style.display = 'none';
+  document.getElementById('qr-container').innerHTML = `
+    <div class="config-empty" style="padding:24px">
+      <div class="icon">📱</div>
+      Generate a WireGuard config to get a QR code for mobile import
+    </div>`;
+  toast('Form cleared', 'warn');
+}
+
+function loadDefaults() {
+  document.getElementById('client-ip').value    = '10.8.0.2';
+  document.getElementById('client-subnet').value= '32';
+  document.getElementById('server-ip').value    = '10.8.0.1';
+  document.getElementById('vpn-subnet').value   = '10.8.0.0/24';
+  document.getElementById('server-port').value  = DEFAULT_PORTS[currentProto];
+  if (currentProto === 'wireguard') {
+    document.getElementById('wg-dns').value       = '1.1.1.1, 8.8.8.8';
+    document.getElementById('wg-keepalive').value = '25';
+    document.getElementById('wg-allowed').value   = '0.0.0.0/0, ::/0';
+  }
+  if (currentProto === 'openvpn') {
+    document.getElementById('ovpn-dns').value = '1.1.1.1';
+  }
+  toast('Defaults loaded');
+}
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+function toast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast${type !== 'success' ? ' ' + type : ''}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+</script>
+</body>
+</html>

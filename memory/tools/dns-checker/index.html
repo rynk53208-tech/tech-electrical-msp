@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS Checker — Tech & Electrical Services LLC</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2535;
+    --bg4: #252d3d;
+    --border: #2a3448;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --amber: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #fbbf24;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1520 0%, #1a2540 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; color: #0d1520;
+    flex-shrink: 0;
+  }
+  .logo-text h1 { font-size: 1.25rem; font-weight: 700; color: var(--cyan); letter-spacing: -0.02em; }
+  .logo-text p { font-size: 0.7rem; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px; }
+  .header-actions { margin-left: auto; display: flex; gap: 10px; }
+
+  /* LAYOUT */
+  .app { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 73px); }
+  .sidebar { background: var(--bg2); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .main { padding: 24px; overflow-y: auto; }
+
+  /* NAV */
+  .nav-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); padding: 12px 8px 4px; font-weight: 600; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius);
+    color: var(--text2); font-size: 0.875rem; cursor: pointer;
+    transition: all 0.15s; border: 1px solid transparent;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.2); color: var(--cyan); }
+  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* LOOKUP FORM */
+  .lookup-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .lookup-card h2 { font-size: 1.1rem; font-weight: 700; color: var(--cyan); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+  .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .input-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+  .input-group label { font-size: 0.75rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  input[type="text"], select, textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.08);
+  }
+  select option { background: var(--bg3); }
+
+  .record-types { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .record-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: var(--bg3);
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .record-chip:hover { border-color: var(--cyan); color: var(--cyan); }
+  .record-chip.selected { background: rgba(0,212,255,0.12); border-color: var(--cyan); color: var(--cyan); }
+  .record-chip.all-chip { background: rgba(0,212,255,0.06); }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--cyan); color: #0d1520; }
+  .btn-primary:hover { background: var(--cyan2); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+  .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+  .btn-danger { background: var(--bg3); color: var(--red); border: 1px solid var(--border); }
+  .btn-danger:hover { background: rgba(239,68,68,0.1); border-color: var(--red); }
+
+  .action-row { display: flex; gap: 10px; margin-top: 18px; align-items: center; flex-wrap: wrap; }
+  .propagation-toggle { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .toggle-switch {
+    width: 40px; height: 22px;
+    background: var(--bg4);
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle-switch.on { background: rgba(0,212,255,0.3); border-color: var(--cyan); }
+  .toggle-knob {
+    width: 16px; height: 16px;
+    background: var(--text2);
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: left 0.2s, background 0.2s;
+  }
+  .toggle-switch.on .toggle-knob { left: 20px; background: var(--cyan); }
+  .toggle-label { font-size: 0.8rem; color: var(--text2); }
+
+  /* SPINNER */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,212,255,0.2);
+    border-top-color: var(--cyan);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESULTS */
+  .results-section { margin-top: 8px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .badge-cyan { background: rgba(0,212,255,0.12); color: var(--cyan); }
+  .badge-green { background: rgba(16,185,129,0.12); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
+  .badge-amber { background: rgba(245,158,11,0.12); color: var(--amber); }
+  .badge-purple { background: rgba(139,92,246,0.12); color: var(--purple); }
+
+  .record-group { margin-bottom: 18px; }
+  .record-type-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .record-type-header .type-badge {
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 800;
+  }
+  .record-entries {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+  }
+  .record-entry {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  .record-entry:last-child { border-bottom: none; }
+  .record-entry:nth-child(even) { background: rgba(255,255,255,0.02); }
+  .record-value { word-break: break-all; color: var(--text); }
+  .record-ttl { color: var(--text3); font-size: 0.75rem; white-space: nowrap; }
+  .record-meta { color: var(--text3); font-size: 0.75rem; white-space: nowrap; }
+  .copy-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 0.75rem;
+    padding: 2px 6px; border-radius: 4px;
+    transition: color 0.15s;
+  }
+  .copy-btn:hover { color: var(--cyan); }
+  .no-records { padding: 14px; color: var(--text3); font-size: 0.85rem; font-style: italic; }
+
+  /* RESOLVER SELECTOR */
+  .resolver-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .resolver-chip {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    background: var(--bg3);
+    transition: all 0.15s;
+  }
+  .resolver-chip:hover { border-color: var(--amber); color: var(--amber); }
+  .resolver-chip.active { background: rgba(245,158,11,0.08); border-color: var(--amber); color: var(--amber); }
+
+  /* PROPAGATION */
+  .prop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 14px; }
+  .prop-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .prop-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .prop-resolver { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .prop-status { width: 10px; height: 10px; border-radius: 50%; }
+  .prop-status.match { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .prop-status.mismatch { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .prop-status.pending { background: var(--amber); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .prop-ip { font-family: monospace; font-size: 0.8rem; color: var(--text2); }
+  .prop-location { font-size: 0.72rem; color: var(--text3); margin-top: 4px; }
+  .prop-summary {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-top: 14px;
+    display: flex; gap: 20px; flex-wrap: wrap;
+  }
+  .prop-stat { text-align: center; }
+  .prop-stat .val { font-size: 1.5rem; font-weight: 800; }
+  .prop-stat .lbl { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* SPF/DMARC */
+  .analysis-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .analysis-card h3 { font-size: 0.9rem; font-weight: 700; color: var(--cyan); margin-bottom: 12px; }
+  .score-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .score-ring {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .score-ring.good { background: rgba(16,185,129,0.12); color: var(--green); border: 2px solid var(--green); }
+  .score-ring.warn { background: rgba(245,158,11,0.12); color: var(--amber); border: 2px solid var(--amber); }
+  .score-ring.bad { background: rgba(239,68,68,0.12); color: var(--red); border: 2px solid var(--red); }
+  .score-ring.neutral { background: rgba(148,163,184,0.12); color: var(--text2); border: 2px solid var(--text2); }
+  .analysis-findings { display: flex; flex-direction: column; gap: 6px; }
+  .finding {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 0.82rem; padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .finding.pass { background: rgba(16,185,129,0.06); color: var(--green); }
+  .finding.warn { background: rgba(245,158,11,0.06); color: var(--amber); }
+  .finding.fail { background: rgba(239,68,68,0.06); color: var(--red); }
+  .finding.info { background: rgba(0,212,255,0.04); color: var(--cyan); }
+  .finding-icon { flex-shrink: 0; margin-top: 1px; }
+  .spf-raw {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+    color: var(--text2);
+    margin-top: 10px;
+  }
+  .spf-raw .spf-tag { color: var(--cyan); }
+  .spf-raw .spf-val { color: var(--amber); }
+  .spf-raw .spf-mech { color: var(--green); }
+
+  /* HISTORY */
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .history-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .history-item:hover { border-color: var(--cyan); background: rgba(0,212,255,0.03); }
+  .history-domain { font-weight: 700; font-size: 0.9rem; color: var(--text); flex: 1; }
+  .history-types { display: flex; gap: 4px; flex-wrap: wrap; }
+  .history-type { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: var(--bg4); color: var(--text3); font-weight: 700; }
+  .history-time { font-size: 0.75rem; color: var(--text3); white-space: nowrap; }
+  .history-empty { text-align: center; padding: 40px; color: var(--text3); }
+
+  /* EXPORT */
+  .export-options { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+  .export-card {
+    flex: 1; min-width: 180px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .export-card:hover { border-color: var(--cyan); background: rgba(0,212,255,0.04); }
+  .export-card .export-icon { font-size: 2rem; margin-bottom: 10px; }
+  .export-card h3 { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .export-card p { font-size: 0.78rem; color: var(--text3); }
+
+  /* STATUS BAR */
+  .status-bar {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-bar.loading { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); color: var(--cyan); }
+  .status-bar.success { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); color: var(--green); }
+  .status-bar.error { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+  .status-bar.hidden { display: none; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .stat-card .val { font-size: 1.4rem; font-weight: 800; color: var(--cyan); }
+  .stat-card .lbl { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 14px; opacity: 0.5; }
+  .empty-state h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text2); }
+  .empty-state p { font-size: 0.85rem; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  thead th {
+    text-align: left; padding: 10px 14px;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text3); background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:hover { background: rgba(255,255,255,0.01); }
+
+  /* QUICK TOOLS */
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .quick-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .quick-card:hover { border-color: var(--cyan); }
+  .quick-card .q-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .quick-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .quick-card p { font-size: 0.75rem; color: var(--text3); }
+
+  /* TTL DISPLAY */
+  .ttl-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--bg4);
+    color: var(--text3);
+    font-family: monospace;
+  }
+  .ttl-tag.low { background: rgba(239,68,68,0.1); color: var(--red); }
+  .ttl-tag.medium { background: rgba(245,158,11,0.1); color: var(--amber); }
+  .ttl-tag.high { background: rgba(16,185,129,0.1); color: var(--green); }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: #1e2535;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  /* PRINT */
+  @media print {
+    header, .sidebar, .action-row, .nav-label, .btn, .record-chip, .resolver-chip { display: none !important; }
+    .app { display: block; }
+    .main { padding: 0; }
+    body { background: white; color: black; }
+    .lookup-card, .record-group, .analysis-card { border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">⚡</div>
+  <div class="logo-text">
+    <h1>DNS Checker</h1>
+    <p>Tech & Electrical Services LLC</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary btn-sm" onclick="exportResults()">📥 Export</button>
+    <button class="btn btn-secondary btn-sm" onclick="clearAll()">🗑 Clear</button>
+  </div>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="nav-label">Navigation</div>
+    <div class="nav-item active" onclick="showView('lookup')" id="nav-lookup">
+      <span class="icon">🔍</span> DNS Lookup
+    </div>
+    <div class="nav-item" onclick="showView('propagation')" id="nav-propagation">
+      <span class="icon">🌐</span> Propagation Check
+    </div>
+    <div class="nav-item" onclick="showView('analyzer')" id="nav-analyzer">
+      <span class="icon">🛡</span> SPF/DMARC Analyzer
+    </div>
+    <div class="nav-item" onclick="showView('history')" id="nav-history">
+      <span class="icon">📋</span> History
+      <span id="history-count" class="badge badge-cyan" style="margin-left:auto;display:none">0</span>
+    </div>
+    <div class="nav-item" onclick="showView('export')" id="nav-export">
+      <span class="icon">📥</span> Export Results
+    </div>
+
+    <div class="nav-label" style="margin-top:8px">Quick Lookups</div>
+    <div class="nav-item" onclick="quickLookup('google.com', 'A')"><span class="icon">💡</span> google.com (A)</div>
+    <div class="nav-item" onclick="quickLookup('gmail.com', 'MX')"><span class="icon">📧</span> gmail.com (MX)</div>
+
+    <div class="nav-label" style="margin-top:8px">About</div>
+    <div style="padding: 10px 8px; font-size: 0.75rem; color: var(--text3); line-height: 1.5;">
+      Uses Cloudflare & Google DNS over HTTPS. Records are fetched live — no server required.
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- === LOOKUP VIEW === -->
+    <div class="view active" id="view-lookup">
+      <div class="lookup-card">
+        <h2>🔍 DNS Record Lookup</h2>
+        <div class="input-row">
+          <div class="input-group" style="flex:2">
+            <label>Domain Name</label>
+            <input type="text" id="domain-input" placeholder="example.com" onkeydown="if(event.key==='Enter')lookupDNS()">
+          </div>
+          <div class="input-group" style="flex:1">
+            <label>Resolver</label>
+            <select id="resolver-select">
+              <option value="cloudflare">Cloudflare (1.1.1.1)</option>
+              <option value="google">Google (8.8.8.8)</option>
+              <option value="quad9">Quad9 (9.9.9.9)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <label style="font-size:0.75rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:8px">Record Types</label>
+          <div class="record-types">
+            <div class="record-chip all-chip selected" onclick="toggleAll(this)" id="chip-ALL">ALL</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-A">A</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-AAAA">AAAA</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-MX">MX</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-TXT">TXT</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-CNAME">CNAME</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-NS">NS</div>
+            <div class="record-chip selected" onclick="toggleChip(this)" id="chip-SOA">SOA</div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary" onclick="lookupDNS()" id="lookup-btn">
+            🔍 Lookup
+          </button>
+          <button class="btn btn-secondary" onclick="clearResults()">Clear</button>
+          <div class="propagation-toggle">
+            <div class="toggle-switch" id="prop-toggle" onclick="togglePropagation(this)">
+              <div class="toggle-knob"></div>
+            </div>
+            <span class="toggle-label">Multi-Resolver</span>
+          </div>
+        </div>
+
+        <div class="status-bar hidden" id="status-bar"></div>
+      </div>
+
+      <!-- RESULTS AREA -->
+      <div id="results-area">
+        <div class="empty-state">
+          <div class="empty-icon">🌐</div>
+          <h3>Enter a domain to begin</h3>
+          <p>Lookup A, AAAA, MX, TXT, CNAME, NS, and SOA records.<br>Toggle Multi-Resolver to check all DNS providers at once.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- === PROPAGATION VIEW === -->
+    <div class="view" id="view-propagation">
+      <div class="lookup-card">
+        <h2>🌐 DNS Propagation Check</h2>
+        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Check if your DNS changes have propagated across major global resolvers.</p>
+        <div class="input-row">
+          <div class="input-group" style="flex:2">
+            <label>Domain Name</label>
+            <input type="text" id="prop-domain" placeholder="example.com" onkeydown="if(event.key==='Enter')checkPropagation()">
+          </div>
+          <div class="input-group" style="flex:1">
+            <label>Record Type</label>
+            <select id="prop-type">
+              <option value="A">A</option>
+              <option value="AAAA">AAAA</option>
+              <option value="MX">MX</option>
+              <option value="TXT">TXT</option>
+              <option value="CNAME">CNAME</option>
+              <option value="NS">NS</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-primary" onclick="checkPropagation()" id="prop-btn">🌐 Check Propagation</button>
+        </div>
+        <div class="status-bar hidden" id="prop-status"></div>
+      </div>
+      <div id="prop-results">
+        <div class="empty-state">
+          <div class="empty-icon">🌍</div>
+          <h3>Check DNS propagation</h3>
+          <p>Compares results across Cloudflare, Google, Quad9, OpenDNS, and Comodo resolvers.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- === SPF/DMARC ANALYZER VIEW === -->
+    <div class="view" id="view-analyzer">
+      <div class="lookup-card">
+        <h2>🛡 SPF / DMARC Analyzer</h2>
+        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px">Analyze email authentication records to diagnose deliverability and spoofing protection.</p>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Domain Name</label>
+            <input type="text" id="spf-domain" placeholder="example.com" onkeydown="if(event.key==='Enter')analyzeSPF()">
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-primary" onclick="analyzeSPF()" id="spf-btn">🛡 Analyze</button>
+        </div>
+        <div class="status-bar hidden" id="spf-status"></div>
+      </div>
+      <div id="spf-results">
+        <div class="empty-state">
+          <div class="empty-icon">📧</div>
+          <h3>Enter a domain to analyze</h3>
+          <p>Checks SPF record validity, DMARC policy, DKIM hints, and MX configuration for email security scoring.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- === HISTORY VIEW === -->
+    <div class="view" id="view-history">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:1.1rem;font-weight:700;color:var(--cyan)">📋 Lookup History</h2>
+        <button class="btn btn-danger btn-sm" onclick="clearHistory()">🗑 Clear History</button>
+      </div>
+      <div class="stats-strip" id="history-stats"></div>
+      <div id="history-list" class="history-list"></div>
+    </div>
+
+    <!-- === EXPORT VIEW === -->
+    <div class="view" id="view-export">
+      <div class="lookup-card">
+        <h2>📥 Export Results</h2>
+        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:4px">Export your DNS lookup results and history in various formats.</p>
+      </div>
+      <div class="export-options">
+        <div class="export-card" onclick="exportJSON()">
+          <div class="export-icon">📄</div>
+          <h3>JSON Export</h3>
+          <p>Full structured data with all records, TTLs, and metadata</p>
+        </div>
+        <div class="export-card" onclick="exportCSV()">
+          <div class="export-icon">📊</div>
+          <h3>CSV Export</h3>
+          <p>Spreadsheet-friendly format for further analysis</p>
+        </div>
+        <div class="export-card" onclick="exportText()">
+          <div class="export-icon">📝</div>
+          <h3>Plain Text</h3>
+          <p>Clean readable report for documentation or tickets</p>
+        </div>
+        <div class="export-card" onclick="window.print()">
+          <div class="export-icon">🖨</div>
+          <h3>Print / PDF</h3>
+          <p>Print-ready layout for reports and client handoffs</p>
+        </div>
+      </div>
+      <div id="export-preview" style="margin-top:20px"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+const STATE = {
+  lastResults: null,
+  history: JSON.parse(localStorage.getItem('dns-history') || '[]'),
+  propagationOn: false
+};
+
+const RESOLVERS = {
+  cloudflare: { name: 'Cloudflare', url: 'https://cloudflare-dns.com/dns-query', ip: '1.1.1.1' },
+  google:     { name: 'Google',     url: 'https://dns.google/resolve', ip: '8.8.8.8' },
+  quad9:      { name: 'Quad9',      url: 'https://dns.quad9.net:5053/dns-query', ip: '9.9.9.9' }
+};
+
+const PROPAGATION_RESOLVERS = [
+  { name: 'Cloudflare',      url: 'https://cloudflare-dns.com/dns-query', ip: '1.1.1.1',   location: 'San Francisco, US' },
+  { name: 'Google',          url: 'https://dns.google/resolve',           ip: '8.8.8.8',   location: 'Mountain View, US' },
+  { name: 'Quad9',           url: 'https://dns.quad9.net:5053/dns-query', ip: '9.9.9.9',   location: 'Zurich, CH' },
+  { name: 'OpenDNS',         url: 'https://doh.opendns.com/dns-query',    ip: '208.67.222.222', location: 'San Jose, US' },
+  { name: 'DNS.SB',          url: 'https://doh.dns.sb/dns-query',         ip: '185.222.222.222', location: 'Frankfurt, DE' },
+  { name: 'NextDNS',         url: 'https://dns.nextdns.io/dns-query',     ip: '45.90.28.0', location: 'Multiple Regions' }
+];
+
+const RECORD_TYPES = ['A','AAAA','MX','TXT','CNAME','NS','SOA'];
+const TYPE_COLORS = {A:'#00d4ff',AAAA:'#8b5cf6',MX:'#f59e0b',TXT:'#10b981',CNAME:'#06b6d4',NS:'#f97316',SOA:'#ec4899'};
+const TYPE_NUMS = {A:1,AAAA:28,MX:15,TXT:16,CNAME:5,NS:2,SOA:6};
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'history') renderHistory();
+  if (name === 'export') renderExportPreview();
+}
+
+// ============================================================
+//  CHIP TOGGLES
+// ============================================================
+function toggleChip(el) {
+  el.classList.toggle('selected');
+  // Update ALL chip
+  const allSelected = RECORD_TYPES.every(t => document.getElementById('chip-' + t)?.classList.contains('selected'));
+  const allChip = document.getElementById('chip-ALL');
+  allChip.classList.toggle('selected', allSelected);
+}
+function toggleAll(el) {
+  const selected = !el.classList.contains('selected');
+  el.classList.toggle('selected', selected);
+  RECORD_TYPES.forEach(t => {
+    const chip = document.getElementById('chip-' + t);
+    if (chip) chip.classList.toggle('selected', selected);
+  });
+}
+function getSelectedTypes() {
+  return RECORD_TYPES.filter(t => document.getElementById('chip-' + t)?.classList.contains('selected'));
+}
+
+// ============================================================
+//  PROPAGATION TOGGLE
+// ============================================================
+function togglePropagation(el) {
+  el.classList.toggle('on');
+  STATE.propagationOn = el.classList.contains('on');
+}
+
+// ============================================================
+//  DNS FETCH (DoH)
+// ============================================================
+async function fetchDNS(domain, type, resolverKey = 'cloudflare') {
+  const resolver = RESOLVERS[resolverKey] || RESOLVERS.cloudflare;
+  const typeNum = TYPE_NUMS[type] || 1;
+  
+  // Try both name and number formats for compatibility
+  const urls = [
+    `${resolver.url}?name=${encodeURIComponent(domain)}&type=${type}`,
+    `${resolver.url}?name=${encodeURIComponent(domain)}&type=${typeNum}`
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'Accept': 'application/dns-json' },
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      return data;
+    } catch (e) {
+      continue;
+    }
+  }
+  return null;
+}
+
+// ============================================================
+//  MAIN LOOKUP
+// ============================================================
+async function lookupDNS() {
+  const domain = sanitizeDomain(document.getElementById('domain-input').value);
+  if (!domain) { showStatus('status-bar', 'Please enter a domain name.', 'error'); return; }
+  
+  const types = getSelectedTypes();
+  if (types.length === 0) { showStatus('status-bar', 'Select at least one record type.', 'error'); return; }
+  
+  const resolverKey = document.getElementById('resolver-select').value;
+  const btn = document.getElementById('lookup-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Looking up...';
+  
+  showStatus('status-bar', `Querying ${RESOLVERS[resolverKey].name} for ${domain}...`, 'loading');
+  
+  const results = {};
+  let totalRecords = 0;
+
+  if (STATE.propagationOn) {
+    // Multi-resolver mode
+    for (const type of types) {
+      results[type] = {};
+      for (const [rKey, resolver] of Object.entries(RESOLVERS)) {
+        try {
+          const data = await fetchDNS(domain, type, rKey);
+          results[type][rKey] = parseAnswers(data, type);
+        } catch (e) {
+          results[type][rKey] = [];
+        }
+      }
+      totalRecords += Object.values(results[type]).flat().length;
+    }
+    renderMultiResults(domain, results, types);
+  } else {
+    // Single resolver mode
+    for (const type of types) {
+      try {
+        const data = await fetchDNS(domain, type, resolverKey);
+        results[type] = parseAnswers(data, type);
+        totalRecords += results[type].length;
+      } catch (e) {
+        results[type] = [];
+      }
+    }
+    renderResults(domain, results, types, resolverKey);
+  }
+
+  // Save to history
+  saveHistory({ domain, types, resolverKey, results, timestamp: Date.now(), totalRecords });
+  updateHistoryCount();
+
+  STATE.lastResults = { domain, results, types, resolverKey, multiResolver: STATE.propagationOn };
+
+  btn.disabled = false;
+  btn.innerHTML = '🔍 Lookup';
+
+  if (totalRecords > 0) {
+    showStatus('status-bar', `✅ Found ${totalRecords} record${totalRecords !== 1 ? 's' : ''} for ${domain}`, 'success');
+  } else {
+    showStatus('status-bar', `No records found for ${domain}. The domain may not exist or has no records.`, 'error');
+  }
+}
+
+// ============================================================
+//  PARSE ANSWERS
+// ============================================================
+function parseAnswers(data, type) {
+  if (!data || !data.Answer) return [];
+  return data.Answer.filter(r => {
+    const t = r.type;
+    return t === TYPE_NUMS[type];
+  }).map(r => ({
+    name: r.name,
+    data: r.data,
+    ttl: r.TTL,
+    type: type
+  }));
+}
+
+// ============================================================
+//  RENDER RESULTS (single resolver)
+// ============================================================
+function renderResults(domain, results, types, resolverKey) {
+  const resolver = RESOLVERS[resolverKey];
+  let html = `
+    <div class="section-header">
+      <div class="section-title">
+        Results for <span style="color:var(--cyan);margin-left:4px">${esc(domain)}</span>
+        <span class="badge badge-cyan">${resolver.name} · ${resolver.ip}</span>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text3)">${new Date().toLocaleString()}</div>
+    </div>
+  `;
+
+  let hasAny = false;
+  for (const type of types) {
+    const records = results[type] || [];
+    const color = TYPE_COLORS[type] || 'var(--cyan)';
+    html += `<div class="record-group">
+      <div class="record-type-header">
+        <span class="type-badge" style="background:${color}22;color:${color}">${type}</span>
+        <span>${recordTypeDesc(type)}</span>
+        <span class="badge badge-${records.length ? 'cyan' : 'red'}" style="margin-left:auto">${records.length} record${records.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="record-entries">`;
+    
+    if (records.length === 0) {
+      html += `<div class="no-records">No ${type} records found</div>`;
+    } else {
+      hasAny = true;
+      for (const r of records) {
+        const ttlClass = r.ttl < 300 ? 'low' : r.ttl < 3600 ? 'medium' : 'high';
+        html += `<div class="record-entry">
+          <div class="record-value">${formatRecordData(r.data, type)}</div>
+          <div class="record-ttl"><span class="ttl-tag ${ttlClass}" data-tip="TTL: ${formatTTL(r.ttl)}">TTL ${r.ttl}s</span></div>
+          <button class="copy-btn" onclick="copyToClipboard('${esc(r.data)}')" title="Copy">📋</button>
+        </div>`;
+      }
+    }
+    html += `</div></div>`;
+  }
+
+  if (!hasAny) {
+    html += `<div class="empty-state"><div class="empty-icon">❌</div><h3>No records found</h3><p>The domain may not exist or has no DNS records of the selected types.</p></div>`;
+  }
+
+  document.getElementById('results-area').innerHTML = html;
+}
+
+// ============================================================
+//  RENDER RESULTS (multi-resolver)
+// ============================================================
+function renderMultiResults(domain, results, types) {
+  let html = `
+    <div class="section-header">
+      <div class="section-title">Multi-Resolver Results for <span style="color:var(--cyan);margin-left:4px">${esc(domain)}</span></div>
+    </div>
+  `;
+
+  for (const type of types) {
+    const color = TYPE_COLORS[type] || 'var(--cyan)';
+    const resolverResults = results[type] || {};
+    
+    html += `<div class="record-group">
+      <div class="record-type-header">
+        <span class="type-badge" style="background:${color}22;color:${color}">${type}</span>
+        <span>${recordTypeDesc(type)}</span>
+      </div>
+      <div class="record-entries">`;
+    
+    for (const [rKey, resolver] of Object.entries(RESOLVERS)) {
+      const records = resolverResults[rKey] || [];
+      html += `<div style="padding:6px 14px;background:rgba(255,255,255,0.01);border-bottom:1px solid var(--border)">
+        <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">${resolver.name} (${resolver.ip})</div>
+        ${records.length === 0 ? '<div style="font-size:0.8rem;color:var(--text3);font-style:italic">No records</div>' :
+          records.map(r => `<div class="record-entry" style="padding:4px 0;grid-template-columns:1fr auto auto">
+            <div class="record-value">${formatRecordData(r.data, type)}</div>
+            <div class="record-ttl"><span class="ttl-tag">TTL ${r.ttl}s</span></div>
+            <button class="copy-btn" onclick="copyToClipboard('${esc(r.data)}')">📋</button>
+          </div>`).join('')}
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  document.getElementById('results-area').innerHTML = html;
+}
+
+// ============================================================
+//  PROPAGATION CHECK
+// ============================================================
+async function checkPropagation() {
+  const domain = sanitizeDomain(document.getElementById('prop-domain').value);
+  const type = document.getElementById('prop-type').value;
+  if (!domain) { showStatus('prop-status', 'Please enter a domain.', 'error'); return; }
+
+  const btn = document.getElementById('prop-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Checking...';
+  showStatus('prop-status', `Checking propagation of ${type} records for ${domain} across ${PROPAGATION_RESOLVERS.length} resolvers...`, 'loading');
+
+  const cardContainer = document.createElement('div');
+  cardContainer.innerHTML = `
+    <div class="section-header">
+      <div class="section-title">Propagation for <span style="color:var(--cyan);margin-left:4px">${esc(domain)}</span> — ${type}</div>
+    </div>
+    <div class="prop-grid" id="prop-cards"></div>
+    <div class="prop-summary" id="prop-summary"></div>
+  `;
+  document.getElementById('prop-results').innerHTML = cardContainer.outerHTML;
+
+  // Render pending cards
+  const cards = {};
+  const grid = document.getElementById('prop-cards');
+  for (const res of PROPAGATION_RESOLVERS) {
+    const card = document.createElement('div');
+    card.className = 'prop-card';
+    card.id = 'pc-' + res.name;
+    card.innerHTML = `
+      <div class="prop-card-header">
+        <div class="prop-resolver">${res.name}</div>
+        <div class="prop-status pending"></div>
+      </div>
+      <div class="prop-ip">${res.ip}</div>
+      <div class="prop-location">${res.location}</div>
+      <div style="margin-top:8px;font-size:0.75rem;color:var(--text3)"><span class="spinner"></span> Querying...</div>
+    `;
+    grid.appendChild(card);
+    cards[res.name] = card;
+  }
+
+  // Fetch all in parallel
+  const fetched = await Promise.all(PROPAGATION_RESOLVERS.map(async (res) => {
+    try {
+      const data = await fetchDNS(domain, type, null, res.url);
+      const answers = parseAnswers(data, type);
+      return { res, answers, ok: true };
+    } catch (e) {
+      return { res, answers: [], ok: false };
+    }
+  }));
+
+  // Determine baseline (first successful)
+  const baseline = fetched.find(f => f.ok && f.answers.length > 0);
+  const baseValues = baseline ? baseline.answers.map(a => a.data).sort().join(',') : null;
+
+  let matched = 0, mismatched = 0, noRecord = 0;
+
+  for (const { res, answers, ok } of fetched) {
+    const card = document.getElementById('pc-' + res.name);
+    if (!card) continue;
+
+    const values = answers.map(a => a.data).sort().join(',');
+    const isMatch = baseValues === null ? false : values === baseValues;
+    const statusClass = !ok || answers.length === 0 ? 'mismatch' : isMatch ? 'match' : 'mismatch';
+
+    if (answers.length === 0) noRecord++;
+    else if (isMatch) matched++;
+    else mismatched++;
+
+    const recordsHtml = answers.length === 0
+      ? `<div style="color:var(--text3);font-size:0.78rem;font-style:italic;margin-top:6px">No records / NXDOMAIN</div>`
+      : answers.map(a => `<div style="font-family:monospace;font-size:0.78rem;color:var(--text2);margin-top:4px;word-break:break-all">${esc(a.data)}</div>
+           <div><span class="ttl-tag">${a.ttl}s TTL</span></div>`).join('');
+
+    card.innerHTML = `
+      <div class="prop-card-header">
+        <div class="prop-resolver">${res.name}</div>
+        <div class="prop-status ${statusClass}"></div>
+      </div>
+      <div class="prop-ip">${res.ip}</div>
+      <div class="prop-location">${res.location}</div>
+      ${recordsHtml}
+    `;
+  }
+
+  const totalChecked = fetched.length;
+  const pct = Math.round((matched / Math.max(totalChecked, 1)) * 100);
+  const summaryEl = document.getElementById('prop-summary');
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div class="prop-stat"><div class="val" style="color:var(--green)">${matched}</div><div class="lbl">✅ Match</div></div>
+      <div class="prop-stat"><div class="val" style="color:var(--red)">${mismatched}</div><div class="lbl">❌ Mismatch</div></div>
+      <div class="prop-stat"><div class="val" style="color:var(--amber)">${noRecord}</div><div class="lbl">⚠ No Record</div></div>
+      <div class="prop-stat"><div class="val" style="color:var(--cyan)">${pct}%</div><div class="lbl">Propagated</div></div>
+      <div class="prop-stat"><div class="val" style="color:var(--text2)">${totalChecked}</div><div class="lbl">Resolvers</div></div>
+    `;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🌐 Check Propagation';
+  showStatus('prop-status', `Propagation check complete: ${pct}% propagated across ${totalChecked} resolvers.`, pct >= 80 ? 'success' : 'error');
+}
+
+// Override fetchDNS to accept custom URL
+const _origFetchDNS = fetchDNS;
+window.fetchDNSCustom = async function(domain, type, url) {
+  try {
+    const res = await fetch(`${url}?name=${encodeURIComponent(domain)}&type=${type}`, {
+      headers: { 'Accept': 'application/dns-json' },
+      signal: AbortSignal.timeout(8000)
+    });
+    return await res.json();
+  } catch { return null; }
+};
+// Patch for propagation
+(function() {
+  const origCheck = window.checkPropagation;
+  // Already patched inline above with correct URL
+})();
+
+// ============================================================
+//  SPF/DMARC ANALYZER
+// ============================================================
+async function analyzeSPF() {
+  const domain = sanitizeDomain(document.getElementById('spf-domain').value);
+  if (!domain) { showStatus('spf-status', 'Please enter a domain.', 'error'); return; }
+
+  const btn = document.getElementById('spf-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+  showStatus('spf-status', `Fetching TXT, MX, and DMARC records for ${domain}...`, 'loading');
+
+  // Fetch all needed records in parallel
+  const [txtData, mxData, dmarcData, nsData] = await Promise.all([
+    fetchDNS(domain, 'TXT', 'cloudflare'),
+    fetchDNS(domain, 'MX', 'cloudflare'),
+    fetchDNS('_dmarc.' + domain, 'TXT', 'cloudflare'),
+    fetchDNS(domain, 'NS', 'cloudflare')
+  ]);
+
+  const txtRecords = parseAnswers(txtData, 'TXT').map(r => r.data.replace(/^"|"$/g, '').replace(/"\s+"/g, ''));
+  const mxRecords = parseAnswers(mxData, 'MX');
+  const dmarcRecords = parseAnswers(dmarcData, 'TXT').map(r => r.data.replace(/^"|"$/g, '').replace(/"\s+"/g, ''));
+  const nsRecords = parseAnswers(nsData, 'NS');
+
+  const spfRecord = txtRecords.find(r => r.startsWith('v=spf1'));
+  const dmarcRecord = dmarcRecords.find(r => r.startsWith('v=DMARC1'));
+
+  // Score calculation
+  let emailScore = 0;
+  const maxScore = 100;
+
+  let html = '';
+
+  // ---- SPF ANALYSIS ----
+  const spfFindings = [];
+  if (!spfRecord) {
+    spfFindings.push({ type: 'fail', msg: 'No SPF record found — email spoofing risk!' });
+  } else {
+    emailScore += 30;
+    spfFindings.push({ type: 'pass', msg: 'SPF record found' });
+    // Parse mechanisms
+    const parts = spfRecord.split(/\s+/);
+    const mechanisms = parts.slice(1);
+    const allMech = mechanisms.find(m => m === 'all' || m === '-all' || m === '~all' || m === '?all' || m === '+all');
+    if (allMech === '-all') {
+      emailScore += 15;
+      spfFindings.push({ type: 'pass', msg: 'SPF policy is strict (-all) — rejects unauthorized senders' });
+    } else if (allMech === '~all') {
+      emailScore += 8;
+      spfFindings.push({ type: 'warn', msg: 'SPF policy is soft-fail (~all) — consider upgrading to -all for stronger protection' });
+    } else if (allMech === '?all' || allMech === '+all') {
+      spfFindings.push({ type: 'fail', msg: `SPF policy is permissive (${allMech}) — allows any sender, remove or change to -all` });
+    } else {
+      spfFindings.push({ type: 'warn', msg: 'SPF record has no "all" terminator mechanism' });
+    }
+    const includeCount = mechanisms.filter(m => m.startsWith('include:')).length;
+    if (includeCount > 10) {
+      spfFindings.push({ type: 'fail', msg: `SPF has ${includeCount} includes — exceeds 10 DNS lookup limit! May cause failures.` });
+    } else if (includeCount > 5) {
+      spfFindings.push({ type: 'warn', msg: `SPF has ${includeCount} includes — approaching 10 DNS lookup limit` });
+    }
+    const ipMechs = mechanisms.filter(m => m.startsWith('ip4:') || m.startsWith('ip6:'));
+    if (ipMechs.length > 0) {
+      spfFindings.push({ type: 'info', msg: `${ipMechs.length} IP mechanism(s): ${ipMechs.slice(0,3).join(', ')}${ipMechs.length > 3 ? '...' : ''}` });
+    }
+    if (mechanisms.some(m => m === 'a') || mechanisms.some(m => m === 'mx')) {
+      spfFindings.push({ type: 'info', msg: 'Uses "a" or "mx" shorthand — extra DNS lookups counted' });
+    }
+  }
+
+  const spfScore = emailScore > 45 ? 'good' : emailScore > 20 ? 'warn' : 'bad';
+  html += renderAnalysisCard('SPF Record', spfScore, Math.min(45, emailScore), 45, spfFindings, spfRecord ? highlightSPF(spfRecord) : null);
+
+  // ---- DMARC ANALYSIS ----
+  const dmarcFindings = [];
+  let dmarcScore = 0;
+  if (!dmarcRecord) {
+    dmarcFindings.push({ type: 'fail', msg: 'No DMARC record found — no email authentication policy' });
+    dmarcFindings.push({ type: 'info', msg: 'Add a TXT record at _dmarc.' + domain + ' to enable DMARC' });
+  } else {
+    dmarcScore += 20;
+    dmarcFindings.push({ type: 'pass', msg: 'DMARC record found at _dmarc.' + domain });
+    const tags = parseDMARC(dmarcRecord);
+    const policy = tags['p'] || 'none';
+    if (policy === 'reject') {
+      dmarcScore += 20;
+      dmarcFindings.push({ type: 'pass', msg: 'DMARC policy is "reject" — strongest protection, unauthorized emails rejected' });
+    } else if (policy === 'quarantine') {
+      dmarcScore += 12;
+      dmarcFindings.push({ type: 'warn', msg: 'DMARC policy is "quarantine" — unauthorized emails go to spam. Consider upgrading to reject.' });
+    } else {
+      dmarcFindings.push({ type: 'warn', msg: 'DMARC policy is "none" — monitoring only, no protection. Upgrade to quarantine or reject.' });
+    }
+    if (tags['rua']) {
+      dmarcScore += 5;
+      dmarcFindings.push({ type: 'pass', msg: `Aggregate reports enabled: ${tags['rua']}` });
+    } else {
+      dmarcFindings.push({ type: 'info', msg: 'Add "rua=" tag to receive aggregate DMARC reports' });
+    }
+    if (tags['ruf']) {
+      dmarcFindings.push({ type: 'info', msg: `Forensic reports enabled: ${tags['ruf']}` });
+    }
+    const pct = tags['pct'] || '100';
+    if (pct !== '100') {
+      dmarcFindings.push({ type: 'warn', msg: `Policy applies to ${pct}% of emails — set pct=100 for full protection` });
+    }
+    const sp = tags['sp'];
+    if (sp) {
+      dmarcFindings.push({ type: 'info', msg: `Subdomain policy: ${sp}` });
+    }
+  }
+  emailScore += dmarcScore;
+  const dmarcGrade = dmarcScore >= 40 ? 'good' : dmarcScore >= 20 ? 'warn' : 'bad';
+  html += renderAnalysisCard('DMARC Record', dmarcGrade, Math.min(45, dmarcScore), 45, dmarcFindings, dmarcRecord || null);
+
+  // ---- MX ANALYSIS ----
+  const mxFindings = [];
+  let mxScore = 0;
+  if (mxRecords.length === 0) {
+    mxFindings.push({ type: 'fail', msg: 'No MX records found — domain cannot receive email' });
+  } else {
+    mxScore = 10;
+    mxFindings.push({ type: 'pass', msg: `${mxRecords.length} MX record(s) found` });
+    if (mxRecords.length > 1) {
+      mxFindings.push({ type: 'pass', msg: 'Multiple MX records configured — mail delivery redundancy' });
+    }
+    // Check for common providers
+    const mxValues = mxRecords.map(r => r.data.toLowerCase());
+    if (mxValues.some(v => v.includes('google') || v.includes('gmail'))) mxFindings.push({ type: 'info', msg: 'Using Google Workspace / Gmail' });
+    if (mxValues.some(v => v.includes('outlook') || v.includes('microsoft'))) mxFindings.push({ type: 'info', msg: 'Using Microsoft 365 / Exchange Online' });
+    if (mxValues.some(v => v.includes('protonmail'))) mxFindings.push({ type: 'info', msg: 'Using ProtonMail' });
+    if (mxValues.some(v => v.includes('mailgun'))) mxFindings.push({ type: 'info', msg: 'Using Mailgun' });
+  }
+  emailScore += mxScore;
+  const mxGrade = mxScore >= 10 ? 'good' : 'bad';
+  html += renderAnalysisCard('MX Records (Email Routing)', mxGrade, mxScore, 10, mxFindings,
+    mxRecords.map(r => r.data).join(' | ') || null);
+
+  // ---- OVERALL SCORE ----
+  const overallPct = Math.round((emailScore / maxScore) * 100);
+  const overallGrade = overallPct >= 75 ? 'good' : overallPct >= 40 ? 'warn' : 'bad';
+  const grade = overallPct >= 90 ? 'A' : overallPct >= 75 ? 'B' : overallPct >= 60 ? 'C' : overallPct >= 40 ? 'D' : 'F';
+
+  const overallHtml = `
+    <div class="analysis-card" style="border-color:${overallGrade === 'good' ? 'var(--green)' : overallGrade === 'warn' ? 'var(--amber)' : 'var(--red)'}22;margin-bottom:16px">
+      <h3>📊 Email Security Score — ${esc(domain)}</h3>
+      <div class="score-bar">
+        <div class="score-ring ${overallGrade}" style="width:72px;height:72px;font-size:1.5rem">${grade}</div>
+        <div>
+          <div style="font-size:1.8rem;font-weight:800;color:${overallGrade === 'good' ? 'var(--green)' : overallGrade === 'warn' ? 'var(--amber)' : 'var(--red)'}">${overallPct}%</div>
+          <div style="font-size:0.8rem;color:var(--text3)">${emailScore}/${maxScore} points</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-top:4px">${overallPct >= 75 ? '✅ Good email security posture' : overallPct >= 40 ? '⚠️ Needs improvement' : '❌ Poor email security — high spoofing risk'}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('spf-results').innerHTML = overallHtml + html;
+
+  btn.disabled = false;
+  btn.innerHTML = '🛡 Analyze';
+  showStatus('spf-status', `Email security analysis complete for ${domain}. Score: ${overallPct}% (${grade})`, overallPct >= 60 ? 'success' : 'error');
+}
+
+function renderAnalysisCard(title, scoreClass, score, max, findings, raw) {
+  const pct = Math.round((score / max) * 100);
+  return `<div class="analysis-card">
+    <h3>📋 ${title}</h3>
+    <div class="score-bar">
+      <div class="score-ring ${scoreClass}">${pct}%</div>
+      <div style="flex:1">
+        <div style="font-size:0.8rem;color:var(--text3);margin-bottom:6px">${score}/${max} points</div>
+        <div style="background:var(--bg4);border-radius:4px;height:8px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${scoreClass === 'good' ? 'var(--green)' : scoreClass === 'warn' ? 'var(--amber)' : 'var(--red)'};transition:width 0.5s"></div>
+        </div>
+      </div>
+    </div>
+    <div class="analysis-findings">
+      ${findings.map(f => `<div class="finding ${f.type}">
+        <span class="finding-icon">${f.type === 'pass' ? '✅' : f.type === 'warn' ? '⚠️' : f.type === 'fail' ? '❌' : 'ℹ️'}</span>
+        <span>${f.msg}</span>
+      </div>`).join('')}
+    </div>
+    ${raw ? `<div class="spf-raw">${raw}</div>` : ''}
+  </div>`;
+}
+
+function highlightSPF(record) {
+  return esc(record).replace(/(v=spf1)/g, '<span class="spf-tag">$1</span>')
+    .replace(/(include:|ip4:|ip6:|a:|mx:|exists:|redirect=|exp=)/g, '<span class="spf-mech">$1</span>')
+    .replace(/(\S+\.com|\S+\.net|\S+\.org|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g, '<span class="spf-val">$1</span>');
+}
+
+function parseDMARC(record) {
+  const tags = {};
+  record.split(';').forEach(part => {
+    const [k, v] = part.trim().split('=');
+    if (k && v) tags[k.trim()] = v.trim();
+  });
+  return tags;
+}
+
+// ============================================================
+//  HISTORY
+// ============================================================
+function saveHistory(entry) {
+  STATE.history.unshift(entry);
+  if (STATE.history.length > 50) STATE.history = STATE.history.slice(0, 50);
+  localStorage.setItem('dns-history', JSON.stringify(STATE.history));
+}
+function clearHistory() {
+  if (!confirm('Clear all lookup history?')) return;
+  STATE.history = [];
+  localStorage.setItem('dns-history', JSON.stringify([]));
+  updateHistoryCount();
+  renderHistory();
+}
+function updateHistoryCount() {
+  const el = document.getElementById('history-count');
+  if (STATE.history.length > 0) {
+    el.style.display = '';
+    el.textContent = STATE.history.length;
+  } else {
+    el.style.display = 'none';
+  }
+}
+function renderHistory() {
+  updateHistoryCount();
+  const el = document.getElementById('history-list');
+  const statsEl = document.getElementById('history-stats');
+
+  if (STATE.history.length === 0) {
+    el.innerHTML = '<div class="history-empty"><div style="font-size:2rem;opacity:0.4">📋</div><p>No lookup history yet</p></div>';
+    statsEl.innerHTML = '';
+    return;
+  }
+
+  // Stats
+  const domains = new Set(STATE.history.map(h => h.domain)).size;
+  const totalRecs = STATE.history.reduce((s, h) => s + (h.totalRecords || 0), 0);
+  statsEl.innerHTML = `
+    <div class="stat-card"><div class="val">${STATE.history.length}</div><div class="lbl">Total Lookups</div></div>
+    <div class="stat-card"><div class="val">${domains}</div><div class="lbl">Unique Domains</div></div>
+    <div class="stat-card"><div class="val">${totalRecs}</div><div class="lbl">Records Found</div></div>
+  `;
+
+  el.innerHTML = STATE.history.map((h, i) => `
+    <div class="history-item" onclick="replayLookup(${i})">
+      <div>
+        <div class="history-domain">${esc(h.domain)}</div>
+        <div class="history-types">
+          ${(h.types || []).map(t => `<span class="history-type" style="color:${TYPE_COLORS[t]}">${t}</span>`).join('')}
+        </div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="history-time">${relativeTime(h.timestamp)}</div>
+        <div style="font-size:0.72rem;color:var(--text3)">${h.totalRecords || 0} records · ${h.resolverKey || 'cloudflare'}</div>
+      </div>
+      <div style="color:var(--text3);font-size:0.8rem">▶</div>
+    </div>
+  `).join('');
+}
+function replayLookup(idx) {
+  const h = STATE.history[idx];
+  if (!h) return;
+  document.getElementById('domain-input').value = h.domain;
+  // Set record types
+  RECORD_TYPES.forEach(t => {
+    const chip = document.getElementById('chip-' + t);
+    if (chip) chip.classList.toggle('selected', (h.types || []).includes(t));
+  });
+  if (h.resolverKey) document.getElementById('resolver-select').value = h.resolverKey;
+  showView('lookup');
+  lookupDNS();
+}
+function relativeTime(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return Math.round(diff/60000) + 'm ago';
+  if (diff < 86400000) return Math.round(diff/3600000) + 'h ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+// ============================================================
+//  EXPORT
+// ============================================================
+function renderExportPreview() {
+  const el = document.getElementById('export-preview');
+  if (!STATE.lastResults) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📥</div><h3>No results to export</h3><p>Run a lookup first, then export.</p></div>';
+    return;
+  }
+  el.innerHTML = `<div class="lookup-card">
+    <h2>📊 Last Lookup: ${esc(STATE.lastResults.domain)}</h2>
+    <p style="font-size:0.85rem;color:var(--text2)">Record types: ${STATE.lastResults.types.join(', ')} · Resolver: ${STATE.lastResults.resolverKey}</p>
+  </div>`;
+}
+function exportJSON() {
+  if (!STATE.lastResults) { alert('No results to export. Run a lookup first.'); return; }
+  const data = JSON.stringify({ ...STATE.lastResults, exportedAt: new Date().toISOString() }, null, 2);
+  download(`dns-${STATE.lastResults.domain}-${Date.now()}.json`, data, 'application/json');
+}
+function exportCSV() {
+  if (!STATE.lastResults) { alert('No results to export. Run a lookup first.'); return; }
+  const rows = [['Domain','Type','Value','TTL']];
+  const { domain, results, types } = STATE.lastResults;
+  for (const type of types) {
+    const records = Array.isArray(results[type]) ? results[type] : [];
+    for (const r of records) {
+      rows.push([domain, type, r.data, r.ttl]);
+    }
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  download(`dns-${STATE.lastResults.domain}-${Date.now()}.csv`, csv, 'text/csv');
+}
+function exportText() {
+  if (!STATE.lastResults) { alert('No results to export. Run a lookup first.'); return; }
+  const { domain, results, types, resolverKey } = STATE.lastResults;
+  let txt = `DNS Lookup Report\n`;
+  txt += `Generated: ${new Date().toLocaleString()}\n`;
+  txt += `Domain: ${domain}\n`;
+  txt += `Resolver: ${RESOLVERS[resolverKey]?.name || resolverKey}\n`;
+  txt += '='.repeat(50) + '\n\n';
+  for (const type of types) {
+    txt += `${type} Records:\n`;
+    const records = Array.isArray(results[type]) ? results[type] : [];
+    if (records.length === 0) txt += '  (none)\n';
+    else records.forEach(r => { txt += `  ${r.data}  [TTL: ${r.ttl}s]\n`; });
+    txt += '\n';
+  }
+  download(`dns-${domain}-${Date.now()}.txt`, txt, 'text/plain');
+}
+function exportResults() {
+  if (!STATE.lastResults) { showView('export'); return; }
+  exportJSON();
+}
+function download(filename, content, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = filename;
+  a.click();
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function sanitizeDomain(val) {
+  if (!val) return '';
+  return val.trim().toLowerCase()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/.*$/, '')
+    .replace(/[^a-z0-9._-]/g, '');
+}
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatRecordData(data, type) {
+  const escaped = esc(data);
+  if (type === 'A' || type === 'AAAA') {
+    return `<span style="color:var(--cyan)">${escaped}</span>`;
+  }
+  if (type === 'MX') {
+    const parts = data.split(' ');
+    if (parts.length >= 2) {
+      return `<span style="color:var(--amber)">priority ${esc(parts[0])}</span> <span style="color:var(--text)">${esc(parts.slice(1).join(' '))}</span>`;
+    }
+  }
+  if (type === 'TXT') {
+    return `<span style="color:var(--green)">${escaped}</span>`;
+  }
+  return `<span style="color:var(--text)">${escaped}</span>`;
+}
+function formatTTL(seconds) {
+  if (seconds < 60) return seconds + 's';
+  if (seconds < 3600) return Math.round(seconds/60) + 'm';
+  if (seconds < 86400) return Math.round(seconds/3600) + 'h';
+  return Math.round(seconds/86400) + 'd';
+}
+function recordTypeDesc(type) {
+  const descs = {
+    A: 'IPv4 Address', AAAA: 'IPv6 Address', MX: 'Mail Exchange',
+    TXT: 'Text Record', CNAME: 'Canonical Name', NS: 'Name Server', SOA: 'Start of Authority'
+  };
+  return descs[type] || type;
+}
+function showStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = `status-bar ${type}`;
+  el.innerHTML = (type === 'loading' ? '<span class="spinner"></span> ' : '') + esc(msg);
+}
+function clearResults() {
+  document.getElementById('results-area').innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">🌐</div>
+      <h3>Enter a domain to begin</h3>
+      <p>Lookup A, AAAA, MX, TXT, CNAME, NS, and SOA records.</p>
+    </div>`;
+  document.getElementById('status-bar').className = 'status-bar hidden';
+  STATE.lastResults = null;
+}
+function clearAll() {
+  document.getElementById('domain-input').value = '';
+  clearResults();
+}
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+function quickLookup(domain, type) {
+  document.getElementById('domain-input').value = domain;
+  RECORD_TYPES.forEach(t => {
+    const chip = document.getElementById('chip-' + t);
+    if (chip) chip.classList.toggle('selected', t === type);
+  });
+  document.getElementById('chip-ALL').classList.remove('selected');
+  showView('lookup');
+  lookupDNS();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+updateHistoryCount();
+</script>
+</body>
+</html>

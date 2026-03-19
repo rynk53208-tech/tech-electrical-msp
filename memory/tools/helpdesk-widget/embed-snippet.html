@@ -1,0 +1,52 @@
+<!-- ============================================================
+     Helpdesk Widget — Copy-Paste Embed Snippet
+     Place before </body> on any client website
+     ============================================================ -->
+
+<!-- Step 1: Configure the widget -->
+<script>
+  window.HelpdeskConfig = {
+    // ── Required ──────────────────────────────────────────────
+    businessName: "Your Business Name",     // Shown in header
+    greeting: "Hi! How can we help you?",   // First message
+
+    // ── Appearance ────────────────────────────────────────────
+    accentColor: "#2563eb",                 // Brand color (hex)
+    position: "bottom-right",              // "bottom-right" | "bottom-left"
+    avatarUrl: "",                          // Optional: URL to logo/avatar image
+
+    // ── Backend (optional) ────────────────────────────────────
+    webhookUrl: null,                       // POST endpoint for messages
+    // Payload sent: { message, sessionId, timestamp }
+    // Expected response: { reply: "...", sessionId: "..." }
+
+    // ── Offline / Fallback ────────────────────────────────────
+    emailFallback: "support@yourdomain.com",
+    offlineMessage: "We're away. Leave a message and we'll reply soon.",
+    onlineHours: {
+      start: 8,                             // 8am local
+      end: 18,                              // 6pm local
+      timezone: "America/Los_Angeles"
+    },
+
+    // ── Behavior ─────────────────────────────────────────────
+    collectEmail: false,                    // Ask visitor email before chat
+    autoOpenDelay: 0,                       // ms to auto-open (0 = off)
+    showBranding: true,                     // Show powered-by footer
+    brandingText: "Helpdesk",
+    brandingUrl: "https://yourdomain.com",
+  };
+</script>
+
+<!-- Step 2: Load the widget -->
+<script src="https://cdn.yourdomain.com/helpdesk/widget.js" defer></script>
+
+<!-- ============================================================
+     Optional: Control widget from your own buttons/code
+     ============================================================
+  HelpdeskWidget.open()                    // Open the chat window
+  HelpdeskWidget.close()                   // Close it
+  HelpdeskWidget.toggle()                  // Toggle open/closed
+  HelpdeskWidget.sendAgentMessage("Hi!")   // Push a message from agent
+                                           // (shows unread badge if closed)
+  ============================================================ -->

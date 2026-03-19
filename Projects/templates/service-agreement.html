@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Agreement - Tech & Electrical Services LLC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header {
+            border-bottom: 3px solid #d32f2f;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            background: #ffebee;
+            border: 2px dashed #d32f2f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #d32f2f;
+            margin: 0 auto 15px;
+        }
+        h1 {
+            color: #d32f2f;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #d32f2f;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ffcdd2;
+            text-transform: uppercase;
+        }
+        h3 {
+            color: #333;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .header-subtitle {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .document-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 12px;
+        }
+        .info-row {
+            margin-bottom: 8px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #d32f2f;
+        }
+        .info-value {
+            color: #666;
+        }
+        .parties-section {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-content {
+            margin-left: 20px;
+        }
+        ol {
+            margin-left: 25px;
+            margin-bottom: 12px;
+        }
+        li {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        ul {
+            margin-left: 25px;
+            margin-bottom: 12px;
+            list-style-type: disc;
+        }
+        .highlight {
+            background: #fff3e0;
+            padding: 15px;
+            border-left: 4px solid #ff6f00;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        .important-box {
+            background: #ffebee;
+            padding: 15px;
+            border-left: 4px solid #d32f2f;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th {
+            background: #ffcdd2;
+            color: #d32f2f;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #d32f2f;
+        }
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+        .signature-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #ddd;
+        }
+        .signature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .sig-line {
+            border-bottom: 1px solid #333;
+            min-height: 60px;
+            margin-bottom: 5px;
+        }
+        .sig-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 600;
+        }
+        .date-line {
+            border-bottom: 1px solid #333;
+            width: 200px;
+            margin-top: 15px;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 12px;
+            color: #856404;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e8e8e8;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">Logo</div>
+            <h1>SERVICE AGREEMENT</h1>
+            <p class="header-subtitle">Tech & Electrical Services LLC</p>
+        </header>
+
+        <div class="document-info">
+            <div>
+                <div class="info-row">
+                    <span class="info-label">Agreement #:</span>
+                    <span class="info-value">[SA-2026-0001]</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">[DATE]</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Effective Date:</span>
+                    <span class="info-value">[START_DATE]</span>
+                </div>
+            </div>
+            <div>
+                <div class="info-row">
+                    <span class="info-label">Agreement Type:</span>
+                    <span class="info-value">MSP / Project / Hourly</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Term:</span>
+                    <span class="info-value">[DURATION]</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Expiration Date:</span>
+                    <span class="info-value">[END_DATE]</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="section">
+            <h2>1. Parties to the Agreement</h2>
+            <div class="parties-section">
+                <p>
+                    <strong>SERVICE PROVIDER:</strong><br>
+                    Tech & Electrical Services LLC<br>
+                    Temecula, CA<br>
+                    Phone: (951) 555-0123<br>
+                    Email: contracts@techelectricalservices.com<br>
+                    License: #[LICENSE_NUMBER]
+                </p>
+                <p style="margin-top: 20px;">
+                    <strong>CLIENT:</strong><br>
+                    [CLIENT_NAME]<br>
+                    [COMPANY_NAME]<br>
+                    [ADDRESS]<br>
+                    [CITY, STATE ZIP]<br>
+                    Phone: [PHONE]<br>
+                    Email: [EMAIL]
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. Scope of Services</h2>
+            <div class="section-content">
+                <p>Service Provider agrees to provide the following services to Client:</p>
+                <ul>
+                    <li>[Service description 1]</li>
+                    <li>[Service description 2]</li>
+                    <li>[Service description 3]</li>
+                    <li>[Service description 4]</li>
+                </ul>
+                <p><strong>Service Location:</strong> [LOCATION]</p>
+                <p><strong>Service Hours:</strong> [HOURS] (excluding holidays and weekends unless otherwise agreed)</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. Term and Renewal</h2>
+            <div class="section-content">
+                <p>
+                    <strong>Initial Term:</strong> This agreement shall commence on [START_DATE] and continue for a period of [DURATION], 
+                    unless earlier terminated as provided herein.
+                </p>
+                <p>
+                    <strong>Renewal:</strong> This agreement shall automatically renew for successive [DURATION] periods unless either 
+                    party provides written notice of non-renewal at least 30 days prior to expiration.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Compensation and Payment Terms</h2>
+            <div class="section-content">
+                <h3>4.1 Fees</h3>
+                <p>Client agrees to pay Service Provider the following fees for services rendered:</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service/Item</th>
+                                <th>Rate</th>
+                                <th>Frequency</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>[Service 1]</td>
+                                <td>$[RATE]/[UNIT]</td>
+                                <td>[Monthly/One-time]</td>
+                                <td>[Description]</td>
+                            </tr>
+                            <tr>
+                                <td>[Service 2]</td>
+                                <td>$[RATE]/[UNIT]</td>
+                                <td>[Monthly/One-time]</td>
+                                <td>[Description]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>4.2 Expenses</h3>
+                <p>Client shall reimburse Service Provider for all reasonable out-of-pocket expenses, including:</p>
+                <ul>
+                    <li>Travel (mileage at $[RATE]/mile or actual costs)</li>
+                    <li>Materials and parts (at cost plus [%] markup)</li>
+                    <li>Third-party services and licenses (as agreed)</li>
+                </ul>
+
+                <h3>4.3 Invoicing and Payment</h3>
+                <ul>
+                    <li>Invoices will be submitted [monthly/weekly/upon completion]</li>
+                    <li>Payment is due within [#] days of invoice date</li>
+                    <li>Late payments will accrue interest at [%] per month or maximum allowable by law</li>
+                    <li>Accepted payment methods: [Check, ACH, Credit Card, PayPal]</li>
+                </ul>
+
+                <h3>4.4 Minimum Commitments</h3>
+                <p>Client commits to a minimum monthly retainer of $[AMOUNT] for ongoing support services.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>5. Service Levels and Availability</h2>
+            <div class="section-content">
+                <h3>5.1 Response Times</h3>
+                <ul>
+                    <li><strong>Critical Issues:</strong> 1-hour response (during business hours)</li>
+                    <li><strong>High Priority:</strong> 4-hour response (during business hours)</li>
+                    <li><strong>Normal Priority:</strong> Next business day</li>
+                    <li><strong>Low Priority:</strong> Within 5 business days</li>
+                </ul>
+
+                <h3>5.2 Availability</h3>
+                <p>Standard support hours: [HOURS] Monday-Friday, excluding holidays. Emergency support available [at additional cost / included].</p>
+
+                <h3>5.3 Uptime Commitment</h3>
+                <p>Service Provider aims for [%] uptime for managed services, measured monthly.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>6. Warranties</h2>
+            <div class="section-content">
+                <h3>6.1 Service Warranty</h3>
+                <p>
+                    Service Provider warrants that all services will be performed in a professional and workmanlike manner in accordance 
+                    with industry standards. All work is guaranteed for [#] days from completion.
+                </p>
+
+                <h3>6.2 Disclaimer</h3>
+                <div class="important-box">
+                    <p>
+                        <strong>EXCEPT AS EXPRESSLY PROVIDED HEREIN, SERVICE PROVIDER MAKES NO OTHER WARRANTIES, EXPRESS OR IMPLIED, 
+                        INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>7. Confidentiality</h2>
+            <div class="section-content">
+                <p>
+                    Both parties agree to maintain the confidentiality of all proprietary information, trade secrets, and sensitive data 
+                    disclosed during this engagement. This obligation shall survive termination of this agreement for [#] years.
+                </p>
+                <p>
+                    Service Provider may use general descriptions of the work performed for marketing purposes, unless Client objects 
+                    in writing within 10 days of project completion.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>8. Limitation of Liability</h2>
+            <div class="important-box">
+                <p>
+                    <strong>IN NO EVENT SHALL SERVICE PROVIDER BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE 
+                    DAMAGES, INCLUDING LOST PROFITS OR LOSS OF DATA, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+                    SERVICE PROVIDER'S TOTAL LIABILITY SHALL NOT EXCEED THE FEES PAID IN THE PRECEDING 90 DAYS.</strong>
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>9. Termination</h2>
+            <div class="section-content">
+                <h3>9.1 Termination for Convenience</h3>
+                <p>Either party may terminate this agreement with [#] days' written notice. Client remains responsible for all services 
+                rendered and expenses incurred through the termination date.</p>
+
+                <h3>9.2 Termination for Cause</h3>
+                <p>Either party may immediately terminate for material breach that is not cured within 10 days of written notice.</p>
+
+                <h3>9.3 Effect of Termination</h3>
+                <p>Upon termination, Service Provider will transition services and provide all work product to Client. Client remains 
+                responsible for all outstanding invoices.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>10. Intellectual Property</h2>
+            <div class="section-content">
+                <p>
+                    All work product, documents, code, and deliverables created specifically for Client under this agreement shall be owned 
+                    by Client upon full payment. Service Provider retains all rights to pre-existing materials, methodologies, and tools.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>11. Indemnification</h2>
+            <div class="section-content">
+                <p>
+                    Service Provider shall indemnify and hold Client harmless from any third-party claims arising from Service Provider's 
+                    negligence or violation of this agreement. Client shall indemnify Service Provider for claims arising from Client's use 
+                    of services beyond agreed scope.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>12. Independent Contractor</h2>
+            <div class="section-content">
+                <p>
+                    Service Provider is an independent contractor. Nothing in this agreement creates an employment relationship, partnership, 
+                    or joint venture. Service Provider is responsible for all taxes, insurance, and benefits.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>13. Entire Agreement</h2>
+            <div class="section-content">
+                <p>
+                    This agreement constitutes the entire agreement between the parties and supersedes all prior negotiations, representations, 
+                    and agreements. Modifications must be made in writing and signed by both parties.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>14. Governing Law</h2>
+            <div class="section-content">
+                <p>This agreement shall be governed by and construed in accordance with the laws of the State of California, without regard 
+                to its conflict of law principles.</p>
+            </div>
+        </section>
+
+        <div class="warning">
+            <strong>⚠️ IMPORTANT:</strong> By signing below, both parties acknowledge that they have read, understood, and agree to be 
+            bound by the terms and conditions of this Service Agreement.
+        </div>
+
+        <div class="signature-section">
+            <h2>Signatures</h2>
+            
+            <div class="signature-block">
+                <div>
+                    <p><strong>SERVICE PROVIDER</strong></p>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Authorized Representative</div>
+                    <div class="sig-label" style="margin-top: 15px;">Printed Name</div>
+                    <div class="date-line"></div>
+                    <div class="sig-label">Date</div>
+                </div>
+                <div>
+                    <p><strong>CLIENT</strong></p>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Authorized Representative</div>
+                    <div class="sig-label" style="margin-top: 15px;">Printed Name</div>
+                    <div class="date-line"></div>
+                    <div class="sig-label">Date</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Tech & Electrical Services LLC | © 2026 | All rights reserved | Contact: contracts@techelectricalservices.com
+        </footer>
+    </div>
+</body>
+</html>

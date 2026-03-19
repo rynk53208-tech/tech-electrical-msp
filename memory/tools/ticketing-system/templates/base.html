@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}TES LLC Ticketing{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"/>
+</head>
+<body>
+
+<!-- Sidebar Nav -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">⚡</span>
+    <div>
+      <div class="brand-name">TES LLC</div>
+      <div class="brand-sub">Ticketing System</div>
+    </div>
+  </div>
+  <ul class="nav-list">
+    <li><a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+      <span class="nav-icon">📊</span> Dashboard
+    </a></li>
+    <li><a href="{{ url_for('submit_ticket') }}" class="nav-link {% if request.endpoint == 'submit_ticket' %}active{% endif %}">
+      <span class="nav-icon">➕</span> New Ticket
+    </a></li>
+    <li class="nav-section">FILTERS</li>
+    <li><a href="{{ url_for('dashboard', status='Open') }}" class="nav-link">
+      <span class="status-dot open"></span> Open
+    </a></li>
+    <li><a href="{{ url_for('dashboard', status='In Progress') }}" class="nav-link">
+      <span class="status-dot in-progress"></span> In Progress
+    </a></li>
+    <li><a href="{{ url_for('dashboard', status='Pending') }}" class="nav-link">
+      <span class="status-dot pending"></span> Pending
+    </a></li>
+    <li><a href="{{ url_for('dashboard', status='Resolved') }}" class="nav-link">
+      <span class="status-dot resolved"></span> Resolved
+    </a></li>
+    <li class="nav-section">CATEGORIES</li>
+    <li><a href="{{ url_for('dashboard', category='IT Support') }}" class="nav-link">🖥️ IT Support</a></li>
+    <li><a href="{{ url_for('dashboard', category='Electrical') }}" class="nav-link">🔌 Electrical</a></li>
+    <li><a href="{{ url_for('dashboard', category='Cybersecurity') }}" class="nav-link">🔒 Cybersecurity</a></li>
+    <li><a href="{{ url_for('dashboard', category='Hardware Repair') }}" class="nav-link">🔧 Hardware Repair</a></li>
+    <li><a href="{{ url_for('dashboard', category='Software') }}" class="nav-link">💻 Software</a></li>
+  </ul>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('dashboard') }}?priority=Critical" class="nav-link critical-link">🚨 Critical Tickets</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-left">
+      {% block breadcrumb %}<span class="breadcrumb">Dashboard</span>{% endblock %}
+    </div>
+    <div class="topbar-right">
+      <a href="{{ url_for('submit_ticket') }}" class="btn btn-primary btn-sm">+ New Ticket</a>
+    </div>
+  </header>
+
+  <main class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

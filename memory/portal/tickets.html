@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets | Tech & Electrical Services Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+        }
+        /* ── Nav ── */
+        .topbar {
+            background: #fff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e1e4e8;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a1a2e;
+            text-decoration: none;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.1rem;
+        }
+        nav a {
+            color: #666; text-decoration: none; font-size: 0.9rem; margin-left: 1.5rem;
+            padding: 0.25rem 0; border-bottom: 2px solid transparent; transition: color 0.2s;
+        }
+        nav a:hover { color: #667eea; }
+        nav a.active { color: #667eea; border-bottom-color: #667eea; }
+        .user-pill {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: #f0f0f5; border-radius: 20px; padding: 0.35rem 0.85rem;
+            font-size: 0.8rem; color: #555;
+        }
+        /* ── Page ── */
+        .main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        .page-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1.75rem;
+        }
+        .page-header h1 { font-size: 1.5rem; }
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px; border: none; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; transition: opacity 0.2s, transform 0.1s;
+        }
+        .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-primary { background: linear-gradient(135deg,#667eea,#764ba2); color: #fff; }
+        .btn-outline { background: #fff; border: 1px solid #d0d7de; color: #1a1a2e; }
+        /* ── Filters ── */
+        .filters {
+            background: #fff; border-radius: 12px; padding: 1rem 1.25rem;
+            display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .filter-group { display: flex; align-items: center; gap: 0.5rem; }
+        .filter-group label { font-size: 0.8rem; color: #666; white-space: nowrap; }
+        select, input[type="search"] {
+            padding: 0.45rem 0.75rem; border-radius: 7px;
+            border: 1px solid #d0d7de; background: #f9fafb;
+            font-size: 0.85rem; color: #1a1a2e; outline: none;
+        }
+        select:focus, input[type="search"]:focus { border-color: #667eea; background: #fff; }
+        input[type="search"] { min-width: 200px; }
+        .filter-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-left: auto; }
+        .tag {
+            padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;
+            cursor: pointer; border: 1px solid transparent; transition: all 0.15s;
+        }
+        .tag.active { font-weight: 600; }
+        .tag-all.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+        .tag-open.active { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+        .tag-progress.active { background: #fef3c7; color: #d97706; border-color: #fcd34d; }
+        .tag-resolved.active { background: #d1fae5; color: #059669; border-color: #6ee7b7; }
+        .tag-closed.active { background: #f0f0f5; color: #555; border-color: #ccc; }
+        .tag:not(.active) { background: #f5f7fa; color: #666; border-color: #e1e4e8; }
+        .tag:hover:not(.active) { border-color: #aaa; }
+        /* ── Ticket Cards ── */
+        .ticket-list { display: flex; flex-direction: column; gap: 1rem; }
+        .ticket-card {
+            background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            display: grid; grid-template-columns: auto 1fr auto;
+            gap: 1rem; align-items: start;
+            border-left: 4px solid transparent;
+            cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+        }
+        .ticket-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
+        .ticket-card.priority-high { border-left-color: #ef4444; }
+        .ticket-card.priority-medium { border-left-color: #f59e0b; }
+        .ticket-card.priority-low { border-left-color: #22c55e; }
+        .ticket-id-col { text-align: center; }
+        .ticket-num { font-size: 0.75rem; color: #999; font-weight: 500; }
+        .ticket-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-top: 0.25rem;
+        }
+        .ticket-icon.type-network { background: #eff6ff; }
+        .ticket-icon.type-hardware { background: #fef3c7; }
+        .ticket-icon.type-security { background: #fce7f3; }
+        .ticket-icon.type-electrical { background: #fff7ed; }
+        .ticket-icon.type-software { background: #f0fdf4; }
+        .ticket-icon.type-other { background: #f5f3ff; }
+        .ticket-body {}
+        .ticket-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .ticket-meta { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .ticket-meta-item { font-size: 0.78rem; color: #666; }
+        .ticket-meta-item strong { color: #333; }
+        .ticket-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+        .status-badge {
+            display: inline-block; padding: 0.25rem 0.75rem;
+            border-radius: 20px; font-size: 0.72rem; font-weight: 600; white-space: nowrap;
+        }
+        .badge-open { background: #dbeafe; color: #1d4ed8; }
+        .badge-progress { background: #fef3c7; color: #d97706; }
+        .badge-resolved { background: #d1fae5; color: #059669; }
+        .badge-closed { background: #f0f0f5; color: #555; }
+        .priority-label { font-size: 0.72rem; font-weight: 600; }
+        .pri-high { color: #ef4444; }
+        .pri-medium { color: #f59e0b; }
+        .pri-low { color: #22c55e; }
+        .ticket-age { font-size: 0.72rem; color: #999; }
+        /* ── Modal ── */
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            display: none; align-items: center; justify-content: center; z-index: 500;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; width: 100%; max-width: 580px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 1.5rem; border-bottom: 1px solid #e1e4e8;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-header h2 { font-size: 1.1rem; }
+        .modal-close {
+            background: none; border: none; cursor: pointer;
+            color: #666; font-size: 1.4rem; line-height: 1; padding: 0.25rem;
+        }
+        .modal-close:hover { color: #333; }
+        .modal-body { padding: 1.5rem; }
+        .form-row { margin-bottom: 1.1rem; }
+        .form-row label { display: block; font-size: 0.82rem; color: #555; font-weight: 500; margin-bottom: 0.4rem; }
+        .form-row input[type="text"],
+        .form-row select,
+        .form-row textarea {
+            width: 100%; padding: 0.65rem 0.9rem; border-radius: 8px;
+            border: 1px solid #d0d7de; font-size: 0.9rem; color: #1a1a2e;
+            background: #fff; outline: none;
+        }
+        .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: #667eea; }
+        .form-row textarea { resize: vertical; min-height: 100px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .modal-footer {
+            padding: 1.25rem 1.5rem; border-top: 1px solid #e1e4e8;
+            display: flex; justify-content: flex-end; gap: 0.75rem;
+        }
+        /* ── Ticket Detail Panel ── */
+        .detail-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+            display: none; justify-content: flex-end; z-index: 500;
+        }
+        .detail-backdrop.open { display: flex; }
+        .detail-panel {
+            background: #fff; width: 480px; max-width: 100%;
+            height: 100vh; overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            padding: 0;
+        }
+        .detail-header {
+            padding: 1.5rem; background: linear-gradient(135deg,#1a1a2e,#302b63);
+            color: #fff;
+        }
+        .detail-header-top {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;
+        }
+        .detail-id { font-size: 0.8rem; opacity: 0.7; }
+        .detail-close {
+            background: rgba(255,255,255,0.15); border: none; cursor: pointer;
+            color: #fff; border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 1rem;
+        }
+        .detail-title { font-size: 1.15rem; font-weight: 700; }
+        .detail-body { padding: 1.5rem; }
+        .detail-section { margin-bottom: 1.5rem; }
+        .detail-section h4 { font-size: 0.8rem; color: #999; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .detail-field label { font-size: 0.75rem; color: #888; }
+        .detail-field p { font-size: 0.9rem; font-weight: 500; margin-top: 0.1rem; }
+        .detail-desc { background: #f9fafb; border-radius: 8px; padding: 1rem; font-size: 0.875rem; line-height: 1.6; color: #444; }
+        .timeline { position: relative; padding-left: 1.5rem; }
+        .timeline::before { content: ''; position: absolute; left: 0.35rem; top: 0; bottom: 0; width: 2px; background: #e1e4e8; }
+        .timeline-item { position: relative; margin-bottom: 1rem; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -1.22rem; top: 0.3rem;
+            width: 10px; height: 10px; border-radius: 50%; background: #667eea; border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+        .timeline-event { font-size: 0.85rem; }
+        .timeline-time { font-size: 0.72rem; color: #999; }
+        /* ── Empty State ── */
+        .empty { text-align: center; padding: 4rem 2rem; color: #999; }
+        .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+        /* ── Pagination ── */
+        .pagination {
+            display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;
+        }
+        .page-btn {
+            width: 36px; height: 36px; border-radius: 8px;
+            border: 1px solid #d0d7de; background: #fff; cursor: pointer;
+            font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+        }
+        .page-btn.active { background: #667eea; color: #fff; border-color: #667eea; }
+        .page-btn:hover:not(.active) { background: #f5f7fa; }
+    </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+    <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        Tech &amp; Electrical
+    </a>
+    <nav>
+        <a href="client-dashboard.html">Dashboard</a>
+        <a href="tickets.html" class="active">Tickets</a>
+        <a href="reporting.html">Reports</a>
+    </nav>
+    <div class="user-pill">👤 Client View</div>
+</header>
+
+<main class="main">
+    <div class="page-header">
+        <h1>🎟 Support Tickets</h1>
+        <button class="btn btn-primary" onclick="openNewTicketModal()">+ New Ticket</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-group">
+            <label>Search:</label>
+            <input type="search" id="searchInput" placeholder="Search tickets…" oninput="applyFilters()">
+        </div>
+        <div class="filter-group">
+            <label>Priority:</label>
+            <select id="priorityFilter" onchange="applyFilters()">
+                <option value="">All</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Type:</label>
+            <select id="typeFilter" onchange="applyFilters()">
+                <option value="">All Types</option>
+                <option value="Network">Network</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Security">Security</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Software">Software</option>
+            </select>
+        </div>
+        <div class="filter-tags">
+            <span class="tag tag-all active" onclick="setStatusFilter('')">All</span>
+            <span class="tag tag-open" onclick="setStatusFilter('Open')">Open</span>
+            <span class="tag tag-progress" onclick="setStatusFilter('In Progress')">In Progress</span>
+            <span class="tag tag-resolved" onclick="setStatusFilter('Resolved')">Resolved</span>
+            <span class="tag tag-closed" onclick="setStatusFilter('Closed')">Closed</span>
+        </div>
+    </div>
+
+    <!-- Ticket List -->
+    <div class="ticket-list" id="ticketList"></div>
+    <div class="pagination" id="pagination"></div>
+</main>
+
+<!-- New Ticket Modal -->
+<div class="modal-backdrop" id="newTicketModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Create New Ticket</h2>
+            <button class="modal-close" onclick="closeModal('newTicketModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <label>Subject / Issue Title *</label>
+                <input type="text" id="newTitle" placeholder="Briefly describe the issue…">
+            </div>
+            <div class="form-grid">
+                <div class="form-row">
+                    <label>Type</label>
+                    <select id="newType">
+                        <option>Network</option>
+                        <option>Hardware</option>
+                        <option>Security</option>
+                        <option>Electrical</option>
+                        <option>Software</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Priority</label>
+                    <select id="newPriority">
+                        <option>Low</option>
+                        <option selected>Medium</option>
+                        <option>High</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Description *</label>
+                <textarea id="newDesc" placeholder="Provide details: what happened, when it started, any error messages…"></textarea>
+            </div>
+            <div class="form-row">
+                <label>Preferred Contact Method</label>
+                <select id="newContact">
+                    <option>Email</option>
+                    <option>Phone</option>
+                    <option>Either</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('newTicketModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitTicket()">Submit Ticket</button>
+        </div>
+    </div>
+</div>
+
+<!-- Ticket Detail Panel -->
+<div class="detail-backdrop" id="detailPanel">
+    <div class="detail-panel">
+        <div class="detail-header">
+            <div class="detail-header-top">
+                <span class="detail-id" id="detailId"></span>
+                <button class="detail-close" onclick="closeDetail()">✕</button>
+            </div>
+            <div class="detail-title" id="detailTitle"></div>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+    </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────
+const typeIcons = {
+    Network: '🌐', Hardware: '🖥', Security: '🔒',
+    Electrical: '⚡', Software: '💻', Other: '🎫'
+};
+
+let tickets = [
+    { id:'TKT-0145', title:'Server room power circuit audit', type:'Electrical', priority:'High',
+      status:'Open', client:'Barney\'s Tire Shop', created:'Mar 18, 2026',
+      desc:'Need a full audit of the server room electrical circuits before we install new rack equipment. Concerned about capacity.',
+      timeline:['Mar 18 – Ticket created','Mar 18 – Assigned to Irvin A.'] },
+    { id:'TKT-0144', title:'Firewall rule misconfiguration', type:'Security', priority:'High',
+      status:'In Progress', client:'DataFlow Inc', created:'Mar 16, 2026',
+      desc:'Port 3389 appears to be open externally. Requesting immediate review and lockdown.',
+      timeline:['Mar 16 – Ticket created','Mar 17 – Under investigation','Mar 18 – Partial fix applied, monitoring'] },
+    { id:'TKT-0143', title:'Network switch installation – main office', type:'Network', priority:'Medium',
+      status:'In Progress', client:'Smith Office', created:'Mar 15, 2026',
+      desc:'Replace aging 100Mbps unmanaged switch with new gigabit managed switch. Schedule on-site visit.',
+      timeline:['Mar 15 – Ticket created','Mar 16 – Parts ordered','Mar 18 – On-site scheduled for Mar 22'] },
+    { id:'TKT-0142', title:'Server maintenance & backup setup', type:'Network', priority:'High',
+      status:'In Progress', client:'Acme Corp', created:'Mar 14, 2026',
+      desc:'Monthly server maintenance window + configure automated nightly backups to cloud storage.',
+      timeline:['Mar 14 – Ticket created','Mar 15 – Maintenance started','Mar 17 – Backup config in progress'] },
+    { id:'TKT-0141', title:'Workstation keyboard replacement', type:'Hardware', priority:'Low',
+      status:'Open', client:'Local Library', created:'Mar 14, 2026',
+      desc:'Two keyboards at circulation desk need replacing. Both have sticky keys and one has a broken spacebar.',
+      timeline:['Mar 14 – Ticket created','Mar 15 – Parts on order'] },
+    { id:'TKT-0140', title:'SSL certificate renewal', type:'Software', priority:'Low',
+      status:'Resolved', client:'DataFlow Inc', created:'Mar 12, 2026',
+      desc:'SSL cert expiring in 7 days. Need renewal and installation on main web server.',
+      timeline:['Mar 12 – Ticket created','Mar 12 – Cert renewed remotely','Mar 13 – Verified and closed'] },
+    { id:'TKT-0139', title:'Security scan update', type:'Security', priority:'Medium',
+      status:'Resolved', client:'Local Library', created:'Mar 11, 2026',
+      desc:'Run quarterly vulnerability scan and patch critical findings.',
+      timeline:['Mar 11 – Ticket created','Mar 12 – Scan completed','Mar 13 – Patches applied and verified'] },
+    { id:'TKT-0138', title:'Server migration to new rack', type:'Network', priority:'High',
+      status:'Closed', client:'Tech Startup', created:'Mar 8, 2026',
+      desc:'Full server migration to new rack in co-lo facility. Includes cabling and IP reconfig.',
+      timeline:['Mar 8 – Ticket created','Mar 9 – Pre-migration plan approved','Mar 10 – Migration completed','Mar 11 – Closed'] },
+];
+
+let activeStatus = '';
+const perPage = 6;
+let currentPage = 1;
+
+// ── Filtering ──────────────────────────────────────────
+function getFiltered() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const pri = document.getElementById('priorityFilter').value;
+    const type = document.getElementById('typeFilter').value;
+    return tickets.filter(t => {
+        if (activeStatus && t.status !== activeStatus) return false;
+        if (pri && t.priority !== pri) return false;
+        if (type && t.type !== type) return false;
+        if (q && !t.title.toLowerCase().includes(q) && !t.id.toLowerCase().includes(q)) return false;
+        return true;
+    });
+}
+
+function setStatusFilter(status) {
+    activeStatus = status;
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    if (!status) document.querySelector('.tag-all').classList.add('active');
+    else if (status==='Open') document.querySelector('.tag-open').classList.add('active');
+    else if (status==='In Progress') document.querySelector('.tag-progress').classList.add('active');
+    else if (status==='Resolved') document.querySelector('.tag-resolved').classList.add('active');
+    else if (status==='Closed') document.querySelector('.tag-closed').classList.add('active');
+    currentPage = 1;
+    renderTickets();
+}
+
+function applyFilters() { currentPage = 1; renderTickets(); }
+
+// ── Rendering ──────────────────────────────────────────
+function statusBadge(s) {
+    const map = { 'Open':'badge-open','In Progress':'badge-progress','Resolved':'badge-resolved','Closed':'badge-closed' };
+    return `<span class="status-badge ${map[s]||''}">${s}</span>`;
+}
+function priorityLabel(p) {
+    const map = { High:'pri-high', Medium:'pri-medium', Low:'pri-low' };
+    return `<span class="priority-label ${map[p]||''}">${p} Priority</span>`;
+}
+
+function renderTickets() {
+    const list = document.getElementById('ticketList');
+    const pgn = document.getElementById('pagination');
+    const filtered = getFiltered();
+    if (!filtered.length) {
+        list.innerHTML = `<div class="empty"><div class="empty-icon">🎫</div><p>No tickets match your filters.</p></div>`;
+        pgn.innerHTML = '';
+        return;
+    }
+    const pages = Math.ceil(filtered.length / perPage);
+    const slice = filtered.slice((currentPage-1)*perPage, currentPage*perPage);
+
+    list.innerHTML = slice.map(t => `
+        <div class="ticket-card priority-${t.priority.toLowerCase()}" onclick="openDetail('${t.id}')">
+            <div class="ticket-id-col">
+                <div class="ticket-num">${t.id}</div>
+                <div class="ticket-icon type-${t.type.toLowerCase()}">${typeIcons[t.type]||'🎫'}</div>
+            </div>
+            <div class="ticket-body">
+                <div class="ticket-title">${t.title}</div>
+                <div class="ticket-meta">
+                    <span class="ticket-meta-item"><strong>Type:</strong> ${t.type}</span>
+                    <span class="ticket-meta-item"><strong>Client:</strong> ${t.client}</span>
+                    <span class="ticket-meta-item"><strong>Created:</strong> ${t.created}</span>
+                </div>
+            </div>
+            <div class="ticket-right">
+                ${statusBadge(t.status)}
+                ${priorityLabel(t.priority)}
+                <span class="ticket-age">${t.created}</span>
+            </div>
+        </div>
+    `).join('');
+
+    // Pagination
+    if (pages <= 1) { pgn.innerHTML = ''; return; }
+    let html = '';
+    for (let i = 1; i <= pages; i++) {
+        html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    pgn.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; renderTickets(); }
+
+// ── New Ticket Modal ───────────────────────────────────
+function openNewTicketModal() {
+    document.getElementById('newTicketModal').classList.add('open');
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+function submitTicket() {
+    const title = document.getElementById('newTitle').value.trim();
+    const type = document.getElementById('newType').value;
+    const priority = document.getElementById('newPriority').value;
+    const desc = document.getElementById('newDesc').value.trim();
+    if (!title || !desc) { alert('Please fill in the title and description.'); return; }
+
+    const num = tickets.length + 146;
+    const id = `TKT-0${num}`;
+    const today = new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+
+    tickets.unshift({
+        id, title, type, priority, status:'Open', client:'Your Account',
+        created: today, desc,
+        timeline: [`${today} – Ticket created by client`]
+    });
+    closeModal('newTicketModal');
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newDesc').value = '';
+    currentPage = 1;
+    renderTickets();
+    // Brief success flash
+    const h = document.querySelector('.page-header h1');
+    h.textContent = '🎟 Ticket submitted!';
+    setTimeout(() => h.textContent = '🎟 Support Tickets', 2000);
+}
+
+// ── Detail Panel ───────────────────────────────────────
+function openDetail(id) {
+    const t = tickets.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('detailId').textContent = t.id;
+    document.getElementById('detailTitle').textContent = t.title;
+    document.getElementById('detailBody').innerHTML = `
+        <div class="detail-section">
+            <h4>Ticket Info</h4>
+            <div class="detail-grid">
+                <div class="detail-field"><label>Status</label><p>${statusBadge(t.status)}</p></div>
+                <div class="detail-field"><label>Priority</label><p>${priorityLabel(t.priority)}</p></div>
+                <div class="detail-field"><label>Type</label><p>${typeIcons[t.type]} ${t.type}</p></div>
+                <div class="detail-field"><label>Client</label><p>${t.client}</p></div>
+                <div class="detail-field"><label>Created</label><p>${t.created}</p></div>
+            </div>
+        </div>
+        <div class="detail-section">
+            <h4>Description</h4>
+            <div class="detail-desc">${t.desc}</div>
+        </div>
+        <div class="detail-section">
+            <h4>Timeline</h4>
+            <div class="timeline">
+                ${t.timeline.map(e => {
+                    const parts = e.split(' – ');
+                    return `<div class="timeline-item">
+                        <div class="timeline-event">${parts[1]||e}</div>
+                        <div class="timeline-time">${parts[0]||''}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>
+    `;
+    document.getElementById('detailPanel').classList.add('open');
+}
+
+function closeDetail() {
+    document.getElementById('detailPanel').classList.remove('open');
+}
+
+// Close modals on backdrop click
+document.getElementById('newTicketModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('newTicketModal');
+});
+document.getElementById('detailPanel').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+});
+
+// Init
+renderTickets();
+</script>
+</body>
+</html>

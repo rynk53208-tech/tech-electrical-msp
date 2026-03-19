@@ -1,0 +1,10 @@
+node_modules/
+.agents/
+research/
+.openclaw/
+*.db
+*.sqlite
+.env
+.env.local
+memory/portal/
+memory/tools/msp-toolset/

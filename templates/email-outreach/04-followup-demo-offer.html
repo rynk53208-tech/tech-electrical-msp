@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: left;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .body-section {
+            padding: 30px 20px;
+        }
+        .body-section p {
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .offer-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .offer-card h2 {
+            margin: 0 0 10px 0;
+            color: #0066cc;
+            font-size: 20px;
+        }
+        .offer-card p {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+        .included-list {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .included-list h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .included-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .included-item:before {
+            content: "✓";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .urgency-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .urgency-box strong {
+            color: #ff9800;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #0066cc;
+            color: white !important;
+            padding: 14px 35px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 15px;
+        }
+        .cta-button:hover {
+            background-color: #0052a3;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Last One: Let's Make This Real</h1>
+            <p>Your free security assessment + remediation roadmap</p>
+        </div>
+
+        <div class="body-section">
+            <p>Hi {{FIRST_NAME}},</p>
+
+            <p>I've reached out a few times because I genuinely believe {{COMPANY}} would benefit from a fresh security assessment.</p>
+
+            <p>Rather than keep sending emails, I'd rather just show you what it looks like.</p>
+
+            <div class="offer-card">
+                <h2>Free Security Assessment</h2>
+                <p><strong>No strings attached</strong></p>
+                <p>60 minutes | Real findings | Actionable roadmap</p>
+            </div>
+
+            <div class="included-list">
+                <h3>Here's what you get:</h3>
+                <div class="included-item">Complete vulnerability scan (external + internal)</div>
+                <div class="included-item">Compliance gap analysis (HIPAA, PCI, SOC 2)</div>
+                <div class="included-item">Threat model specific to your industry</div>
+                <div class="included-item">30/90/365-day remediation roadmap</div>
+                <div class="included-item">Written report + 15-minute debrief call</div>
+            </div>
+
+            <div class="urgency-box">
+                <strong>Important:</strong> I have 3 assessment slots open this month. After that, I'm booked into April. If you want to get started in March, we need to lock it in the next few days.
+            </div>
+
+            <p>Here's what happens next:</p>
+            <ol style="margin: 15px 0; padding-left: 20px; font-size: 14px;">
+                <li>You pick a time that works (60 minutes)</li>
+                <li>I run the assessment</li>
+                <li>You get a full report + recommendations</li>
+                <li>If it makes sense to go deeper, we talk. If not, no pressure.</li>
+            </ol>
+
+            <p>Most importantly: <strong>you get clarity.</strong> Even if you decide not to work with me, you'll know exactly where your security stands and what needs attention.</p>
+
+            <p style="text-align: center;">
+                <a href="{{CALENDLY_LINK}}" class="cta-button">Book Your Assessment Now</a>
+            </p>
+
+            <p>If this month doesn't work, I understand. But security isn't going to wait—neither should you.</p>
+
+            <div class="signature">
+                <p style="margin: 0;">Best,</p>
+                <p style="margin: 5px 0 0 0;"><strong>Irvin Avitia</strong></p>
+                <p style="margin: 2px 0 0 0;">Cyber Systems Engineer | MSP Security Specialist</p>
+                <p style="margin: 2px 0 0 0;">{{PHONE}}</p>
+                <p style="margin: 8px 0 0 0; font-size: 11px; color: #999;">P.S. — If you're not the right person, who is? I'm happy to connect with the person who owns security/compliance at {{COMPANY}}.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">You're receiving this because we identified {{COMPANY}} as a strong fit for security modernization. <a href="{{UNSUBSCRIBE_LINK}}" style="color: #0066cc; text-decoration: none;">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>

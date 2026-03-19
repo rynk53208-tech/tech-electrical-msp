@@ -1,0 +1,2 @@
+Intro Script (30 seconds):
+Hi {Name}, this is Irvin with Northrop-grade cyber/DevOps expertise. We help SMBs cut downtime and strengthen security without slowing your team. I’ll be brief: are you the right person to discuss improving uptime and reducing incidents this quarter?

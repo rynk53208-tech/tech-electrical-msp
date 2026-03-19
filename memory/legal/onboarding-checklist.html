@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSP Client Onboarding Checklist — Tech &amp; Electrical Services LLC</title>
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan: #00d4ff;
+      --amber: #f59e0b;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --red: #f85149;
+      --purple: #a371f7;
+      --blue: #58a6ff;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── Screen-only styles ── */
+    @media screen {
+      body { padding: 24px; }
+      .page-wrap { max-width: 960px; margin: 0 auto; }
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--cyan);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 0.01em;
+    }
+    .header-left p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 200px;
+    }
+    .header-right .label { font-weight: 600; color: var(--text); }
+
+    /* ── Meta block ── */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .meta-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .meta-field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 8px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .meta-field input:focus { border-color: var(--cyan); }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 24px;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-label span:last-child { color: var(--cyan); font-weight: 600; }
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--amber));
+      border-radius: 99px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    /* ── Section card ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-header:hover { background: rgba(255,255,255,0.03); }
+    .section-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-title { font-weight: 600; font-size: 15px; flex: 1; }
+    .section-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .section-toggle { color: var(--muted); font-size: 16px; transition: transform 0.2s; }
+    .section.collapsed .section-toggle { transform: rotate(-90deg); }
+    .section.collapsed .section-body { display: none; }
+
+    /* ── Colors per section ── */
+    .s1 .section-num { background: rgba(88,166,255,0.15); color: var(--blue); }
+    .s2 .section-num { background: rgba(167,113,247,0.15); color: var(--purple); }
+    .s3 .section-num { background: rgba(0,212,255,0.15); color: var(--cyan); }
+    .s4 .section-num { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .s5 .section-num { background: rgba(248,81,73,0.15); color: var(--red); }
+    .s6 .section-num { background: rgba(63,185,80,0.15); color: var(--green); }
+    .s7 .section-num { background: rgba(88,166,255,0.15); color: var(--blue); }
+    .s8 .section-num { background: rgba(245,158,11,0.15); color: var(--amber); }
+
+    /* ── Table ── */
+    .section-body { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      background: rgba(255,255,255,0.04);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    thead th:first-child { width: 40px; text-align: center; }
+    tbody tr { border-bottom: 1px solid rgba(48,54,61,0.5); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.025); }
+    tbody td { padding: 10px 14px; vertical-align: top; }
+    tbody td:first-child { text-align: center; }
+
+    /* ── Checkbox ── */
+    .cb-wrap { display: flex; align-items: center; justify-content: center; }
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+    tr.done td { opacity: 0.5; }
+    tr.done .task-text { text-decoration: line-through; }
+
+    /* ── Responsible badge ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-tech { background: rgba(0,212,255,0.12); color: var(--cyan); }
+    .badge-client { background: rgba(245,158,11,0.12); color: var(--amber); }
+    .badge-both { background: rgba(63,185,80,0.12); color: var(--green); }
+    .badge-pm { background: rgba(167,113,247,0.12); color: var(--purple); }
+
+    /* ── Notes input ── */
+    .notes-cell input {
+      width: 100%;
+      min-width: 120px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed var(--border);
+      color: var(--text);
+      font-size: 12px;
+      padding: 2px 0;
+      outline: none;
+    }
+    .notes-cell input:focus { border-bottom-color: var(--cyan); }
+    .notes-cell input::placeholder { color: var(--muted); }
+
+    /* ── Section progress ── */
+    .sec-progress {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--cyan); color: #000; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-danger { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sig-block {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .sig-field {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── Print ── */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11pt;
+        padding: 0;
+      }
+      :root {
+        --bg: #fff;
+        --surface: #f8f8f8;
+        --border: #ddd;
+        --text: #000;
+        --muted: #555;
+        --cyan: #0066cc;
+        --amber: #b45309;
+        --green: #166534;
+        --red: #991b1b;
+        --purple: #6b21a8;
+        --blue: #1e3a5f;
+      }
+      .page-wrap { max-width: 100%; }
+      .actions { display: none !important; }
+      .section { break-inside: avoid; border: 1px solid #ddd; page-break-inside: avoid; }
+      .section.collapsed .section-body { display: block !important; }
+      .section-header { cursor: default; }
+      .section-toggle { display: none; }
+      input { border: none !important; background: transparent !important; color: #000 !important; }
+      .notes-cell input { border-bottom: 1px solid #999 !important; }
+      .meta-field input { border-bottom: 1px solid #999 !important; border-top: none; border-left: none; border-right: none; border-radius: 0; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; }
+      .header { border-bottom: 2px solid #000; }
+      .header-left h1 { color: #000; }
+      .badge { border: 1px solid currentColor; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <h1>⚡ MSP Client Onboarding Checklist</h1>
+      <p>Tech &amp; Electrical Services LLC — Standardized Onboarding Process</p>
+    </div>
+    <div class="header-right">
+      <div><span class="label">Rev:</span> 1.0 &nbsp;|&nbsp; 2026-03-19</div>
+      <div><span class="label">Doc:</span> TES-ONBOARD-001</div>
+      <div style="margin-top:4px;color:var(--cyan);font-weight:600;">CONFIDENTIAL</div>
+    </div>
+  </div>
+
+  <!-- Client meta -->
+  <div class="meta-grid">
+    <div class="meta-field">
+      <label>Client Name</label>
+      <input type="text" placeholder="e.g. Acme Corp" id="f-client" />
+    </div>
+    <div class="meta-field">
+      <label>Primary Contact</label>
+      <input type="text" placeholder="Name &amp; title" id="f-contact" />
+    </div>
+    <div class="meta-field">
+      <label>Phone / Email</label>
+      <input type="text" placeholder="Contact details" id="f-phone" />
+    </div>
+    <div class="meta-field">
+      <label>Service Tier</label>
+      <input type="text" placeholder="e.g. MSP Pro / MSSP" id="f-tier" />
+    </div>
+    <div class="meta-field">
+      <label>Start Date</label>
+      <input type="date" id="f-start" />
+    </div>
+    <div class="meta-field">
+      <label>Target Go-Live</label>
+      <input type="date" id="f-live" />
+    </div>
+    <div class="meta-field">
+      <label>TES Technician</label>
+      <input type="text" placeholder="Assigned tech" id="f-tech" />
+    </div>
+    <div class="meta-field">
+      <label>Account #</label>
+      <input type="text" placeholder="TES-0001" id="f-acct" />
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Overall Completion</span>
+      <span id="progress-pct">0 / 0 items (0%)</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Export PDF</button>
+    <button class="btn btn-secondary" onclick="expandAll()">Expand All</button>
+    <button class="btn btn-secondary" onclick="collapseAll()">Collapse All</button>
+    <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
+    <button class="btn btn-danger" onclick="resetAll()">↺ Reset</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1 — PRE-ENGAGEMENT
+  ═══════════════════════════════════════ -->
+  <div class="section s1" id="sec-1">
+    <div class="section-header" onclick="toggleSection('sec-1')">
+      <div class="section-num">1</div>
+      <div class="section-title">Pre-Engagement</div>
+      <div class="sec-progress" id="prog-sec-1">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">MSA (Master Service Agreement) fully executed — both parties signed</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Agreement date / DocuSign ref…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">SLA addendum reviewed and signed by client</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="SLA tier agreed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">NDA executed (if applicable)</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="NDA ref / waived…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Initial deposit / setup fee collected and receipted</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Invoice #, amount, date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Recurring billing method on file (ACH / card / check)</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Payment method, billing date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Scope of Work confirmed in writing (services included / excluded)</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="SOW doc ref…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client added to CRM (name, address, billing info, contacts)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="CRM record ID…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Onboarding kick-off call scheduled</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Date / time / Zoom link…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client emergency contact list obtained (after-hours numbers)</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Names / phone numbers…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Onboarding checklist shared with client — expectations set</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Sent via email / portal…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2 — DISCOVERY
+  ═══════════════════════════════════════ -->
+  <div class="section s2" id="sec-2">
+    <div class="section-header" onclick="toggleSection('sec-2')">
+      <div class="section-num">2</div>
+      <div class="section-title">Discovery &amp; Assessment</div>
+      <div class="sec-progress" id="prog-sec-2">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">On-site walk-through completed</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Date / observations…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Network topology diagram created (switches, routers, AP locations)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Diagram file location…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Full hardware inventory documented (make, model, serial, age)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Inventory sheet / tool used…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Software / license inventory documented (OS, apps, expiry dates)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="License tracker updated…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">ISP details documented (carrier, bandwidth, static IPs, account #)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="ISP name, plan, circuit ID…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Active directory / domain info documented (domain name, DCs, schema)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Domain, OU structure…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Existing vendor / support contacts documented</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Prior MSP, ISP support #…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Current pain points &amp; priorities captured (client interview)</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Top 3 issues noted…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Risk / vulnerability assessment completed (open ports, unpatched systems)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Findings doc / severity…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Compliance requirements identified (HIPAA, PCI-DSS, etc.)</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Applicable frameworks…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Discovery findings report delivered to client</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Report sent date…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3 — ACCESS SETUP
+  ═══════════════════════════════════════ -->
+  <div class="section s3" id="sec-3">
+    <div class="section-header" onclick="toggleSection('sec-3')">
+      <div class="section-num">3</div>
+      <div class="section-title">Access Setup</div>
+      <div class="sec-progress" id="prog-sec-3">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">TES admin credentials created on all managed devices</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Admin account naming convention…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">All credentials stored in TES Password Manager (encrypted vault)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Vault entry confirmed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">RMM / monitoring agent installed on all endpoints</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Agent name, version, count…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">All devices reporting to monitoring dashboard</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Dashboard group name…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Remote access tool configured (TeamViewer / AnyDesk / RDP / VPN)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Tool + access method…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Firewall / router admin credentials documented and secured</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Device make/model, IP…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Cloud accounts access granted (Microsoft 365, Google Workspace, etc.)</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Tenant ID / delegated admin…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Domain registrar / DNS access obtained (if managed)</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Registrar, nameservers…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client onboarded into TES ticketing portal with credentials</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Portal URL + username sent…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Access audit log created — all admin accounts inventoried</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Audit doc filed…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 4 — NETWORK CONFIGURATION
+  ═══════════════════════════════════════ -->
+  <div class="section s4" id="sec-4">
+    <div class="section-header" onclick="toggleSection('sec-4')">
+      <div class="section-num">4</div>
+      <div class="section-title">Network Configuration</div>
+      <div class="sec-progress" id="prog-sec-4">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Firewall hardened — default rules reviewed, unnecessary ports closed</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Firewall make/model, rule set version…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Firewall firmware updated to latest stable release</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Firmware version, date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">VLAN structure designed and implemented (Data, VoIP, Guest, IoT, Mgmt)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="VLAN IDs / subnets…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Inter-VLAN routing rules set (block IoT→Corp, allow Mgmt→All)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="ACL ref / firewall rule group…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Wi-Fi SSIDs configured per VLAN — WPA3 or WPA2-Enterprise enforced</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="SSID names / security mode…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">DHCP scopes configured (reservations for servers / printers)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Scope ranges documented…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">DNS configured (internal DNS server or secure resolver — Cloudflare/Quad9)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="DNS servers, filtering enabled…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">VPN / remote access configured for staff (site-to-site or client VPN)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="VPN type, profile distributed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Network documentation updated with final IP scheme and topology</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Diagram file / wiki location…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Bandwidth / QoS policies configured (VoIP priority if applicable)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="QoS rules in place…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Switch port security configured (disable unused ports)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Switch inventory, ports secured…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 5 — SECURITY BASELINE
+  ═══════════════════════════════════════ -->
+  <div class="section s5" id="sec-5">
+    <div class="section-header" onclick="toggleSection('sec-5')">
+      <div class="section-num">5</div>
+      <div class="section-title">Security Baseline</div>
+      <div class="sec-progress" id="prog-sec-5">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Antivirus / EDR deployed on all endpoints — definitions current</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="AV product, version, endpoints #…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Windows / macOS / Linux systems fully patched (OS &amp; drivers)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Patch cycle, WSUS / SCCM…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Automatic patch management configured (schedule + approval flow)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Patch policy name / schedule…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">MFA enabled on all critical accounts (email, VPN, admin portals)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="MFA method (Authenticator / FIDO2)…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Password policy enforced (complexity, length, rotation, no shared creds)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Policy pushed via GPO / MDM…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Backup solution deployed — 3-2-1 rule enforced (local + offsite + cloud)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Backup tool, schedule, retention…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Test restore performed — backup integrity verified</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Restore test date / result…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Email security configured (SPF, DKIM, DMARC, spam filtering)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="DNS records verified…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">DNS filtering / content filtering enabled (block malware domains)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Tool: Umbrella / NextDNS / Pi-hole…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Endpoint encryption enabled (BitLocker / FileVault on all laptops)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Recovery keys escrowed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Screen lock / auto-timeout policy enforced (≤10 min idle)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="GPO / MDM policy name…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Security baseline report delivered to client</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Report sent date / score…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 6 — SERVICE MIGRATION
+  ═══════════════════════════════════════ -->
+  <div class="section s6" id="sec-6">
+    <div class="section-header" onclick="toggleSection('sec-6')">
+      <div class="section-num">6</div>
+      <div class="section-title">Service Migration</div>
+      <div class="sec-progress" id="prog-sec-6">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Email migration plan documented and approved by client</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="From / to platform, cutover date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Email migration executed — all mailboxes and archives migrated</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Mailbox count, migration tool…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">MX records updated — email flow verified post-cutover</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Old MX TTL expired, test emails…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">File server / shared drive migration completed</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Share paths, permissions verified…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Permissions / ACLs validated on migrated file shares</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Spot-check with client staff…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Line-of-business applications tested on new environment</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="App names, test results…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Printers / peripherals mapped on new network / print server</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Printer IPs, driver versions…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">VoIP / phone system configured (if applicable)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="PBX / hosted VoIP provider…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Old system decommissioned or retired per client approval</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Decom date, data wiped…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Data wiping / disposal documented (NIST 800-88 compliant if needed)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Disposal cert issued…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 7 — TRAINING
+  ═══════════════════════════════════════ -->
+  <div class="section s7" id="sec-7">
+    <div class="section-header" onclick="toggleSection('sec-7')">
+      <div class="section-num">7</div>
+      <div class="section-title">Training &amp; Enablement</div>
+      <div class="sec-progress" id="prog-sec-7">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client staff trained on TES ticketing portal (submit, track, escalate)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Training date, attendees…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Ticket priority / severity levels explained (P1–P4 definitions)</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Handed out SLA reference card…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Emergency / after-hours contact procedure communicated</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Emergency # / on-call process…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Security awareness training delivered (phishing, passwords, social engineering)</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Training platform / completion log…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">New device setup / basic troubleshooting steps shown to staff</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Quick-start guide handed out…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client reporting explained — how to read monthly status reports</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Report cadence, delivery method…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Acceptable use policy (AUP) reviewed and signed by all staff</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Signed AUPs on file…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Backup and restore process demonstrated to client key contact</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Live demo completed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Quick-reference guide / IT contact sheet posted / distributed</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Posted in break room, emailed…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 8 — HANDOFF
+  ═══════════════════════════════════════ -->
+  <div class="section s8" id="sec-8">
+    <div class="section-header" onclick="toggleSection('sec-8')">
+      <div class="section-num">8</div>
+      <div class="section-title">Handoff &amp; Go-Live</div>
+      <div class="sec-progress" id="prog-sec-8">0/0</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th>Task</th>
+            <th>Responsible</th>
+            <th>Notes / Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">All checklist sections complete — internal TES sign-off obtained</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Reviewed by…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Final walk-through meeting conducted with client stakeholders</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Attendees, date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Full network / system documentation package delivered to client</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Doc package format / delivery…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Open items / exceptions documented and tracked in ticketing system</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Ticket #s for open items…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Onboarding sign-off form signed by client primary contact</td>
+            <td><span class="badge badge-both">Both</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Signed copy filed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Monitoring alerts verified — test alert triggered and resolved</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Alert test date, notification received…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Monthly reporting cadence activated — first report scheduled</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="First report date…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Day-7 check-in call scheduled (first week review)</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Day-7 call date / time…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Day-7 review completed — issues captured, satisfaction confirmed</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Any complaints / wins noted…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">30-day QBR (Quarterly Business Review) scheduled</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="QBR date confirmed…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Client satisfaction survey sent</td>
+            <td><span class="badge badge-pm">PM</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Survey link / response received…" /></td>
+          </tr>
+          <tr>
+            <td class="cb-wrap"><input type="checkbox" onchange="onCheck(this)" /></td>
+            <td class="task-text">Onboarding record archived in TES client file system</td>
+            <td><span class="badge badge-tech">TES Tech</span></td>
+            <td class="notes-cell"><input type="text" placeholder="Archive path / folder…" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Signature block -->
+  <div class="sig-block">
+    <div class="sig-field">
+      <strong>TES Technician / PM Sign-Off</strong><br/>
+      Name: _______________________________________ &nbsp; Date: ____________
+    </div>
+    <div class="sig-field">
+      <strong>Client Authorized Representative</strong><br/>
+      Name: _______________________________________ &nbsp; Date: ____________
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Tech &amp; Electrical Services LLC &nbsp;·&nbsp; Temecula, CA &nbsp;·&nbsp; TES-ONBOARD-001 v1.0</span>
+    <span>Generated: <span id="gen-date"></span></span>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+  // Set generation date
+  document.getElementById('gen-date').textContent = new Date().toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // ── Toggle section collapse ──
+  function toggleSection(id) {
+    document.getElementById(id).classList.toggle('collapsed');
+  }
+  function expandAll() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('collapsed'));
+  }
+  function collapseAll() {
+    document.querySelectorAll('.section').forEach(s => s.classList.add('collapsed'));
+  }
+
+  // ── Checkbox handler ──
+  function onCheck(cb) {
+    const row = cb.closest('tr');
+    row.classList.toggle('done', cb.checked);
+    updateProgress();
+    saveData();
+  }
+
+  // ── Progress tracking ──
+  function updateProgress() {
+    const allCbs = document.querySelectorAll('tbody input[type="checkbox"]');
+    const checked = [...allCbs].filter(c => c.checked).length;
+    const total = allCbs.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    document.getElementById('progress-pct').textContent = `${checked} / ${total} items (${pct}%)`;
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    // Per-section progress
+    for (let i = 1; i <= 8; i++) {
+      const sec = document.getElementById('sec-' + i);
+      if (!sec) continue;
+      const cbs = sec.querySelectorAll('tbody input[type="checkbox"]');
+      const done = [...cbs].filter(c => c.checked).length;
+      const el = document.getElementById('prog-sec-' + i);
+      if (el) el.textContent = `${done}/${cbs.length}`;
+    }
+  }
+
+  // ── Persist to localStorage ──
+  const SAVE_KEY = 'tes-onboard-v1';
+
+  function saveData() {
+    const cbs = [...document.querySelectorAll('tbody input[type="checkbox"]')].map(c => c.checked);
+    const notes = [...document.querySelectorAll('.notes-cell input')].map(i => i.value);
+    const meta = {
+      client: document.getElementById('f-client').value,
+      contact: document.getElementById('f-contact').value,
+      phone: document.getElementById('f-phone').value,
+      tier: document.getElementById('f-tier').value,
+      start: document.getElementById('f-start').value,
+      live: document.getElementById('f-live').value,
+      tech: document.getElementById('f-tech').value,
+      acct: document.getElementById('f-acct').value,
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ cbs, notes, meta }));
+  }
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const cbs = document.querySelectorAll('tbody input[type="checkbox"]');
+      const notes = document.querySelectorAll('.notes-cell input');
+      (data.cbs || []).forEach((v, i) => {
+        if (cbs[i]) {
+          cbs[i].checked = v;
+          cbs[i].closest('tr').classList.toggle('done', v);
+        }
+      });
+      (data.notes || []).forEach((v, i) => { if (notes[i]) notes[i].value = v; });
+      if (data.meta) {
+        document.getElementById('f-client').value = data.meta.client || '';
+        document.getElementById('f-contact').value = data.meta.contact || '';
+        document.getElementById('f-phone').value = data.meta.phone || '';
+        document.getElementById('f-tier').value = data.meta.tier || '';
+        document.getElementById('f-start').value = data.meta.start || '';
+        document.getElementById('f-live').value = data.meta.live || '';
+        document.getElementById('f-tech').value = data.meta.tech || '';
+        document.getElementById('f-acct').value = data.meta.acct || '';
+      }
+    } catch(e) { console.warn('Load failed', e); }
+    updateProgress();
+  }
+
+  function resetAll() {
+    if (!confirm('Reset all checkboxes and notes? This cannot be undone.')) return;
+    localStorage.removeItem(SAVE_KEY);
+    document.querySelectorAll('tbody input[type="checkbox"]').forEach(c => {
+      c.checked = false;
+      c.closest('tr').classList.remove('done');
+    });
+    document.querySelectorAll('.notes-cell input').forEach(i => i.value = '');
+    document.querySelectorAll('#f-client,#f-contact,#f-phone,#f-tier,#f-start,#f-live,#f-tech,#f-acct')
+      .forEach(i => i.value = '');
+    updateProgress();
+  }
+
+  // Auto-save on meta field changes
+  document.querySelectorAll('.meta-field input').forEach(inp => {
+    inp.addEventListener('change', saveData);
+  });
+  document.querySelectorAll('.notes-cell input').forEach(inp => {
+    inp.addEventListener('input', saveData);
+  });
+
+  // Init
+  loadData();
+  updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSL Certificate Monitor — Tech & Electrical Services LLC</title>
+  <style>
+    /* === RESET & VARIABLES === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0a0f1e;
+      --surface:     #0f1624;
+      --surface2:    #141d2e;
+      --surface3:    #1a2540;
+      --border:      #1e2d47;
+      --cyan:        #00d4ff;
+      --cyan-dim:    #0099cc;
+      --amber:       #f59e0b;
+      --green:       #10b981;
+      --red:         #ef4444;
+      --orange:      #f97316;
+      --purple:      #a855f7;
+      --text:        #e2e8f0;
+      --text-muted:  #64748b;
+      --text-dim:    #94a3b8;
+      --radius:      8px;
+      --radius-lg:   12px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.4);
+      --glow-cyan:   0 0 20px rgba(0,212,255,0.15);
+    }
+
+    html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* === HEADER === */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo svg { width: 32px; height: 32px; }
+    .logo-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: -0.3px;
+    }
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .header-spacer { flex: 1; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .last-check {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--surface3); border-color: var(--cyan-dim); }
+    .btn-primary { background: rgba(0,212,255,0.12); border-color: var(--cyan-dim); color: var(--cyan); }
+    .btn-primary:hover { background: rgba(0,212,255,0.2); }
+    .btn-danger { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); color: var(--red); }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-success { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.4); color: var(--green); }
+    .btn-success:hover { background: rgba(16,185,129,0.2); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-icon { padding: 7px; }
+
+    /* === LAYOUT === */
+    .app-body { display: flex; flex: 1; overflow: hidden; }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      width: 200px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .sidebar-section {
+      padding: 6px 16px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      font-size: 13px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+      user-select: none;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active {
+      background: rgba(0,212,255,0.08);
+      border-left-color: var(--cyan);
+      color: var(--cyan);
+    }
+    .nav-item .badge {
+      margin-left: auto;
+      padding: 2px 7px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-red   { background: rgba(239,68,68,0.2);   color: var(--red); }
+    .badge-amber { background: rgba(245,158,11,0.2);  color: var(--amber); }
+    .badge-green { background: rgba(16,185,129,0.2);  color: var(--green); }
+    .badge-cyan  { background: rgba(0,212,255,0.15);  color: var(--cyan); }
+
+    /* === MAIN CONTENT === */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* === VIEWS === */
+    .view { display: none; flex-direction: column; gap: 20px; }
+    .view.active { display: flex; }
+
+    /* === STAT CARDS === */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-sub { font-size: 11px; color: var(--text-muted); }
+    .stat-card.red   { border-color: rgba(239,68,68,0.3); }
+    .stat-card.red .stat-value   { color: var(--red); }
+    .stat-card.amber { border-color: rgba(245,158,11,0.3); }
+    .stat-card.amber .stat-value { color: var(--amber); }
+    .stat-card.green { border-color: rgba(16,185,129,0.3); }
+    .stat-card.green .stat-value { color: var(--green); }
+    .stat-card.cyan  { border-color: rgba(0,212,255,0.25); }
+    .stat-card.cyan .stat-value  { color: var(--cyan); }
+
+    /* === PANELS === */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .panel-title { font-size: 14px; font-weight: 600; }
+    .panel-subtitle { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .panel-body { padding: 0; }
+
+    /* === TABLE === */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: var(--text); }
+    th .sort-icon { margin-left: 4px; opacity: 0.4; }
+    th.sorted .sort-icon { opacity: 1; color: var(--cyan); }
+    tbody tr {
+      border-top: 1px solid var(--border);
+      transition: background 0.1s;
+      cursor: pointer;
+    }
+    tbody tr:hover { background: var(--surface2); }
+    td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+
+    /* === STATUS BADGES === */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .status-valid    { background: rgba(16,185,129,0.15);  color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .status-warning  { background: rgba(245,158,11,0.15);  color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .status-critical { background: rgba(239,68,68,0.15);   color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .status-expired  { background: rgba(239,68,68,0.25);   color: var(--red);   border: 1px solid rgba(239,68,68,0.5); }
+    .status-unknown  { background: rgba(100,116,139,0.2);  color: var(--text-muted); border: 1px solid rgba(100,116,139,0.3); }
+
+    /* === COUNTDOWN BAR === */
+    .countdown-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+    .countdown-days { font-size: 13px; font-weight: 600; }
+    .countdown-days.expired { color: var(--red); }
+    .countdown-days.critical { color: var(--red); }
+    .countdown-days.warning  { color: var(--amber); }
+    .countdown-days.valid    { color: var(--green); }
+    .progress-bar { height: 4px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.3s; }
+    .fill-green  { background: var(--green); }
+    .fill-amber  { background: var(--amber); }
+    .fill-red    { background: var(--red); }
+
+    /* === DOMAIN NAME === */
+    .domain-cell { display: flex; flex-direction: column; gap: 2px; }
+    .domain-name { font-weight: 600; color: var(--text); font-size: 13px; }
+    .domain-tag  { font-size: 11px; color: var(--text-muted); }
+
+    /* === CERT DETAILS === */
+    .cert-issuer { font-size: 12px; color: var(--text-muted); }
+
+    /* === ALERT THRESHOLDS === */
+    .threshold-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .threshold-chip.active-warn { border-color: rgba(245,158,11,0.4); color: var(--amber); background: rgba(245,158,11,0.1); }
+    .threshold-chip.active-crit { border-color: rgba(239,68,68,0.4); color: var(--red); background: rgba(239,68,68,0.1); }
+
+    /* === MODAL === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 560px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      transform: translateY(20px);
+      transition: transform 0.2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; flex: 1; }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; line-height: 1; padding: 4px 8px; border-radius: var(--radius); }
+    .modal-close:hover { color: var(--text); background: var(--surface2); }
+
+    /* === FORMS === */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+    input, select, textarea {
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      width: 100%;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan-dim);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+    }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; min-height: 60px; }
+    .form-hint { font-size: 11px; color: var(--text-muted); }
+
+    /* === DETAIL PANEL === */
+    .detail-panel {
+      position: fixed;
+      right: 0; top: 0; bottom: 0;
+      width: 420px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 150;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.4);
+    }
+    .detail-panel.open { transform: translateX(0); }
+    .detail-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .detail-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .detail-row { display: flex; flex-direction: column; gap: 4px; }
+    .detail-label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+    .detail-value { font-size: 13px; color: var(--text); word-break: break-all; }
+    .detail-section { margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .detail-section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    .detail-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+
+    /* === ALERT ITEMS === */
+    .alert-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .alert-item:hover { background: var(--surface2); }
+    .alert-item.alert-expired  { border-left: 3px solid var(--red); }
+    .alert-item.alert-critical { border-left: 3px solid var(--red); }
+    .alert-item.alert-warning  { border-left: 3px solid var(--amber); }
+    .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .alert-content { flex: 1; }
+    .alert-domain { font-weight: 600; font-size: 14px; }
+    .alert-message { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .alert-time { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+
+    /* === EMPTY STATE === */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text-dim); }
+    .empty-sub { font-size: 13px; }
+
+    /* === SEARCH & FILTER BAR === */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 12px;
+      flex: 1;
+      min-width: 180px;
+    }
+    .search-box input {
+      background: none;
+      border: none;
+      padding: 0;
+      flex: 1;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .search-box input:focus { outline: none; box-shadow: none; }
+    .filter-select {
+      padding: 8px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* === SETTINGS === */
+    .settings-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .settings-section-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--surface2);
+    }
+    .settings-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .settings-info { flex: 1; }
+    .settings-label { font-size: 13px; font-weight: 500; }
+    .settings-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--cyan-dim); border-color: var(--cyan); }
+    .toggle-thumb {
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .toggle input:checked ~ .toggle-thumb { left: 21px; background: #fff; }
+
+    /* === EXPORT SECTION === */
+    .export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .export-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .export-card:hover { border-color: var(--cyan-dim); background: rgba(0,212,255,0.05); }
+    .export-icon { font-size: 32px; }
+    .export-name { font-size: 14px; font-weight: 600; }
+    .export-desc { font-size: 12px; color: var(--text-muted); }
+
+    /* === TOAST === */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+      pointer-events: all;
+      max-width: 320px;
+      animation: slideIn 0.3s ease;
+    }
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error   { border-left: 3px solid var(--red); }
+    .toast.info    { border-left: 3px solid var(--cyan); }
+    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(20px); opacity: 0; } }
+
+    /* === SCAN ANIMATION === */
+    .scan-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === PRINT === */
+    @media print {
+      .sidebar, .header-actions, .detail-panel, .modal-overlay, .toast-container { display: none !important; }
+      .main { padding: 0; }
+      body { background: #fff; color: #000; }
+      .stat-card, .panel, .alert-item { border: 1px solid #ccc; }
+      .btn { display: none; }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .detail-panel { width: 100%; }
+    }
+
+    /* === MISC === */
+    .divider { height: 1px; background: var(--border); margin: 4px 0; }
+    .icon { font-style: normal; }
+    .monospace { font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; }
+    .text-muted { color: var(--text-muted); }
+    .text-green { color: var(--green); }
+    .text-red { color: var(--red); }
+    .text-amber { color: var(--amber); }
+    .text-cyan { color: var(--cyan); }
+    .flex-gap { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .bold { font-weight: 700; }
+    .mt-4 { margin-top: 4px; }
+    .mt-8 { margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="rgba(0,212,255,0.08)"/>
+      <path d="M16 4 C10 4 6 8.5 6 14 C6 18 8 21.5 12 24 L12 28 L20 28 L20 24 C24 21.5 26 18 26 14 C26 8.5 22 4 16 4Z" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <path d="M14 13 L18 9 L18 14 L22 14 L18 19 L18 14 Z" fill="#00d4ff" opacity="0.8"/>
+      <rect x="12" y="28" width="8" height="2" rx="1" fill="#00d4ff" opacity="0.6"/>
+    </svg>
+    <div>
+      <div class="logo-title">SSL Monitor</div>
+      <div class="logo-sub">Tech & Electrical Services LLC</div>
+    </div>
+  </div>
+  <div class="header-spacer"></div>
+  <div class="header-actions">
+    <div class="last-check"><span class="live-dot"></span><span id="lastCheckLabel">Not yet checked</span></div>
+    <button class="btn btn-primary" onclick="runCheckAll()">⟳ Check All</button>
+    <button class="btn btn-primary" onclick="openModal('add-modal')">+ Add Domain</button>
+    <button class="btn" onclick="showView('export')">↓ Export</button>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">Monitor</div>
+    <div class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+      🏠 Dashboard
+    </div>
+    <div class="nav-item" data-view="domains" onclick="showView('domains')">
+      🌐 All Domains
+      <span class="badge badge-cyan" id="sb-total">0</span>
+    </div>
+    <div class="nav-item" data-view="alerts" onclick="showView('alerts')">
+      🔔 Alerts
+      <span class="badge badge-red" id="sb-alerts">0</span>
+    </div>
+    <div class="sidebar-section" style="margin-top:8px">Status</div>
+    <div class="nav-item" data-view="domains" onclick="showView('domains', 'expired')" style="font-size:12px">
+      🔴 Expired
+      <span class="badge badge-red" id="sb-expired">0</span>
+    </div>
+    <div class="nav-item" data-view="domains" onclick="showView('domains', 'critical')" style="font-size:12px">
+      🟠 Critical
+      <span class="badge badge-red" id="sb-critical">0</span>
+    </div>
+    <div class="nav-item" data-view="domains" onclick="showView('domains', 'warning')" style="font-size:12px">
+      🟡 Warning
+      <span class="badge badge-amber" id="sb-warning">0</span>
+    </div>
+    <div class="nav-item" data-view="domains" onclick="showView('domains', 'valid')" style="font-size:12px">
+      🟢 Valid
+      <span class="badge badge-green" id="sb-valid">0</span>
+    </div>
+    <div class="sidebar-section" style="margin-top:8px">Tools</div>
+    <div class="nav-item" data-view="export" onclick="showView('export')">📥 Export</div>
+    <div class="nav-item" data-view="settings" onclick="showView('settings')">⚙️ Settings</div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- DASHBOARD VIEW -->
+    <div class="view active" id="view-dashboard">
+      <div class="stat-grid" id="stat-cards"></div>
+
+      <!-- Alerts Panel -->
+      <div class="panel" id="alerts-panel">
+        <div class="panel-header">
+          <span class="panel-title">🔔 Active Alerts</span>
+          <span class="panel-subtitle text-muted" id="alerts-count-label"></span>
+        </div>
+        <div class="panel-body" id="alerts-list" style="padding: 12px; display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- Domain Overview Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🌐 Domain Overview</span>
+          <span class="panel-subtitle">
+            <button class="btn btn-sm" onclick="showView('domains')">View All →</button>
+          </span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Domain</th>
+                <th>Status</th>
+                <th>Expires</th>
+                <th>Days Left</th>
+                <th>Issuer</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOMAINS VIEW -->
+    <div class="view" id="view-domains">
+      <div class="toolbar">
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="domain-search" placeholder="Search domains..." oninput="renderDomainTable()">
+        </div>
+        <select class="filter-select" id="domain-filter" onchange="renderDomainTable()">
+          <option value="">All Status</option>
+          <option value="expired">Expired</option>
+          <option value="critical">Critical (≤7d)</option>
+          <option value="warning">Warning (≤30d)</option>
+          <option value="valid">Valid</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <select class="filter-select" id="domain-tag-filter" onchange="renderDomainTable()">
+          <option value="">All Tags</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('add-modal')">+ Add Domain</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">All Monitored Domains</span>
+          <span class="panel-subtitle" id="domains-count-label"></span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortDomains('domain')">Domain <span class="sort-icon">↕</span></th>
+                <th onclick="sortDomains('status')">Status <span class="sort-icon">↕</span></th>
+                <th onclick="sortDomains('daysLeft')">Days Left <span class="sort-icon">↕</span></th>
+                <th onclick="sortDomains('expiry')">Expiry Date <span class="sort-icon">↕</span></th>
+                <th>Issuer</th>
+                <th>Threshold</th>
+                <th>Tag</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="domain-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS VIEW -->
+    <div class="view" id="view-alerts">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🔔 All Alerts</span>
+          <span class="panel-subtitle text-muted" id="all-alerts-count"></span>
+        </div>
+        <div class="panel-body" id="all-alerts-list" style="padding: 12px; display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+    </div>
+
+    <!-- EXPORT VIEW -->
+    <div class="view" id="view-export">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📥 Export / Reports</span>
+        </div>
+        <div class="panel-body" style="padding: 20px;">
+          <div class="export-grid">
+            <div class="export-card" onclick="exportJSON()">
+              <div class="export-icon">📄</div>
+              <div class="export-name">JSON Export</div>
+              <div class="export-desc">Full data export — all domains, cert details, history</div>
+            </div>
+            <div class="export-card" onclick="exportCSV()">
+              <div class="export-icon">📊</div>
+              <div class="export-name">CSV Spreadsheet</div>
+              <div class="export-desc">Spreadsheet-ready: domain, status, expiry, issuer, days left</div>
+            </div>
+            <div class="export-card" onclick="exportReport()">
+              <div class="export-icon">📋</div>
+              <div class="export-name">Text Report</div>
+              <div class="export-desc">Human-readable summary report for tickets or emails</div>
+            </div>
+            <div class="export-card" onclick="window.print()">
+              <div class="export-icon">🖨️</div>
+              <div class="export-name">Print / PDF</div>
+              <div class="export-desc">Print or save as PDF via browser dialog</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <div class="panel-header" style="background: var(--surface2); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 12px;">
+              <span class="panel-title" style="font-size:13px;">📋 Import Domains (JSON / CSV)</span>
+            </div>
+            <textarea id="import-text" placeholder='Paste JSON array or CSV (one domain per line or comma-separated with headers)...' style="width:100%; min-height:100px; font-family:monospace; font-size:12px;"></textarea>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn btn-primary" onclick="importDomains()">↑ Import</button>
+              <button class="btn" onclick="document.getElementById('import-text').value=''">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div class="view" id="view-settings">
+      <div class="settings-section">
+        <div class="settings-section-header">⚠️ Alert Thresholds</div>
+        <div class="settings-body">
+          <p class="form-hint" style="margin-bottom:4px;">Domains expiring within these windows will trigger alerts.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>🔴 Critical Threshold (days)</label>
+              <input type="number" id="thresh-critical" min="1" max="365" value="7" onchange="saveSettings()">
+              <div class="form-hint">Domains expiring within this many days are marked CRITICAL</div>
+            </div>
+            <div class="form-group">
+              <label>🟡 Warning Threshold (days)</label>
+              <input type="number" id="thresh-warning" min="1" max="365" value="30" onchange="saveSettings()">
+              <div class="form-hint">Domains expiring within this many days are marked WARNING</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-header">🔄 Auto-Refresh</div>
+        <div class="settings-body">
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Auto-refresh interval</div>
+              <div class="settings-desc">Automatically re-check all certificates at this interval</div>
+            </div>
+            <select id="auto-refresh" style="width:auto; min-width:140px;" onchange="saveSettings()">
+              <option value="0">Off</option>
+              <option value="300">Every 5 min</option>
+              <option value="900">Every 15 min</option>
+              <option value="3600">Every hour</option>
+              <option value="86400">Every 24 hours</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-header">🗑️ Data Management</div>
+        <div class="settings-body">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+            <button class="btn" onclick="loadDemoData()">🔄 Load Demo Data</button>
+          </div>
+          <div class="form-hint" style="margin-top:8px;">All data is stored in your browser's localStorage. Export before clearing.</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end .main -->
+</div><!-- end .app-body -->
+
+<!-- ========================= DETAIL PANEL ========================= -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div style="flex:1">
+      <div id="dp-domain" style="font-size:16px; font-weight:700;"></div>
+      <div id="dp-tag" style="font-size:12px; color:var(--text-muted); margin-top:2px;"></div>
+    </div>
+    <span id="dp-status"></span>
+    <button class="modal-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section-title">Certificate Details</div>
+    <div class="detail-row"><div class="detail-label">Domain</div><div class="detail-value monospace" id="dp-domain2"></div></div>
+    <div class="detail-row"><div class="detail-label">Port</div><div class="detail-value" id="dp-port"></div></div>
+    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value" id="dp-status2"></div></div>
+    <div class="detail-row"><div class="detail-label">Days Remaining</div><div class="detail-value" id="dp-days"></div></div>
+    <div class="detail-row"><div class="detail-label">Expiry Date</div><div class="detail-value" id="dp-expiry"></div></div>
+    <div class="detail-row"><div class="detail-label">Issued Date</div><div class="detail-value" id="dp-issued"></div></div>
+    <div class="detail-row"><div class="detail-label">Valid Duration</div><div class="detail-value" id="dp-duration"></div></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Issuer</div>
+      <div class="detail-row"><div class="detail-label">Organization</div><div class="detail-value" id="dp-issuer-org"></div></div>
+      <div class="detail-row"><div class="detail-label">CA</div><div class="detail-value" id="dp-issuer-ca"></div></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Alert Thresholds</div>
+      <div class="detail-row"><div class="detail-label">Critical Alert</div><div class="detail-value" id="dp-thresh-crit"></div></div>
+      <div class="detail-row"><div class="detail-label">Warning Alert</div><div class="detail-value" id="dp-thresh-warn"></div></div>
+      <div class="detail-row"><div class="detail-label">Override Global</div><div class="detail-value" id="dp-thresh-override"></div></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Notes</div>
+      <div class="detail-value" id="dp-notes" style="color:var(--text-muted); font-style:italic;"></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Last Checked</div>
+      <div class="detail-value" id="dp-lastcheck"></div>
+    </div>
+  </div>
+  <div class="detail-footer">
+    <button class="btn btn-sm btn-primary" id="dp-check-btn">⟳ Re-check</button>
+    <button class="btn btn-sm" id="dp-edit-btn">✏️ Edit</button>
+    <button class="btn btn-sm btn-danger" id="dp-delete-btn">🗑️</button>
+  </div>
+</div>
+
+<!-- ========================= ADD/EDIT MODAL ========================= -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add Domain</span>
+      <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Domain / Hostname *</label>
+          <input type="text" id="f-domain" placeholder="example.com" autocomplete="off">
+          <div class="form-hint">Enter domain without https:// (e.g., example.com or subdomain.example.com)</div>
+        </div>
+        <div class="form-group">
+          <label>Port</label>
+          <input type="number" id="f-port" value="443" min="1" max="65535">
+        </div>
+        <div class="form-group">
+          <label>Tag / Category</label>
+          <input type="text" id="f-tag" placeholder="Client, Internal, Production...">
+        </div>
+        <div class="form-group">
+          <label>Override Critical Threshold (days)</label>
+          <input type="number" id="f-thresh-crit" placeholder="Leave blank for global">
+        </div>
+        <div class="form-group">
+          <label>Override Warning Threshold (days)</label>
+          <input type="number" id="f-thresh-warn" placeholder="Leave blank for global">
+        </div>
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea id="f-notes" placeholder="Renewal contacts, vendor info, etc."></textarea>
+        </div>
+      </div>
+      <div class="form-hint">⚡ Cert data is simulated (browser cannot directly query TLS). Real-world deploy: use backend proxy or check.sh script.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDomain()">Save Domain</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= TOAST CONTAINER ========================= -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ========================= SCRIPT ========================= -->
+<script>
+'use strict';
+
+// =========================================
+// DATA LAYER
+// =========================================
+
+let domains = [];
+let settings = {
+  thresholdCritical: 7,
+  thresholdWarning: 30,
+  autoRefresh: 0
+};
+let sortKey = 'daysLeft';
+let sortDir = 1;
+let currentDetailId = null;
+let autoRefreshTimer = null;
+
+function loadData() {
+  try {
+    const d = localStorage.getItem('ssl_monitor_domains');
+    if (d) domains = JSON.parse(d);
+  } catch(e) { domains = []; }
+
+  try {
+    const s = localStorage.getItem('ssl_monitor_settings');
+    if (s) settings = { ...settings, ...JSON.parse(s) };
+  } catch(e) {}
+
+  applySettings();
+}
+
+function saveData() {
+  localStorage.setItem('ssl_monitor_domains', JSON.stringify(domains));
+}
+
+function saveSettings() {
+  settings.thresholdCritical = parseInt(document.getElementById('thresh-critical').value) || 7;
+  settings.thresholdWarning  = parseInt(document.getElementById('thresh-warning').value)  || 30;
+  settings.autoRefresh       = parseInt(document.getElementById('auto-refresh').value) || 0;
+  localStorage.setItem('ssl_monitor_settings', JSON.stringify(settings));
+  renderAll();
+  setupAutoRefresh();
+  toast('Settings saved', 'success');
+}
+
+function applySettings() {
+  document.getElementById('thresh-critical').value = settings.thresholdCritical;
+  document.getElementById('thresh-warning').value  = settings.thresholdWarning;
+  document.getElementById('auto-refresh').value    = settings.autoRefresh;
+  setupAutoRefresh();
+}
+
+function setupAutoRefresh() {
+  if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+  if (settings.autoRefresh > 0) {
+    autoRefreshTimer = setInterval(() => runCheckAll(true), settings.autoRefresh * 1000);
+  }
+}
+
+// =========================================
+// CERT STATUS LOGIC
+// =========================================
+
+function getStatus(domain) {
+  if (!domain.expiry) return 'unknown';
+  const days = getDaysLeft(domain.expiry);
+  const crit = domain.threshCritical != null ? domain.threshCritical : settings.thresholdCritical;
+  const warn = domain.threshWarning  != null ? domain.threshWarning  : settings.thresholdWarning;
+  if (days < 0)    return 'expired';
+  if (days <= crit) return 'critical';
+  if (days <= warn) return 'warning';
+  return 'valid';
+}
+
+function getDaysLeft(expiryStr) {
+  const now = new Date();
+  const exp = new Date(expiryStr);
+  return Math.floor((exp - now) / 86400000);
+}
+
+function statusBadge(status) {
+  const map = {
+    valid:    '<span class="status-badge status-valid">✅ Valid</span>',
+    warning:  '<span class="status-badge status-warning">⚠️ Warning</span>',
+    critical: '<span class="status-badge status-critical">🔴 Critical</span>',
+    expired:  '<span class="status-badge status-expired">💀 Expired</span>',
+    unknown:  '<span class="status-badge status-unknown">❓ Unknown</span>',
+  };
+  return map[status] || map.unknown;
+}
+
+// =========================================
+// COUNTDOWN BAR
+// =========================================
+
+function countdownBar(domain) {
+  if (!domain.expiry || !domain.issued) return '<span class="text-muted">—</span>';
+  const days = getDaysLeft(domain.expiry);
+  const total = getDaysLeft(domain.expiry) - getDaysLeft(domain.issued);
+  const totalValidity = (new Date(domain.expiry) - new Date(domain.issued)) / 86400000;
+  const status = getStatus(domain);
+
+  let cls = 'valid';
+  let fillCls = 'fill-green';
+  if (status === 'expired')  { cls = 'expired'; fillCls = 'fill-red'; }
+  else if (status === 'critical') { cls = 'critical'; fillCls = 'fill-red'; }
+  else if (status === 'warning')  { cls = 'warning';  fillCls = 'fill-amber'; }
+
+  const pct = Math.max(0, Math.min(100, (days / totalValidity) * 100)).toFixed(1);
+  const label = days < 0 ? `Expired ${Math.abs(days)}d ago` : `${days} days left`;
+
+  return `<div class="countdown-wrap">
+    <div class="countdown-days ${cls}">${label}</div>
+    <div class="progress-bar"><div class="progress-fill ${fillCls}" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+// =========================================
+// SIMULATED CERT CHECK
+// =========================================
+
+// In a browser-only tool, we can't directly query TLS.
+// We simulate realistic cert data for the demo domains.
+// Real deployment: use a backend proxy (Node.js / Python) or the included check.sh.
+
+const DEMO_CAS = [
+  { ca: "Let's Encrypt", org: "Let's Encrypt Authority X3" },
+  { ca: "DigiCert", org: "DigiCert Inc" },
+  { ca: "Sectigo", org: "Sectigo Limited" },
+  { ca: "GlobalSign", org: "GlobalSign nv-sa" },
+  { ca: "ZeroSSL", org: "ZeroSSL ECC Domain Secure Site CA" },
+  { ca: "Amazon", org: "Amazon RSA 2048 M02" },
+];
+
+function simulateCertCheck(domain) {
+  // Generate realistic-ish cert data based on domain hash for consistency
+  const hash = [...domain.domain].reduce((a,c) => a + c.charCodeAt(0), 0);
+  const ca = DEMO_CAS[hash % DEMO_CAS.length];
+
+  // Use existing expiry if already set (preserve user-set data)
+  if (domain.expiry && domain.issued && domain.certCA) return domain;
+
+  // Simulate various expiry scenarios
+  const now = new Date();
+  const scenarios = [
+    // expired
+    { issued: -400, expiry: -15 },
+    // critical (< 7d)
+    { issued: -80, expiry: 3 },
+    { issued: -80, expiry: 6 },
+    // warning (7-30d)
+    { issued: -60, expiry: 14 },
+    { issued: -70, expiry: 25 },
+    // valid
+    { issued: -30, expiry: 60 },
+    { issued: -45, expiry: 90 },
+    { issued: -10, expiry: 355 },
+    { issued: -90, expiry: 275 },
+    { issued: -5, expiry: 360 },
+  ];
+  const sc = scenarios[hash % scenarios.length];
+
+  const issued = new Date(now); issued.setDate(issued.getDate() + sc.issued);
+  const expiry = new Date(now); expiry.setDate(expiry.getDate() + sc.expiry);
+
+  return {
+    ...domain,
+    issued: issued.toISOString().split('T')[0],
+    expiry: expiry.toISOString().split('T')[0],
+    certCA:  ca.ca,
+    certOrg: ca.org,
+    lastChecked: new Date().toISOString(),
+  };
+}
+
+async function checkSingleDomain(id) {
+  const idx = domains.findIndex(d => d.id === id);
+  if (idx < 0) return;
+  domains[idx].checking = true;
+  renderAll();
+  await delay(400 + Math.random() * 600);
+  domains[idx] = simulateCertCheck(domains[idx]);
+  domains[idx].checking = false;
+  saveData();
+  renderAll();
+}
+
+async function runCheckAll(silent = false) {
+  if (!silent) toast(`Checking ${domains.length} domain(s)...`, 'info');
+  for (const d of domains) {
+    d.checking = true;
+    d.lastChecked = new Date().toISOString();
+  }
+  renderAll();
+
+  // Stagger checks
+  for (let i = 0; i < domains.length; i++) {
+    await delay(200 + Math.random() * 400);
+    domains[i] = simulateCertCheck(domains[i]);
+    domains[i].checking = false;
+    saveData();
+    renderAll();
+  }
+
+  document.getElementById('lastCheckLabel').textContent = 'Checked ' + new Date().toLocaleTimeString();
+  if (!silent) toast(`All ${domains.length} domains checked`, 'success');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// =========================================
+// DOMAIN CRUD
+// =========================================
+
+function openModal(id, domainId = null) {
+  // Reset form
+  document.getElementById('edit-id').value = '';
+  document.getElementById('f-domain').value = '';
+  document.getElementById('f-port').value = '443';
+  document.getElementById('f-tag').value = '';
+  document.getElementById('f-thresh-crit').value = '';
+  document.getElementById('f-thresh-warn').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('modal-title').textContent = 'Add Domain';
+
+  if (domainId) {
+    const d = domains.find(x => x.id === domainId);
+    if (d) {
+      document.getElementById('edit-id').value = d.id;
+      document.getElementById('f-domain').value = d.domain;
+      document.getElementById('f-port').value = d.port || 443;
+      document.getElementById('f-tag').value = d.tag || '';
+      document.getElementById('f-thresh-crit').value = d.threshCritical != null ? d.threshCritical : '';
+      document.getElementById('f-thresh-warn').value = d.threshWarning  != null ? d.threshWarning  : '';
+      document.getElementById('f-notes').value = d.notes || '';
+      document.getElementById('modal-title').textContent = 'Edit Domain';
+    }
+  }
+
+  document.getElementById(id).classList.add('open');
+  setTimeout(() => document.getElementById('f-domain').focus(), 100);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function saveDomain() {
+  const domain = (document.getElementById('f-domain').value || '').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\//,'');
+  if (!domain) { toast('Domain name is required', 'error'); return; }
+
+  const editId = document.getElementById('edit-id').value;
+  const existing = editId ? domains.find(d => d.id === editId) : null;
+
+  const critVal = document.getElementById('f-thresh-crit').value;
+  const warnVal = document.getElementById('f-thresh-warn').value;
+
+  const obj = {
+    id: existing ? existing.id : 'dom_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    domain,
+    port: parseInt(document.getElementById('f-port').value) || 443,
+    tag:  (document.getElementById('f-tag').value || '').trim(),
+    threshCritical: critVal !== '' ? parseInt(critVal) : null,
+    threshWarning:  warnVal !== '' ? parseInt(warnVal) : null,
+    notes: (document.getElementById('f-notes').value || '').trim(),
+    // Preserve cert data if editing
+    issued:      existing ? existing.issued : null,
+    expiry:      existing ? existing.expiry : null,
+    certCA:      existing ? existing.certCA : null,
+    certOrg:     existing ? existing.certOrg : null,
+    lastChecked: existing ? existing.lastChecked : null,
+    checking:    false,
+  };
+
+  if (existing) {
+    const idx = domains.findIndex(d => d.id === editId);
+    domains[idx] = obj;
+    toast(`Updated ${domain}`, 'success');
+  } else {
+    domains.push(obj);
+    toast(`Added ${domain}`, 'success');
+    // Auto-check new domain
+    checkSingleDomain(obj.id);
+  }
+
+  saveData();
+  closeModal('add-modal');
+  renderAll();
+}
+
+function deleteDomain(id) {
+  const d = domains.find(x => x.id === id);
+  if (!d) return;
+  if (!confirm(`Delete ${d.domain}?`)) return;
+  domains = domains.filter(x => x.id !== id);
+  saveData();
+  closeDetail();
+  renderAll();
+  toast(`Deleted ${d.domain}`, 'info');
+}
+
+// =========================================
+// DETAIL PANEL
+// =========================================
+
+function openDetail(id) {
+  const d = domains.find(x => x.id === id);
+  if (!d) return;
+  currentDetailId = id;
+  const status = getStatus(d);
+  const days = d.expiry ? getDaysLeft(d.expiry) : null;
+  const crit = d.threshCritical != null ? d.threshCritical : settings.thresholdCritical;
+  const warn = d.threshWarning  != null ? d.threshWarning  : settings.thresholdWarning;
+
+  document.getElementById('dp-domain').textContent  = d.domain;
+  document.getElementById('dp-domain2').textContent = d.domain;
+  document.getElementById('dp-tag').textContent     = d.tag ? `🏷️ ${d.tag}` : '';
+  document.getElementById('dp-port').textContent    = d.port || 443;
+  document.getElementById('dp-status').innerHTML    = statusBadge(status);
+  document.getElementById('dp-status2').innerHTML   = statusBadge(status);
+  document.getElementById('dp-days').textContent    = days != null ? (days < 0 ? `Expired ${Math.abs(days)} days ago` : `${days} days`) : 'Unknown';
+  document.getElementById('dp-expiry').textContent  = d.expiry ? new Date(d.expiry).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
+  document.getElementById('dp-issued').textContent  = d.issued ? new Date(d.issued).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
+
+  // Cert duration
+  if (d.issued && d.expiry) {
+    const dur = Math.round((new Date(d.expiry) - new Date(d.issued)) / 86400000);
+    document.getElementById('dp-duration').textContent = `${dur} days`;
+  } else {
+    document.getElementById('dp-duration').textContent = '—';
+  }
+
+  document.getElementById('dp-issuer-org').textContent = d.certOrg || '—';
+  document.getElementById('dp-issuer-ca').textContent  = d.certCA  || '—';
+  document.getElementById('dp-thresh-crit').textContent = `${crit} days`;
+  document.getElementById('dp-thresh-warn').textContent = `${warn} days`;
+  document.getElementById('dp-thresh-override').textContent = d.threshCritical != null || d.threshWarning != null ? 'Yes' : 'No (using global)';
+  document.getElementById('dp-notes').textContent = d.notes || 'None';
+  document.getElementById('dp-lastcheck').textContent = d.lastChecked ? new Date(d.lastChecked).toLocaleString() : 'Never';
+
+  document.getElementById('dp-check-btn').onclick  = () => { checkSingleDomain(id); closeDetail(); };
+  document.getElementById('dp-edit-btn').onclick   = () => { closeDetail(); openModal('add-modal', id); };
+  document.getElementById('dp-delete-btn').onclick = () => deleteDomain(id);
+
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  currentDetailId = null;
+}
+
+// Close detail on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDetail(); closeModal('add-modal'); }
+});
+
+// =========================================
+// RENDERING
+// =========================================
+
+function renderAll() {
+  updateSidebar();
+  renderStatCards();
+  renderAlerts();
+  renderDomainTable();
+  renderDashboardTable();
+  updateTagFilter();
+}
+
+function updateSidebar() {
+  const expired  = domains.filter(d => getStatus(d) === 'expired').length;
+  const critical = domains.filter(d => getStatus(d) === 'critical').length;
+  const warning  = domains.filter(d => getStatus(d) === 'warning').length;
+  const valid    = domains.filter(d => getStatus(d) === 'valid').length;
+  const alertCount = expired + critical + warning;
+
+  document.getElementById('sb-total').textContent    = domains.length;
+  document.getElementById('sb-alerts').textContent   = alertCount;
+  document.getElementById('sb-expired').textContent  = expired;
+  document.getElementById('sb-critical').textContent = critical;
+  document.getElementById('sb-warning').textContent  = warning;
+  document.getElementById('sb-valid').textContent    = valid;
+}
+
+function renderStatCards() {
+  const expired  = domains.filter(d => getStatus(d) === 'expired').length;
+  const critical = domains.filter(d => getStatus(d) === 'critical').length;
+  const warning  = domains.filter(d => getStatus(d) === 'warning').length;
+  const valid    = domains.filter(d => getStatus(d) === 'valid').length;
+  const unknown  = domains.filter(d => getStatus(d) === 'unknown').length;
+
+  document.getElementById('stat-cards').innerHTML = `
+    <div class="stat-card cyan">
+      <div class="stat-label">Total Domains</div>
+      <div class="stat-value">${domains.length}</div>
+      <div class="stat-sub">Monitored</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Valid</div>
+      <div class="stat-value">${valid}</div>
+      <div class="stat-sub">Certs healthy</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Expiring Soon</div>
+      <div class="stat-value">${warning + critical}</div>
+      <div class="stat-sub">Need renewal</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Expired</div>
+      <div class="stat-value">${expired}</div>
+      <div class="stat-sub">Action required!</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Unknown</div>
+      <div class="stat-value" style="color:var(--text-muted)">${unknown}</div>
+      <div class="stat-sub">Not yet checked</div>
+    </div>
+  `;
+}
+
+function renderAlerts() {
+  const alertDomains = domains
+    .filter(d => ['expired','critical','warning'].includes(getStatus(d)))
+    .sort((a,b) => getDaysLeft(a.expiry || '9999-01-01') - getDaysLeft(b.expiry || '9999-01-01'));
+
+  const count = alertDomains.length;
+  document.getElementById('alerts-count-label').textContent = `${count} alert${count !== 1 ? 's' : ''}`;
+  document.getElementById('all-alerts-count').textContent   = `${count} alert${count !== 1 ? 's' : ''}`;
+
+  function renderAlertItem(d) {
+    const status = getStatus(d);
+    const days = getDaysLeft(d.expiry);
+    let icon = '⚠️', msg = '';
+    if (status === 'expired')  { icon = '💀'; msg = `Expired ${Math.abs(days)} day${Math.abs(days) !== 1?'s':''} ago — REPLACE IMMEDIATELY`; }
+    if (status === 'critical') { icon = '🔴'; msg = `Expires in ${days} day${days !== 1?'s':''} — renew now`; }
+    if (status === 'warning')  { icon = '🟡'; msg = `Expires in ${days} day${days !== 1?'s':''} — schedule renewal`; }
+    const lastCheck = d.lastChecked ? `Checked ${timeAgo(d.lastChecked)}` : 'Not yet checked';
+    return `<div class="alert-item alert-${status}" onclick="openDetail('${d.id}')">
+      <div class="alert-icon">${icon}</div>
+      <div class="alert-content">
+        <div class="alert-domain">${d.domain}${d.tag ? ` <span style="font-size:11px;color:var(--text-muted);font-weight:400">[${d.tag}]</span>` : ''}</div>
+        <div class="alert-message">${msg}</div>
+      </div>
+      <div class="alert-time">${lastCheck}</div>
+    </div>`;
+  }
+
+  const html = count > 0 ? alertDomains.map(renderAlertItem).join('') :
+    `<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">No Alerts</div><div class="empty-sub">All monitored domains are healthy.</div></div>`;
+
+  document.getElementById('alerts-list').innerHTML = html;
+  document.getElementById('all-alerts-list').innerHTML = html;
+}
+
+function renderDashboardTable() {
+  const sorted = [...domains].sort((a,b) => {
+    const da = a.expiry ? getDaysLeft(a.expiry) : 9999;
+    const db = b.expiry ? getDaysLeft(b.expiry) : 9999;
+    return da - db;
+  }).slice(0, 10);
+
+  const rows = sorted.map(d => {
+    const status = getStatus(d);
+    const days = d.expiry ? getDaysLeft(d.expiry) : null;
+    const expiryStr = d.expiry ? new Date(d.expiry).toLocaleDateString() : '—';
+    const daysStr = days != null ? (days < 0 ? `${Math.abs(days)}d ago` : `${days}d`) : '—';
+    return `<tr onclick="openDetail('${d.id}')">
+      <td><div class="domain-cell"><div class="domain-name">${d.domain}</div>${d.tag ? `<div class="domain-tag">${d.tag}</div>` : ''}</div></td>
+      <td>${d.checking ? `<span><span class="scan-spinner"></span>Checking...</span>` : statusBadge(status)}</td>
+      <td class="monospace">${expiryStr}</td>
+      <td>${d.checking ? '—' : countdownBar(d)}</td>
+      <td class="cert-issuer">${d.certCA || '—'}</td>
+    </tr>`;
+  });
+
+  document.getElementById('dashboard-table-body').innerHTML = rows.length ? rows.join('') :
+    `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">No domains added yet. Click "+ Add Domain" to get started.</td></tr>`;
+}
+
+function renderDomainTable() {
+  const query  = (document.getElementById('domain-search').value || '').toLowerCase();
+  const filter = document.getElementById('domain-filter').value;
+  const tagFilter = document.getElementById('domain-tag-filter').value;
+
+  let filtered = [...domains];
+  if (query) filtered = filtered.filter(d =>
+    d.domain.includes(query) || (d.tag||'').toLowerCase().includes(query) || (d.notes||'').toLowerCase().includes(query)
+  );
+  if (filter) filtered = filtered.filter(d => getStatus(d) === filter);
+  if (tagFilter) filtered = filtered.filter(d => d.tag === tagFilter);
+
+  // Sort
+  filtered.sort((a, b) => {
+    let av, bv;
+    if (sortKey === 'daysLeft') {
+      av = a.expiry ? getDaysLeft(a.expiry) : 9999;
+      bv = b.expiry ? getDaysLeft(b.expiry) : 9999;
+    } else if (sortKey === 'expiry') {
+      av = a.expiry || '9999';
+      bv = b.expiry || '9999';
+    } else if (sortKey === 'domain') {
+      av = a.domain; bv = b.domain;
+    } else if (sortKey === 'status') {
+      const order = {expired:0, critical:1, warning:2, valid:3, unknown:4};
+      av = order[getStatus(a)] ?? 5;
+      bv = order[getStatus(b)] ?? 5;
+    } else {
+      av = a[sortKey] || ''; bv = b[sortKey] || '';
+    }
+    if (av < bv) return -1 * sortDir;
+    if (av > bv) return 1 * sortDir;
+    return 0;
+  });
+
+  document.getElementById('domains-count-label').textContent = `${filtered.length} / ${domains.length} domains`;
+
+  const rows = filtered.map(d => {
+    const status = getStatus(d);
+    const days = d.expiry ? getDaysLeft(d.expiry) : null;
+    const expiryStr = d.expiry ? new Date(d.expiry).toLocaleDateString() : '—';
+    const crit = d.threshCritical != null ? d.threshCritical : settings.thresholdCritical;
+    const warn = d.threshWarning  != null ? d.threshWarning  : settings.thresholdWarning;
+    const overrideClass = (status === 'critical' || (days != null && days <= crit)) ? 'active-crit' :
+                          (status === 'warning' || (days != null && days <= warn))  ? 'active-warn' : '';
+
+    return `<tr onclick="openDetail('${d.id}')">
+      <td><div class="domain-cell"><div class="domain-name">${d.domain}</div><div class="domain-tag">port ${d.port || 443}</div></div></td>
+      <td>${d.checking ? `<span><span class="scan-spinner"></span>Checking...</span>` : statusBadge(status)}</td>
+      <td>${d.checking ? '—' : countdownBar(d)}</td>
+      <td class="monospace" style="font-size:12px;">${expiryStr}</td>
+      <td class="cert-issuer">${d.certCA || '—'}</td>
+      <td><span class="threshold-chip ${overrideClass}">⚠️ ${crit}d / 🟡 ${warn}d</span></td>
+      <td>${d.tag ? `<span class="threshold-chip">${d.tag}</span>` : '<span class="text-muted" style="font-size:12px;">—</span>'}</td>
+      <td onclick="event.stopPropagation()">
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-sm btn-primary btn-icon" onclick="checkSingleDomain('${d.id}')" title="Re-check">⟳</button>
+          <button class="btn btn-sm btn-icon" onclick="openModal('add-modal','${d.id}')" title="Edit">✏️</button>
+          <button class="btn btn-sm btn-danger btn-icon" onclick="deleteDomain('${d.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('domain-table-body').innerHTML = rows.length ? rows.join('') :
+    `<tr><td colspan="8" style="text-align:center; padding:40px; color:var(--text-muted);">No domains match the current filters.</td></tr>`;
+}
+
+function updateTagFilter() {
+  const tags = [...new Set(domains.map(d => d.tag).filter(Boolean))].sort();
+  const sel = document.getElementById('domain-tag-filter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Tags</option>' + tags.map(t => `<option value="${t}">${t}</option>`).join('');
+  sel.value = tags.includes(cur) ? cur : '';
+}
+
+function sortDomains(key) {
+  if (sortKey === key) sortDir *= -1;
+  else { sortKey = key; sortDir = 1; }
+  renderDomainTable();
+}
+
+// =========================================
+// NAVIGATION
+// =========================================
+
+let currentView = 'dashboard';
+
+function showView(viewName, filterStatus = null) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('view-' + viewName).classList.add('active');
+  document.querySelectorAll(`[data-view="${viewName}"]`).forEach(n => n.classList.add('active'));
+  currentView = viewName;
+
+  if (filterStatus && viewName === 'domains') {
+    document.getElementById('domain-filter').value = filterStatus;
+  }
+  renderDomainTable();
+}
+
+// =========================================
+// EXPORT
+// =========================================
+
+function exportJSON() {
+  const data = { exported: new Date().toISOString(), settings, domains };
+  download('ssl-monitor-export.json', JSON.stringify(data, null, 2), 'application/json');
+  toast('JSON exported', 'success');
+}
+
+function exportCSV() {
+  const headers = ['Domain','Port','Status','DaysLeft','Expiry','Issued','Issuer','CA','Tag','ThreshCritical','ThreshWarning','Notes','LastChecked'];
+  const rows = domains.map(d => {
+    const status = getStatus(d);
+    const days = d.expiry ? getDaysLeft(d.expiry) : '';
+    return [
+      d.domain, d.port||443, status, days,
+      d.expiry||'', d.issued||'', d.certOrg||'', d.certCA||'',
+      d.tag||'', d.threshCritical??'', d.threshWarning??'',
+      (d.notes||'').replace(/,/g,'|'),
+      d.lastChecked||''
+    ].join(',');
+  });
+  download('ssl-monitor-' + dateStr() + '.csv', [headers.join(','), ...rows].join('\n'), 'text/csv');
+  toast('CSV exported', 'success');
+}
+
+function exportReport() {
+  const lines = [
+    '=== SSL Certificate Monitor Report ===',
+    `Generated: ${new Date().toLocaleString()}`,
+    `Total Domains: ${domains.length}`,
+    '',
+  ];
+  const expired  = domains.filter(d => getStatus(d) === 'expired');
+  const critical = domains.filter(d => getStatus(d) === 'critical');
+  const warning  = domains.filter(d => getStatus(d) === 'warning');
+  const valid    = domains.filter(d => getStatus(d) === 'valid');
+
+  lines.push(`SUMMARY:`);
+  lines.push(`  Expired:  ${expired.length}`);
+  lines.push(`  Critical: ${critical.length}`);
+  lines.push(`  Warning:  ${warning.length}`);
+  lines.push(`  Valid:    ${valid.length}`);
+  lines.push('');
+
+  if (expired.length > 0) {
+    lines.push('--- EXPIRED ---');
+    expired.forEach(d => { const days = getDaysLeft(d.expiry); lines.push(`  ❌ ${d.domain} — Expired ${Math.abs(days)} days ago (${d.expiry})`); });
+    lines.push('');
+  }
+  if (critical.length > 0) {
+    lines.push('--- CRITICAL (renewal urgent) ---');
+    critical.forEach(d => lines.push(`  🔴 ${d.domain} — ${getDaysLeft(d.expiry)} days left (exp ${d.expiry})`));
+    lines.push('');
+  }
+  if (warning.length > 0) {
+    lines.push('--- WARNING (schedule renewal) ---');
+    warning.forEach(d => lines.push(`  ⚠️ ${d.domain} — ${getDaysLeft(d.expiry)} days left (exp ${d.expiry})`));
+    lines.push('');
+  }
+  if (valid.length > 0) {
+    lines.push('--- VALID ---');
+    valid.forEach(d => { const days = d.expiry ? getDaysLeft(d.expiry) : '?'; lines.push(`  ✅ ${d.domain} — ${days} days left (exp ${d.expiry||'unknown'})`); });
+    lines.push('');
+  }
+
+  download('ssl-report-' + dateStr() + '.txt', lines.join('\n'), 'text/plain');
+  toast('Report exported', 'success');
+}
+
+function importDomains() {
+  const raw = (document.getElementById('import-text').value || '').trim();
+  if (!raw) { toast('Nothing to import', 'error'); return; }
+
+  let imported = [];
+  try {
+    const parsed = JSON.parse(raw);
+    const arr = Array.isArray(parsed) ? parsed : (parsed.domains || []);
+    imported = arr.filter(d => d.domain).map(d => ({
+      id: 'dom_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      domain: d.domain, port: d.port||443, tag: d.tag||'',
+      notes: d.notes||'', threshCritical: d.threshCritical??null, threshWarning: d.threshWarning??null,
+      expiry: d.expiry||null, issued: d.issued||null, certCA: d.certCA||null, certOrg: d.certOrg||null,
+      lastChecked: null, checking: false,
+    }));
+  } catch(e) {
+    // Try CSV / plain list
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    for (const line of lines) {
+      const domain = line.split(',')[0].trim().replace(/^https?:\/\//,'').replace(/\/.*/,'');
+      if (domain && domain.includes('.')) {
+        imported.push({ id: 'dom_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+          domain, port: 443, tag: '', notes: '', threshCritical: null, threshWarning: null,
+          expiry: null, issued: null, certCA: null, certOrg: null, lastChecked: null, checking: false });
+      }
+    }
+  }
+
+  if (!imported.length) { toast('No valid domains found in input', 'error'); return; }
+
+  const dupes = imported.filter(d => domains.find(x => x.domain === d.domain));
+  imported = imported.filter(d => !domains.find(x => x.domain === d.domain));
+  domains.push(...imported);
+  saveData();
+  renderAll();
+  document.getElementById('import-text').value = '';
+  toast(`Imported ${imported.length} domain(s)${dupes.length ? ` (${dupes.length} skipped as duplicates)` : ''}`, 'success');
+  if (imported.length) runCheckAll(true);
+}
+
+// =========================================
+// DEMO DATA
+// =========================================
+
+function loadDemoData() {
+  if (domains.length > 0 && !confirm('This will replace all current domains with demo data. Continue?')) return;
+
+  domains = [
+    { id:'demo1', domain:'techelectrical.com',      port:443, tag:'Company',    notes:'Primary company site. Renewed via Namecheap.', threshCritical:null, threshWarning:null },
+    { id:'demo2', domain:'portal.techelectrical.com', port:443, tag:'Company',  notes:'MSP client portal. Auto-renew via certbot.', threshCritical:null, threshWarning:null },
+    { id:'demo3', domain:'barneys-tire.com',         port:443, tag:'Client',    notes:'Barney\'s Tire Shop. Contact: Mike Barney 951-555-0100', threshCritical:null, threshWarning:null },
+    { id:'demo4', domain:'desertdental.com',         port:443, tag:'Client',    notes:'Desert Dental. HIPAA compliance cert required.', threshCritical:14, threshWarning:45 },
+    { id:'demo5', domain:'highdesertrealty.com',     port:443, tag:'Client',    notes:'High Desert Realty. Renewed annually in March.', threshCritical:null, threshWarning:null },
+    { id:'demo6', domain:'shop.barneys-tire.com',    port:443, tag:'Client',    notes:'Parts ordering subdomain.', threshCritical:null, threshWarning:null },
+    { id:'demo7', domain:'vpn.techelectrical.com',   port:443, tag:'Internal',  notes:'WireGuard/OpenVPN gateway. Mission critical — alert early.', threshCritical:14, threshWarning:60 },
+    { id:'demo8', domain:'monitoring.techelectrical.com', port:443, tag:'Internal', notes:'Internal monitoring dashboard.', threshCritical:null, threshWarning:null },
+    { id:'demo9', domain:'mail.techelectrical.com',  port:993, tag:'Internal',  notes:'IMAP mail server. Port 993 (IMAPS).', threshCritical:null, threshWarning:null },
+    { id:'demo10', domain:'lawfirmclient.com',       port:443, tag:'Client',    notes:'Law firm client. Strict SLA — renew 60d before expiry.', threshCritical:7, threshWarning:60 },
+  ];
+
+  // Simulate cert data
+  domains = domains.map(d => simulateCertCheck(d));
+  saveData();
+  renderAll();
+  toast('Demo data loaded — 10 domains', 'success');
+  document.getElementById('lastCheckLabel').textContent = 'Checked ' + new Date().toLocaleTimeString();
+}
+
+// =========================================
+// UTILITIES
+// =========================================
+
+function toast(msg, type = 'info', duration = 3000) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => t.remove(), 300);
+  }, duration);
+}
+
+function download(filename, content, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function dateStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function timeAgo(isoStr) {
+  const diff = (Date.now() - new Date(isoStr)) / 1000;
+  if (diff < 60)    return 'just now';
+  if (diff < 3600)  return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
+}
+
+function clearAllData() {
+  if (!confirm('Clear ALL domain data? This cannot be undone. Export first!')) return;
+  domains = [];
+  saveData();
+  renderAll();
+  toast('All data cleared', 'info');
+}
+
+// =========================================
+// INIT
+// =========================================
+
+loadData();
+renderAll();
+
+// If no domains, auto-load demo
+if (domains.length === 0) {
+  loadDemoData();
+}
+</script>
+</body>
+</html>

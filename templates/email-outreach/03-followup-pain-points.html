@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: left;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .body-section {
+            padding: 30px 20px;
+        }
+        .body-section p {
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .pain-points {
+            margin: 20px 0;
+        }
+        .pain-point {
+            background-color: #fff5f5;
+            border-left: 4px solid #d32f2f;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+        .pain-point-title {
+            font-weight: 600;
+            color: #d32f2f;
+            margin-bottom: 5px;
+        }
+        .pain-point-desc {
+            font-size: 13px;
+            color: #555;
+        }
+        .solution-box {
+            background-color: #f0f4ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .solution-box strong {
+            color: #0066cc;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #0066cc;
+            color: white !important;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .cta-button:hover {
+            background-color: #0052a3;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Are Any of These Keeping You Up at Night?</h1>
+            <p>Common security challenges we solve every day</p>
+        </div>
+
+        <div class="body-section">
+            <p>Hi {{FIRST_NAME}},</p>
+
+            <p>I've been thinking about the conversations we hear most often from {{INDUSTRY}} companies, and I wanted to check: are any of these pain points hitting home for {{COMPANY}}?</p>
+
+            <div class="pain-points">
+                <div class="pain-point">
+                    <div class="pain-point-title">1. Security Theater, Not Real Security</div>
+                    <div class="pain-point-desc">You have tools in place, but you're not 100% confident they're actually protecting you. Compliance checkboxes ≠ security.</div>
+                </div>
+
+                <div class="pain-point">
+                    <div class="pain-point-title">2. Outdated Infrastructure Limping Along</div>
+                    <div class="pain-point-desc">Legacy systems, unpatched servers, and technical debt that's become a liability—but replacing it feels overwhelming.</div>
+                </div>
+
+                <div class="pain-point">
+                    <div class="pain-point-title">3. Can't Keep Up With Threats</div>
+                    <div class="pain-point-desc">New threats every week. You don't have time to research, prioritize, and implement. Your team is stretched thin.</div>
+                </div>
+
+                <div class="pain-point">
+                    <div class="pain-point-title">4. Expensive Security Consultants or DIY Headaches</div>
+                    <div class="pain-point-desc">Big firms charge $50K+ for vague recommendations. DIY tools are overwhelming. There's no middle ground.</div>
+                </div>
+            </div>
+
+            <p>Here's the thing: <strong>these aren't unique to you.</strong> Every MSP and mid-market company we talk to faces at least 2 of these.</p>
+
+            <div class="solution-box">
+                <strong>That's exactly why we built our assessment.</strong> It's designed to cut through the noise and give you clarity: where you stand, what's actually dangerous, and a clear path forward—without $50K in consultant fees.
+            </div>
+
+            <p>Most people don't realize until it's too late that security isn't about having the most tools. It's about having the right ones, deployed correctly, and monitored by someone who actually knows what they're looking at.</p>
+
+            <p>That's my background. That's what I do.</p>
+
+            <p style="text-align: center;">
+                <a href="{{CALENDLY_LINK}}" class="cta-button">Schedule Your Clarity Call</a>
+            </p>
+
+            <p>Let's spend 30 minutes on a real assessment. No obligation. Just honest feedback on where your security actually stands.</p>
+
+            <div class="signature">
+                <p style="margin: 0;">Best,</p>
+                <p style="margin: 5px 0 0 0;"><strong>Irvin Avitia</strong></p>
+                <p style="margin: 2px 0 0 0;">Cyber Systems Engineer | MSP Security Specialist</p>
+                <p style="margin: 2px 0 0 0;">{{PHONE}}</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">You're receiving this because we identified {{COMPANY}} as a strong fit for security modernization. <a href="{{UNSUBSCRIBE_LINK}}" style="color: #0066cc; text-decoration: none;">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>

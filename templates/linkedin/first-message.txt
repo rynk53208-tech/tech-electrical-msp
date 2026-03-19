@@ -1,0 +1,2 @@
+LinkedIn First Message (micro-case study):
+Hi {Name}, quick note: a client reduced mean time to recovery by 40% after adopting a consolidated DevSecOps approach (CI/CD + security automation) we implemented. If uptime and smoother incident response matter to you, I can share a 1-page micro-case study.

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Warranty & Asset Tracker — Tech & Electrical Services LLC</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22273a;
+      --border: #2e3452;
+      --accent: #4f8ef7;
+      --accent2: #7c3aed;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #7c8498;
+      --radius: 10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ─── Header ─── */
+    header {
+      background: linear-gradient(135deg, #131720 0%, #1a1d27 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { font-size: 28px; }
+    .brand h1 { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+    .brand p { font-size: 0.75rem; color: var(--muted); }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      cursor: pointer; border: none; border-radius: 7px;
+      font-size: 0.82rem; font-weight: 600; padding: 8px 14px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    button:hover { opacity: 0.85; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-danger  { background: var(--red); color: #fff; }
+    .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    /* ─── Stats bar ─── */
+    .stats {
+      display: flex; gap: 14px; padding: 18px 28px; flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1; min-width: 150px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .stat-card .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .stat-card .value { font-size: 2rem; font-weight: 700; margin-top: 4px; }
+    .stat-card.active .value   { color: var(--green); }
+    .stat-card.expiring .value { color: var(--yellow); }
+    .stat-card.expired .value  { color: var(--red); }
+    .stat-card.total .value    { color: var(--accent); }
+    .stat-card.depval .value   { color: #a78bfa; }
+
+    /* ─── Tabs ─── */
+    .tabs { display: flex; gap: 4px; padding: 0 28px; border-bottom: 1px solid var(--border); }
+    .tab {
+      padding: 10px 18px; cursor: pointer; font-size: 0.84rem; font-weight: 600;
+      color: var(--muted); border-bottom: 2px solid transparent; background: none;
+      border-radius: 0; transition: color 0.15s, border-color 0.15s;
+    }
+    .tab:hover { color: var(--text); transform: none; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ─── Main content ─── */
+    .main { padding: 22px 28px; }
+
+    /* ─── Search & filter bar ─── */
+    .toolbar {
+      display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; align-items: center;
+    }
+    .search-box {
+      flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 7px; padding: 8px 14px; color: var(--text); font-size: 0.85rem;
+      outline: none;
+    }
+    .search-box:focus { border-color: var(--accent); }
+    select.filter {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
+      padding: 8px 12px; color: var(--text); font-size: 0.84rem; cursor: pointer;
+      outline: none;
+    }
+    select.filter:focus { border-color: var(--accent); }
+
+    /* ─── Table ─── */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    thead th {
+      background: var(--surface2); padding: 11px 14px; text-align: left;
+      font-weight: 600; color: var(--muted); font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: .05em; white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: var(--text); }
+    tbody tr { border-top: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 11px 14px; vertical-align: middle; white-space: nowrap; }
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 0.72rem;
+      font-weight: 700; letter-spacing: .04em;
+    }
+    .badge-active   { background: rgba(34,197,94,.15); color: var(--green); }
+    .badge-expiring { background: rgba(245,158,11,.15); color: var(--yellow); }
+    .badge-expired  { background: rgba(239,68,68,.15);  color: var(--red); }
+    .badge-type     { background: rgba(79,142,247,.12); color: var(--accent); }
+    .row-actions { display: flex; gap: 6px; }
+    .row-actions button { padding: 5px 10px; font-size: 0.75rem; }
+
+    /* ─── Alert banner ─── */
+    .alert-section { margin-bottom: 18px; }
+    .alert-item {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.3);
+      border-radius: 8px; padding: 10px 14px; margin-bottom: 8px;
+      font-size: 0.83rem;
+    }
+    .alert-item.expired-alert {
+      background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3);
+    }
+    .alert-icon { font-size: 1.1rem; }
+
+    /* ─── Modal ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      z-index: 100; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 640px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+      padding: 28px; position: relative;
+    }
+    .modal h2 { font-size: 1.1rem; margin-bottom: 20px; }
+    .modal-close {
+      position: absolute; top: 16px; right: 18px; background: none; border: none;
+      color: var(--muted); font-size: 1.4rem; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); transform: none; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: 1/-1; }
+    .form-group label { font-size: 0.77rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .form-group input, .form-group select, .form-group textarea {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 8px 12px; color: var(--text); font-size: 0.85rem; outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+    /* ─── Maintenance tab ─── */
+    .maint-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .maint-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .maint-card h3 { font-size: 0.9rem; margin-bottom: 6px; }
+    .maint-card .maint-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; }
+    .maint-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-top: 1px solid var(--border); font-size: 0.8rem;
+    }
+    .maint-item .due { color: var(--muted); }
+    .maint-item .due.overdue { color: var(--red); }
+    .maint-item .due.soon   { color: var(--yellow); }
+
+    /* ─── Depreciation tab ─── */
+    .dep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .dep-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .dep-card h3 { font-size: 0.9rem; margin-bottom: 8px; }
+    .dep-bar-bg {
+      height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin: 8px 0;
+    }
+    .dep-bar { height: 100%; border-radius: 99px; transition: width 0.3s; }
+    .dep-values { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); }
+
+    /* ─── Vendor tab ─── */
+    .vendor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .vendor-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .vendor-card h3 { font-size: 0.95rem; color: var(--accent); margin-bottom: 10px; }
+    .vendor-row { display: flex; gap: 8px; align-items: flex-start; font-size: 0.82rem; margin-bottom: 6px; }
+    .vendor-row .vl { color: var(--muted); width: 80px; flex-shrink: 0; }
+
+    /* ─── Empty state ─── */
+    .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty .icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty p { font-size: 0.9rem; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      header { padding: 14px 16px; }
+      .main { padding: 14px 16px; }
+      .stats { padding: 14px 16px; }
+      .tabs { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <div>
+      <h1>Warranty &amp; Asset Tracker</h1>
+      <p>Tech &amp; Electrical Services LLC</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-primary" onclick="openModal()">+ Add Asset</button>
+    <button class="btn-success" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn-ghost" onclick="resetData()">↺ Demo Data</button>
+  </div>
+</header>
+
+<!-- Stats -->
+<div class="stats" id="stats"></div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" data-tab="assets" onclick="switchTab('assets',this)">🖥 Assets</button>
+  <button class="tab" data-tab="alerts" onclick="switchTab('alerts',this)">🔔 Alerts</button>
+  <button class="tab" data-tab="maintenance" onclick="switchTab('maintenance',this)">🔧 Maintenance</button>
+  <button class="tab" data-tab="depreciation" onclick="switchTab('depreciation',this)">📉 Depreciation</button>
+  <button class="tab" data-tab="vendors" onclick="switchTab('vendors',this)">📋 Vendors</button>
+</div>
+
+<div class="main">
+
+  <!-- Assets tab -->
+  <div id="tab-assets">
+    <div class="toolbar">
+      <input class="search-box" id="searchInput" type="text" placeholder="🔍  Search assets..." oninput="renderAssets()"/>
+      <select class="filter" id="filterType" onchange="renderAssets()">
+        <option value="">All Types</option>
+        <option>Server</option>
+        <option>Workstation</option>
+        <option>UPS</option>
+        <option>Network</option>
+        <option>Storage</option>
+        <option>Printer</option>
+        <option>Other</option>
+      </select>
+      <select class="filter" id="filterStatus" onchange="renderAssets()">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Expiring Soon">Expiring Soon</option>
+        <option value="Expired">Expired</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('name')">Asset Name ↕</th>
+            <th onclick="sortBy('type')">Type ↕</th>
+            <th onclick="sortBy('serial')">Serial #</th>
+            <th onclick="sortBy('purchaseDate')">Purchase Date ↕</th>
+            <th onclick="sortBy('warrantyEnd')">Warranty End ↕</th>
+            <th onclick="sortBy('status')">Status ↕</th>
+            <th onclick="sortBy('vendor')">Vendor ↕</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="assetsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Alerts tab -->
+  <div id="tab-alerts" style="display:none">
+    <div class="alert-section" id="alertsContent"></div>
+  </div>
+
+  <!-- Maintenance tab -->
+  <div id="tab-maintenance" style="display:none">
+    <div class="maint-grid" id="maintContent"></div>
+  </div>
+
+  <!-- Depreciation tab -->
+  <div id="tab-depreciation" style="display:none">
+    <div class="dep-grid" id="depContent"></div>
+  </div>
+
+  <!-- Vendors tab -->
+  <div id="tab-vendors" style="display:none">
+    <div class="vendor-grid" id="vendorContent"></div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBG(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">Add Asset</h2>
+    <form id="assetForm" onsubmit="saveAsset(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Asset Name *</label>
+          <input type="text" id="f_name" required placeholder="Dell PowerEdge R740"/>
+        </div>
+        <div class="form-group">
+          <label>Type *</label>
+          <select id="f_type" required>
+            <option value="">Select type...</option>
+            <option>Server</option>
+            <option>Workstation</option>
+            <option>UPS</option>
+            <option>Network</option>
+            <option>Storage</option>
+            <option>Printer</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serial Number *</label>
+          <input type="text" id="f_serial" required placeholder="SN-12345"/>
+        </div>
+        <div class="form-group">
+          <label>Model</label>
+          <input type="text" id="f_model" placeholder="PowerEdge R740"/>
+        </div>
+        <div class="form-group">
+          <label>Purchase Date *</label>
+          <input type="date" id="f_purchaseDate" required/>
+        </div>
+        <div class="form-group">
+          <label>Warranty End Date *</label>
+          <input type="date" id="f_warrantyEnd" required/>
+        </div>
+        <div class="form-group">
+          <label>Purchase Price ($)</label>
+          <input type="number" id="f_price" min="0" step="0.01" placeholder="0.00"/>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="f_location" placeholder="Server Room A"/>
+        </div>
+        <div class="form-group">
+          <label>Vendor</label>
+          <input type="text" id="f_vendor" placeholder="Dell Technologies"/>
+        </div>
+        <div class="form-group">
+          <label>Vendor Phone</label>
+          <input type="text" id="f_vendorPhone" placeholder="1-800-956-3355"/>
+        </div>
+        <div class="form-group">
+          <label>Vendor Email</label>
+          <input type="email" id="f_vendorEmail" placeholder="support@vendor.com"/>
+        </div>
+        <div class="form-group">
+          <label>Support Contract #</label>
+          <input type="text" id="f_contractNum" placeholder="CTR-00001"/>
+        </div>
+        <div class="form-group full">
+          <label>Maintenance Notes</label>
+          <textarea id="f_maintNotes" placeholder="Next PM due: 2025-06-01. Filter replacement every 6 months."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea id="f_notes" placeholder="General notes..."></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Save Asset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════
+const STORAGE_KEY = 'tes_warranty_assets';
+const EXPIRING_DAYS = 90; // days before expiry → "Expiring Soon"
+
+const DEMO_ASSETS = [
+  {
+    id: 'a1', name: 'Primary File Server', type: 'Server', serial: 'SVR-PE740-001',
+    model: 'Dell PowerEdge R740', purchaseDate: '2021-03-15', warrantyEnd: '2024-03-15',
+    price: 8500, location: 'Server Room A', vendor: 'Dell Technologies',
+    vendorPhone: '1-800-956-3355', vendorEmail: 'prosupport@dell.com',
+    contractNum: 'CTR-DELL-0021', maintNotes: 'ProSupport 5yr expired. Needs renewal.\nDrive bay 3 has amber light — check RAID.',
+    notes: 'Primary file/application server. ESXi 7.0 host.'
+  },
+  {
+    id: 'a2', name: 'Backup Server', type: 'Server', serial: 'SVR-HP380-002',
+    model: 'HPE ProLiant DL380 Gen10', purchaseDate: '2022-06-01', warrantyEnd: '2025-06-01',
+    price: 7200, location: 'Server Room A', vendor: 'HPE',
+    vendorPhone: '1-800-334-5144', vendorEmail: 'support@hpe.com',
+    contractNum: 'CTR-HPE-0055', maintNotes: 'Veeam backup job daily. iLO firmware update pending.',
+    notes: 'Backup and DR target. Runs Veeam B&R.'
+  },
+  {
+    id: 'a3', name: 'Admin Workstation #1', type: 'Workstation', serial: 'WS-DELL7820-003',
+    model: 'Dell Precision 7820', purchaseDate: '2022-09-10', warrantyEnd: '2025-09-10',
+    price: 3200, location: 'Office — Desk A', vendor: 'Dell Technologies',
+    vendorPhone: '1-800-956-3355', vendorEmail: 'prosupport@dell.com',
+    contractNum: 'CTR-DELL-0044', maintNotes: 'Next PM: clean fans Q3 2025.',
+    notes: 'Primary admin machine. Win 11 Pro, Hyper-V enabled.'
+  },
+  {
+    id: 'a4', name: 'Tech Bench Workstation', type: 'Workstation', serial: 'WS-CUSTOM-004',
+    model: 'Custom Build (X570 / Ryzen 9)', purchaseDate: '2023-01-20', warrantyEnd: '2026-01-20',
+    price: 2100, location: 'Repair Bay', vendor: 'Internal Build',
+    vendorPhone: 'N/A', vendorEmail: 'irvin@techelectrical.com',
+    contractNum: 'N/A', maintNotes: 'Water-cooling loop — flush every 12 months. Next: Jan 2025.',
+    notes: 'Repair / diagnostics workstation. 64GB RAM, 4TB NVMe.'
+  },
+  {
+    id: 'a5', name: 'UPS — Server Room Primary', type: 'UPS', serial: 'UPS-APC-005',
+    model: 'APC Smart-UPS 3000VA', purchaseDate: '2020-11-05', warrantyEnd: '2023-11-05',
+    price: 1800, location: 'Server Room A', vendor: 'APC by Schneider Electric',
+    vendorPhone: '1-800-800-4272', vendorEmail: 'support@apc.com',
+    contractNum: 'CTR-APC-0012', maintNotes: 'Battery replacement overdue! Replace ASAP.\nRuntime test failed 2024-12-01.',
+    notes: 'Powers primary & backup servers. Battery health: critical.'
+  },
+  {
+    id: 'a6', name: 'Core Network Switch', type: 'Network', serial: 'NET-CIS-006',
+    model: 'Cisco Catalyst 9300-48P', purchaseDate: '2022-04-18', warrantyEnd: '2027-04-18',
+    price: 5600, location: 'Server Room A', vendor: 'Cisco Systems',
+    vendorPhone: '1-800-553-2447', vendorEmail: 'tac@cisco.com',
+    contractNum: 'CTR-CISCO-0088', maintNotes: 'IOS-XE update scheduled Q2 2025. TACACS checked monthly.',
+    notes: 'Core L3 switch. 48 PoE+ ports. SmartNet contract active.'
+  },
+  {
+    id: 'a7', name: 'NAS Storage Array', type: 'Storage', serial: 'STO-SYN-007',
+    model: 'Synology RS1221+ (12-bay)', purchaseDate: '2021-08-22', warrantyEnd: '2024-08-22',
+    price: 4100, location: 'Server Room B', vendor: 'Synology',
+    vendorPhone: '1-425-818-1587', vendorEmail: 'support@synology.com',
+    contractNum: 'CTR-SYN-0007', maintNotes: 'DSM update pending. Drive 9 showing reallocated sectors — replace soon.',
+    notes: '72TB raw. Used for media storage and off-site backup staging.'
+  },
+  {
+    id: 'a8', name: 'Edge Firewall', type: 'Network', serial: 'NET-FG-008',
+    model: 'Fortinet FortiGate 100F', purchaseDate: '2023-05-01', warrantyEnd: '2026-05-01',
+    price: 3900, location: 'Server Room A — Rack U1', vendor: 'Fortinet',
+    vendorPhone: '1-866-868-3678', vendorEmail: 'support@fortinet.com',
+    contractNum: 'CTR-FG-0200', maintNotes: 'FortiCare active. Firmware update monthly. Last: 2025-02-15.',
+    notes: 'Internet edge firewall + SD-WAN. FortiCare subscription renewed 2025.'
+  },
+  {
+    id: 'a9', name: 'Office Multifunction Printer', type: 'Printer', serial: 'PRT-HP-009',
+    model: 'HP LaserJet Enterprise M553dn', purchaseDate: '2020-07-14', warrantyEnd: '2023-07-14',
+    price: 850, location: 'Office — Print Room', vendor: 'HP Inc.',
+    vendorPhone: '1-800-474-6836', vendorEmail: 'hpsupport@hp.com',
+    contractNum: 'N/A', maintNotes: 'Toner low (Cyan 12%). Drum at 40k/200k pages.',
+    notes: 'Shared office printer. HP JetAdvantage Security enabled.'
+  },
+  {
+    id: 'a10', name: 'UPS — Office Wing', type: 'UPS', serial: 'UPS-CYB-010',
+    model: 'CyberPower OR1500LCDRT2U', purchaseDate: '2023-10-30', warrantyEnd: '2026-10-30',
+    price: 420, location: 'Office — IDF Closet', vendor: 'CyberPower',
+    vendorPhone: '1-877-297-6937', vendorEmail: 'techsupport@cyberpower.com',
+    contractNum: 'N/A', maintNotes: 'Battery self-test quarterly. Next: Oct 2025.',
+    notes: 'Powers office network gear and IP cameras.'
+  }
+];
+
+// Maintenance schedule templates per type (months interval)
+const MAINT_SCHEDULES = {
+  Server:      [{ task: 'Hardware health check', intervalMonths: 6 },
+                { task: 'Firmware / BIOS update', intervalMonths: 12 },
+                { task: 'Dust & fan cleaning', intervalMonths: 12 }],
+  Workstation: [{ task: 'OS updates & patching', intervalMonths: 1 },
+                { task: 'Dust & fan cleaning', intervalMonths: 6 },
+                { task: 'Thermal paste refresh', intervalMonths: 24 }],
+  UPS:         [{ task: 'Battery runtime test', intervalMonths: 3 },
+                { task: 'Battery replacement check', intervalMonths: 12 },
+                { task: 'Firmware update', intervalMonths: 12 }],
+  Network:     [{ task: 'Firmware / IOS update', intervalMonths: 6 },
+                { task: 'Config backup', intervalMonths: 1 },
+                { task: 'Port/interface audit', intervalMonths: 12 }],
+  Storage:     [{ task: 'SMART drive health check', intervalMonths: 3 },
+                { task: 'OS / DSM update', intervalMonths: 6 },
+                { task: 'Full backup verification', intervalMonths: 12 }],
+  Printer:     [{ task: 'Toner / consumables check', intervalMonths: 2 },
+                { task: 'Drum / maintenance kit', intervalMonths: 12 },
+                { task: 'Firmware update', intervalMonths: 12 }],
+  Other:       [{ task: 'General inspection', intervalMonths: 12 }]
+};
+
+// Depreciation: straight-line over estimated useful life (years)
+const USEFUL_LIFE = { Server: 5, Workstation: 4, UPS: 5, Network: 7, Storage: 5, Printer: 5, Other: 4 };
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let assets = [];
+let editingId = null;
+let sortKey = 'name';
+let sortAsc = true;
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+function loadAssets() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    assets = JSON.parse(raw);
+  } else {
+    assets = DEMO_ASSETS.map(a => ({ ...a }));
+    saveStorage();
+  }
+}
+
+function saveStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(assets));
+}
+
+// ══════════════════════════════════════════════════
+//  WARRANTY STATUS
+// ══════════════════════════════════════════════════
+function warrantyStatus(warrantyEnd) {
+  const now = new Date();
+  const end = new Date(warrantyEnd);
+  const diffDays = Math.ceil((end - now) / 86400000);
+  if (diffDays < 0) return 'Expired';
+  if (diffDays <= EXPIRING_DAYS) return 'Expiring Soon';
+  return 'Active';
+}
+
+function daysUntilExpiry(warrantyEnd) {
+  const now = new Date();
+  const end = new Date(warrantyEnd);
+  return Math.ceil((end - now) / 86400000);
+}
+
+function statusBadge(status) {
+  const map = { 'Active': 'badge-active', 'Expiring Soon': 'badge-expiring', 'Expired': 'badge-expired' };
+  return `<span class="badge ${map[status] || ''}">${status}</span>`;
+}
+
+function fmt(date) {
+  if (!date) return '—';
+  const d = new Date(date + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// ══════════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════════
+function renderStats() {
+  const total = assets.length;
+  const active    = assets.filter(a => warrantyStatus(a.warrantyEnd) === 'Active').length;
+  const expiring  = assets.filter(a => warrantyStatus(a.warrantyEnd) === 'Expiring Soon').length;
+  const expired   = assets.filter(a => warrantyStatus(a.warrantyEnd) === 'Expired').length;
+  const totalVal  = assets.reduce((s, a) => s + (parseFloat(a.price) || 0), 0);
+  const depVal    = assets.reduce((s, a) => s + currentValue(a), 0);
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card total"><div class="label">Total Assets</div><div class="value">${total}</div></div>
+    <div class="stat-card active"><div class="label">Active Warranties</div><div class="value">${active}</div></div>
+    <div class="stat-card expiring"><div class="label">Expiring Soon</div><div class="value">${expiring}</div></div>
+    <div class="stat-card expired"><div class="label">Expired</div><div class="value">${expired}</div></div>
+    <div class="stat-card depval"><div class="label">Total Asset Value</div><div class="value">$${totalVal.toLocaleString()}</div></div>
+    <div class="stat-card depval" style="--green:#a78bfa"><div class="label">Current Book Value</div><div class="value">$${Math.round(depVal).toLocaleString()}</div></div>
+  `;
+}
+
+// ══════════════════════════════════════════════════
+//  ASSETS TABLE
+// ══════════════════════════════════════════════════
+function getFilteredAssets() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const ft = document.getElementById('filterType').value;
+  const fs = document.getElementById('filterStatus').value;
+
+  return assets.filter(a => {
+    const status = warrantyStatus(a.warrantyEnd);
+    const matchQ = !q || [a.name, a.type, a.serial, a.model, a.vendor, a.location].join(' ').toLowerCase().includes(q);
+    const matchT = !ft || a.type === ft;
+    const matchS = !fs || status === fs;
+    return matchQ && matchT && matchS;
+  }).sort((a, b) => {
+    let av = a[sortKey] || '', bv = b[sortKey] || '';
+    if (sortKey === 'status') { av = warrantyStatus(a.warrantyEnd); bv = warrantyStatus(b.warrantyEnd); }
+    if (sortKey === 'price') { av = parseFloat(a.price)||0; bv = parseFloat(b.price)||0; }
+    if (typeof av === 'number') return sortAsc ? av - bv : bv - av;
+    return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = true; }
+  renderAssets();
+}
+
+function renderAssets() {
+  const filtered = getFilteredAssets();
+  const tbody = document.getElementById('assetsBody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="icon">📭</div><p>No assets match your search.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(a => {
+    const status = warrantyStatus(a.warrantyEnd);
+    const days = daysUntilExpiry(a.warrantyEnd);
+    const daysStr = days < 0 ? `${Math.abs(days)}d ago` : `${days}d left`;
+    return `<tr>
+      <td><strong>${esc(a.name)}</strong><br/><small style="color:var(--muted)">${esc(a.model||'')}</small></td>
+      <td><span class="badge badge-type">${esc(a.type)}</span></td>
+      <td><code style="font-size:.8rem">${esc(a.serial)}</code></td>
+      <td>${fmt(a.purchaseDate)}</td>
+      <td>${fmt(a.warrantyEnd)}<br/><small style="color:var(--muted)">${daysStr}</small></td>
+      <td>${statusBadge(status)}</td>
+      <td>${esc(a.vendor||'—')}</td>
+      <td><div class="row-actions">
+        <button class="btn-ghost" onclick="editAsset('${a.id}')">✏️</button>
+        <button class="btn-danger" onclick="deleteAsset('${a.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════════
+//  ALERTS
+// ══════════════════════════════════════════════════
+function renderAlerts() {
+  const expiring = assets.filter(a => warrantyStatus(a.warrantyEnd) === 'Expiring Soon')
+                         .sort((a,b) => daysUntilExpiry(a.warrantyEnd) - daysUntilExpiry(b.warrantyEnd));
+  const expired  = assets.filter(a => warrantyStatus(a.warrantyEnd) === 'Expired')
+                         .sort((a,b) => daysUntilExpiry(a.warrantyEnd) - daysUntilExpiry(b.warrantyEnd));
+
+  let html = '';
+  if (!expiring.length && !expired.length) {
+    html = `<div class="empty"><div class="icon">✅</div><p>No warranty alerts. All warranties are active.</p></div>`;
+  }
+  expired.forEach(a => {
+    const d = Math.abs(daysUntilExpiry(a.warrantyEnd));
+    html += `<div class="alert-item expired-alert">
+      <div class="alert-icon">🚨</div>
+      <div>
+        <strong>${esc(a.name)}</strong> — warranty expired <strong>${d} day${d!==1?'s':''} ago</strong>
+        (${fmt(a.warrantyEnd)})<br/>
+        <small style="color:var(--muted)">Serial: ${esc(a.serial)} | Vendor: ${esc(a.vendor||'—')} ${a.vendorPhone ? '| ☎ '+esc(a.vendorPhone) : ''}</small>
+      </div>
+    </div>`;
+  });
+  expiring.forEach(a => {
+    const d = daysUntilExpiry(a.warrantyEnd);
+    html += `<div class="alert-item">
+      <div class="alert-icon">⚠️</div>
+      <div>
+        <strong>${esc(a.name)}</strong> — warranty expires in <strong>${d} day${d!==1?'s':''}</strong>
+        (${fmt(a.warrantyEnd)})<br/>
+        <small style="color:var(--muted)">Serial: ${esc(a.serial)} | Vendor: ${esc(a.vendor||'—')} ${a.vendorPhone ? '| ☎ '+esc(a.vendorPhone) : ''}</small>
+      </div>
+    </div>`;
+  });
+  document.getElementById('alertsContent').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════
+//  MAINTENANCE
+// ══════════════════════════════════════════════════
+function nextMaintenanceDate(purchaseDate, intervalMonths) {
+  const start = new Date(purchaseDate + 'T00:00:00');
+  const now = new Date();
+  let next = new Date(start);
+  while (next <= now) {
+    next.setMonth(next.getMonth() + intervalMonths);
+  }
+  return next;
+}
+
+function renderMaintenance() {
+  if (!assets.length) {
+    document.getElementById('maintContent').innerHTML = `<div class="empty"><div class="icon">🔧</div><p>No assets to show maintenance for.</p></div>`;
+    return;
+  }
+  const now = new Date();
+  document.getElementById('maintContent').innerHTML = assets.map(a => {
+    const schedule = MAINT_SCHEDULES[a.type] || MAINT_SCHEDULES.Other;
+    const rows = schedule.map(({ task, intervalMonths }) => {
+      const next = nextMaintenanceDate(a.purchaseDate, intervalMonths);
+      const daysAway = Math.ceil((next - now) / 86400000);
+      let dueCls = '';
+      if (daysAway < 0) dueCls = 'overdue';
+      else if (daysAway <= 30) dueCls = 'soon';
+      const label = daysAway < 0 ? `Overdue ${Math.abs(daysAway)}d` : `Due in ${daysAway}d`;
+      return `<div class="maint-item">
+        <span>${esc(task)} <small style="color:var(--muted)">(every ${intervalMonths}mo)</small></span>
+        <span class="due ${dueCls}">${fmt(next.toISOString().slice(0,10))} · ${label}</span>
+      </div>`;
+    }).join('');
+
+    const customNote = a.maintNotes ? `<div style="font-size:.78rem;color:var(--muted);margin-top:8px;white-space:pre-line">${esc(a.maintNotes)}</div>` : '';
+
+    return `<div class="maint-card">
+      <h3>${esc(a.name)}</h3>
+      <div class="maint-meta"><span class="badge badge-type">${esc(a.type)}</span> · ${esc(a.location||'—')}</div>
+      ${rows}
+      ${customNote}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  DEPRECIATION
+// ══════════════════════════════════════════════════
+function currentValue(a) {
+  const price = parseFloat(a.price) || 0;
+  if (!price || !a.purchaseDate) return 0;
+  const life = USEFUL_LIFE[a.type] || 4;
+  const yearsOwned = (new Date() - new Date(a.purchaseDate + 'T00:00:00')) / (365.25 * 86400000);
+  const annualDep = price / life;
+  const depSoFar = Math.min(annualDep * yearsOwned, price);
+  return Math.max(price - depSoFar, 0);
+}
+
+function renderDepreciation() {
+  if (!assets.length) {
+    document.getElementById('depContent').innerHTML = `<div class="empty"><div class="icon">📉</div><p>No assets to show depreciation for.</p></div>`;
+    return;
+  }
+  document.getElementById('depContent').innerHTML = assets.map(a => {
+    const price = parseFloat(a.price) || 0;
+    const cv = currentValue(a);
+    const life = USEFUL_LIFE[a.type] || 4;
+    const pct = price ? Math.round((cv / price) * 100) : 0;
+    const barColor = pct > 60 ? 'var(--green)' : pct > 30 ? 'var(--yellow)' : 'var(--red)';
+    const yearsOwned = price && a.purchaseDate ? ((new Date() - new Date(a.purchaseDate + 'T00:00:00')) / (365.25*86400000)).toFixed(1) : '—';
+    return `<div class="dep-card">
+      <h3>${esc(a.name)}</h3>
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:6px"><span class="badge badge-type">${esc(a.type)}</span> · ${yearsOwned} yrs owned · ${life}yr life</div>
+      <div class="dep-bar-bg"><div class="dep-bar" style="width:${pct}%;background:${barColor}"></div></div>
+      <div class="dep-values">
+        <span>Original: ${price ? '$'+price.toLocaleString() : '—'}</span>
+        <span>Current: ${price ? '$'+Math.round(cv).toLocaleString() : '—'} (${pct}%)</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  VENDORS
+// ══════════════════════════════════════════════════
+function renderVendors() {
+  const vendorMap = {};
+  assets.forEach(a => {
+    if (!a.vendor) return;
+    if (!vendorMap[a.vendor]) vendorMap[a.vendor] = { phone: a.vendorPhone, email: a.vendorEmail, assets: [] };
+    vendorMap[a.vendor].assets.push(a);
+  });
+  const vendors = Object.entries(vendorMap);
+  if (!vendors.length) {
+    document.getElementById('vendorContent').innerHTML = `<div class="empty"><div class="icon">📋</div><p>No vendor data yet.</p></div>`;
+    return;
+  }
+  document.getElementById('vendorContent').innerHTML = vendors.map(([name, info]) => {
+    const assetList = info.assets.map(a => {
+      const status = warrantyStatus(a.warrantyEnd);
+      return `<div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border);font-size:.78rem">
+        <span>${esc(a.name)}</span>${statusBadge(status)}
+      </div>`;
+    }).join('');
+    return `<div class="vendor-card">
+      <h3>${esc(name)}</h3>
+      <div class="vendor-row"><span class="vl">📞 Phone</span><span>${esc(info.phone||'—')}</span></div>
+      <div class="vendor-row"><span class="vl">📧 Email</span><span>${esc(info.email||'—')}</span></div>
+      <div class="vendor-row"><span class="vl">📦 Assets</span><span>${info.assets.length}</span></div>
+      <div style="margin-top:10px">${assetList}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════════
+function switchTab(tab, btn) {
+  ['assets','alerts','maintenance','depreciation','vendors'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'alerts') renderAlerts();
+  if (tab === 'maintenance') renderMaintenance();
+  if (tab === 'depreciation') renderDepreciation();
+  if (tab === 'vendors') renderVendors();
+}
+
+// ══════════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════════
+function openModal(prefill) {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add Asset';
+  document.getElementById('assetForm').reset();
+  if (prefill) {
+    Object.entries(prefill).forEach(([k,v]) => {
+      const el = document.getElementById('f_'+k);
+      if (el) el.value = v;
+    });
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function editAsset(id) {
+  const a = assets.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Asset';
+  const fields = ['name','type','serial','model','purchaseDate','warrantyEnd','price','location','vendor','vendorPhone','vendorEmail','contractNum','maintNotes','notes'];
+  fields.forEach(f => {
+    const el = document.getElementById('f_'+f);
+    if (el) el.value = a[f] || '';
+  });
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function closeModalOnBG(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveAsset(e) {
+  e.preventDefault();
+  const fields = ['name','type','serial','model','purchaseDate','warrantyEnd','price','location','vendor','vendorPhone','vendorEmail','contractNum','maintNotes','notes'];
+  const data = {};
+  fields.forEach(f => { data[f] = document.getElementById('f_'+f).value.trim(); });
+
+  if (editingId) {
+    const idx = assets.findIndex(a => a.id === editingId);
+    if (idx > -1) assets[idx] = { ...assets[idx], ...data };
+  } else {
+    assets.push({ id: 'a' + Date.now(), ...data });
+  }
+  saveStorage();
+  closeModal();
+  renderAll();
+}
+
+function deleteAsset(id) {
+  if (!confirm('Delete this asset? This cannot be undone.')) return;
+  assets = assets.filter(a => a.id !== id);
+  saveStorage();
+  renderAll();
+}
+
+// ══════════════════════════════════════════════════
+//  EXPORT CSV
+// ══════════════════════════════════════════════════
+function exportCSV() {
+  const headers = ['Name','Type','Model','Serial','Purchase Date','Warranty End','Status','Days Until Expiry','Price','Location','Vendor','Vendor Phone','Vendor Email','Contract #','Notes'];
+  const rows = assets.map(a => {
+    const status = warrantyStatus(a.warrantyEnd);
+    const days = daysUntilExpiry(a.warrantyEnd);
+    return [a.name,a.type,a.model,a.serial,a.purchaseDate,a.warrantyEnd,status,days,a.price,a.location,a.vendor,a.vendorPhone,a.vendorEmail,a.contractNum,a.notes]
+      .map(v => '"'+(String(v||'').replace(/"/g,'""'))+'"').join(',');
+  });
+  const csv = [headers.join(','), ...rows].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `asset-tracker-${new Date().toISOString().slice(0,10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════════
+//  RESET / RENDER
+// ══════════════════════════════════════════════════
+function resetData() {
+  if (!confirm('Reset to demo data? All current data will be lost.')) return;
+  assets = DEMO_ASSETS.map(a => ({ ...a }));
+  saveStorage();
+  renderAll();
+}
+
+function renderAll() {
+  renderStats();
+  renderAssets();
+}
+
+// Boot
+loadAssets();
+renderAll();
+</script>
+</body>
+</html>

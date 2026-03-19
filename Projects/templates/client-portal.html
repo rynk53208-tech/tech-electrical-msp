@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal - Tech & Electrical Services</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        
+        /* Login Screen */
+        .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .logo { text-align: center; margin-bottom: 30px; font-size: 24px; font-weight: bold; color: #2563eb; }
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        .login-box button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        .login-box button:hover { background: #1d4ed8; }
+        
+        /* Dashboard */
+        .dashboard { display: none; }
+        .header { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 20px; color: #1e293b; }
+        .logout-btn { color: #64748b; text-decoration: none; font-size: 14px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; }
+        .stat-card h3 { font-size: 14px; color: #64748b; margin-bottom: 5px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; color: #1e293b; }
+        
+        .section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .section h2 { font-size: 18px; margin-bottom: 15px; color: #1e293b; }
+        
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .action-btn { padding: 20px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; text-decoration: none; color: #1e293b; display: block; }
+        .action-btn:hover { border-color: #2563eb; background: #eff6ff; }
+        .action-btn .icon { font-size: 24px; margin-bottom: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { font-size: 12px; color: #64748b; text-transform: uppercase; }
+        
+        .ticket-form { display: none; }
+        .ticket-form input, .ticket-form textarea, .ticket-form select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        .ticket-form button { padding: 12px 24px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        
+        .priority-low { color: #22c55e; }
+        .priority-medium { color: #f59e0b; }
+        .priority-high { color: #ef4444; }
+        
+        .status-open { background: #dbeafe; color: #1d4ed8; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .status-closed { background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="logo">⚡ Tech & Electrical Services</div>
+        <p style="margin-bottom: 20px; color: #64748b; text-align: center;">Client Portal</p>
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="clientId" placeholder="Client ID" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+    <div class="container">
+        <div class="header">
+            <h1>Welcome, <span id="clientName">Client</span></h1>
+            <a href="#" onclick="logout()" class="logout-btn">Sign Out</a>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Active Services</h3>
+                <div class="value">3</div>
+            </div>
+            <div class="stat-card">
+                <h3>Open Tickets</h3>
+                <div class="value">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>Next Service</h3>
+                <div class="value" style="font-size: 18px;">Apr 1, 2026</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Quick Actions</h2>
+            <div class="action-grid">
+                <a href="#" onclick="showSection('invoices')" class="action-btn">
+                    <div class="icon">📄</div>
+                    View Invoices
+                </a>
+                <a href="#" onclick="showSection('tickets')" class="action-btn">
+                    <div class="icon">🎫</div>
+                    New Ticket
+                </a>
+                <a href="#" onclick="showSection('services')" class="action-btn">
+                    <div class="icon">🛡️</div>
+                    My Services
+                </a>
+                <a href="#" onclick="showSection('contact')" class="action-btn">
+                    <div class="icon">📞</div>
+                    Contact Us
+                </a>
+            </div>
+        </div>
+        
+        <div class="section" id="invoicesSection" style="display: none;">
+            <h2>Invoices</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice #</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceTable">
+                    <tr>
+                        <td>Mar 15, 2026</td>
+                        <td>INV-2026-003</td>
+                        <td>Managed IT - March</td>
+                        <td>$750.00</td>
+                        <td><span class="status-open">Unpaid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Feb 15, 2026</td>
+                        <td>INV-2026-002</td>
+                        <td>Managed IT - February</td>
+                        <td>$750.00</td>
+                        <td><span class="status-closed">Paid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section" id="ticketsSection" style="display: none;">
+            <h2>Support Tickets</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#104</td>
+                        <td>VPN not connecting</td>
+                        <td><span class="priority-high">High</span></td>
+                        <td><span class="status-open">Open</span></td>
+                        <td>Mar 18, 2026</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 20px;">
+                <h3>Submit New Ticket</h3>
+                <div class="ticket-form" style="display: block;">
+                    <form onsubmit="submitTicket(event)">
+                        <input type="text" id="ticketSubject" placeholder="Subject" required>
+                        <select id="ticketPriority">
+                            <option value="low">Low - General Question</option>
+                            <option value="medium">Medium - Issue affecting work</option>
+                            <option value="high">High - System down</option>
+                        </select>
+                        <textarea id="ticketDesc" rows="4" placeholder="Describe the issue..." required></textarea>
+                        <button type="submit">Submit Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="servicesSection" style="display: none;">
+            <h2>Active Services</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Start Date</th>
+                        <th>Renewal</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Managed IT (10 users)</td>
+                        <td>Jan 1, 2026</td>
+                        <td>Jan 1, 2027</td>
+                        <td>$750/mo</td>
+                    </tr>
+                    <tr>
+                        <td>Security Monitoring</td>
+                        <td>Jan 1, 2026</td>
+                        <td>Jan 1, 2027</td>
+                        <td>$150/mo</td>
+                    </tr>
+                    <tr>
+                        <td>Cloud Backup</td>
+                        <td>Feb 1, 2026</td>
+                        <td>Feb 1, 2027</td>
+                        <td>$100/mo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple client-side auth (demo only - use real auth in production)
+    const clients = {
+        'barney': { password: 'demo123', name: "Barney's Tire Shop" },
+        'demo': { password: 'demo', name: 'Demo Client' }
+    };
+    
+    function handleLogin(e) {
+        e.preventDefault();
+        const id = document.getElementById('clientId').value.toLowerCase();
+        const pw = document.getElementById('password').value;
+        
+        if (clients[id] && clients[id].password === pw) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('clientName').textContent = clients[id].name;
+        } else {
+            alert('Invalid credentials. Try: barney / demo123');
+        }
+    }
+    
+    function logout() {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('clientId').value = '';
+        document.getElementById('password').value = '';
+    }
+    
+    function showSection(section) {
+        document.getElementById('invoicesSection').style.display = 'none';
+        document.getElementById('ticketsSection').style.display = 'none';
+        document.getElementById('servicesSection').style.display = 'none';
+        
+        if (section === 'invoices') document.getElementById('invoicesSection').style.display = 'block';
+        if (section === 'tickets') document.getElementById('ticketsSection').style.display = 'block';
+        if (section === 'services') document.getElementById('servicesSection').style.display = 'block';
+    }
+    
+    function submitTicket(e) {
+        e.preventDefault();
+        alert('Ticket submitted! We\'ll contact you shortly.');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote & Proposal Generator — Tech & Electrical Services LLC</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --surface3: #30363d;
+    --border: #30363d;
+    --cyan: #00d4ff;
+    --cyan-dim: #0099bb;
+    --amber: #f59e0b;
+    --green: #3fb950;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-dim: #6e7681;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  /* NAV */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--cyan);
+    white-space: nowrap;
+  }
+  .nav-brand span { color: var(--amber); }
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+  }
+  .nav-tab {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { background: var(--surface2); color: var(--text); }
+  .nav-tab.active { background: var(--surface3); color: var(--cyan); }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+  .badge {
+    background: var(--cyan);
+    color: var(--bg);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  /* LAYOUT */
+  .page { display: none; }
+  .page.active { display: block; }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  /* PANELS */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+  }
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .panel-header .icon { font-size: 16px; }
+  .panel-body { padding: 20px; }
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  /* FORM */
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-group select option { background: var(--surface2); }
+  /* BUTTONS */
+  .btn {
+    padding: 9px 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--cyan); color: var(--bg); }
+  .btn-primary:hover { background: var(--cyan-dim); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--surface3); }
+  .btn-success { background: var(--green); color: var(--bg); }
+  .btn-success:hover { background: #2ea043; }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #da3633; }
+  .btn-amber { background: var(--amber); color: var(--bg); }
+  .btn-amber:hover { background: #d97706; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-icon { padding: 7px 10px; }
+  /* QUOTE BUILDER */
+  .split-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+    align-items: start;
+  }
+  /* SERVICE CATALOG */
+  .service-categories {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .cat-btn {
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .cat-btn:hover, .cat-btn.active {
+    background: var(--cyan);
+    color: var(--bg);
+    border-color: var(--cyan);
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .service-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .service-card:hover {
+    border-color: var(--cyan);
+    background: rgba(0, 212, 255, 0.05);
+  }
+  .service-card .svc-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .service-card .svc-desc {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .service-card .svc-price {
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .service-card .svc-unit {
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+  /* LINE ITEMS TABLE */
+  .line-items-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .line-items-table th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .line-items-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    vertical-align: middle;
+  }
+  .line-items-table tr:last-child td { border-bottom: none; }
+  .line-items-table input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    width: 100%;
+    font-family: inherit;
+    outline: none;
+  }
+  .line-items-table input:focus { border-color: var(--cyan); }
+  .line-items-table .qty-input { width: 60px; }
+  .line-items-table .rate-input { width: 90px; }
+  /* TOTALS */
+  .totals-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: sticky;
+    top: 80px;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    font-size: 13px;
+  }
+  .total-row:last-child { border-bottom: none; }
+  .total-row.grand {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cyan);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .total-label { color: var(--text-muted); }
+  .total-value { font-weight: 600; }
+  /* STATS CARDS */
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+  .stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .stat-card .stat-sub {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  /* QUOTE HISTORY TABLE */
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .history-table th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .history-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .history-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .status-draft { background: rgba(139, 148, 158, 0.15); color: var(--text-muted); }
+  .status-sent { background: rgba(0, 212, 255, 0.15); color: var(--cyan); }
+  .status-accepted { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .status-declined { background: rgba(248, 81, 73, 0.15); color: var(--red); }
+  .status-followup { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+  /* REMINDER */
+  .reminder-card {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .reminder-card .icon { font-size: 20px; }
+  .reminder-card .reminder-text { flex: 1; }
+  .reminder-card .reminder-client { font-weight: 600; font-size: 13px; }
+  .reminder-card .reminder-sub { color: var(--text-muted); font-size: 12px; }
+  /* SETTINGS */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-weight: 600; font-size: 13px; }
+  .settings-sub { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+  /* TOAST */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    min-width: 240px;
+  }
+  .toast.success { border-left: 3px solid var(--green); }
+  .toast.error { border-left: 3px solid var(--red); }
+  .toast.info { border-left: 3px solid var(--cyan); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    max-width: 520px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+  }
+  /* E-SIGNATURE */
+  #sig-canvas {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+  }
+  #sig-canvas.signed { border-color: var(--green); }
+  /* MISC */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-12 { margin-bottom: 12px; }
+  .text-muted { color: var(--text-muted); }
+  .text-cyan { color: var(--cyan); }
+  .text-green { color: var(--green); }
+  .text-amber { color: var(--amber); }
+  .text-red { color: var(--red); }
+  .text-sm { font-size: 12px; }
+  .font-bold { font-weight: 700; }
+  .w-full { width: 100%; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state p { font-size: 14px; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(0,212,255,0.1);
+    color: var(--cyan);
+    margin-right: 4px;
+  }
+  .progress-bar {
+    background: var(--surface3);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  @media (max-width: 768px) {
+    .split-layout { grid-template-columns: 1fr; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .nav-tabs { gap: 2px; }
+    .nav-tab { padding: 5px 9px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">⚡ Tech &amp; Electrical <span>Services LLC</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('builder')">📝 New Quote</button>
+    <button class="nav-tab" onclick="showPage('history')">📋 Quote History</button>
+    <button class="nav-tab" onclick="showPage('reminders')">🔔 Reminders</button>
+    <button class="nav-tab" onclick="showPage('pricing')">💰 Pricing DB</button>
+    <button class="nav-tab" onclick="showPage('settings')">⚙️ Settings</button>
+  </div>
+  <div class="nav-right">
+    <span class="badge" id="quote-count-badge">0 quotes</span>
+  </div>
+</nav>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════ PAGE: BUILDER ═══════════════════════════════════ -->
+<div class="page active" id="page-builder">
+<div class="container">
+  <div class="split-layout">
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- CUSTOMER INFO -->
+      <div class="panel">
+        <div class="panel-header"><span class="icon">👤</span> Customer Details</div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Client Name *</label>
+              <input type="text" id="client-name" placeholder="John Smith / Barney's Tire Shop" />
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" id="client-company" placeholder="Company name (optional)" />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="client-email" placeholder="client@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="client-phone" placeholder="(951) 555-0100" />
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" id="client-address" placeholder="123 Main St, Temecula, CA" />
+            </div>
+            <div class="form-group">
+              <label>Quote Valid For</label>
+              <select id="quote-valid">
+                <option value="15">15 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="45">45 days</option>
+                <option value="60">60 days</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Project Description / Scope</label>
+            <textarea id="project-desc" placeholder="Describe the project scope, special requirements, site conditions, etc."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICE CATALOG -->
+      <div class="panel">
+        <div class="panel-header"><span class="icon">🛠️</span> Service Catalog — Click to Add</div>
+        <div class="panel-body">
+          <div class="service-categories" id="cat-filters">
+            <button class="cat-btn active" onclick="filterCatalog('all', this)">All</button>
+            <button class="cat-btn" onclick="filterCatalog('it', this)">💻 IT Support</button>
+            <button class="cat-btn" onclick="filterCatalog('board', this)">🔬 Board Repair</button>
+            <button class="cat-btn" onclick="filterCatalog('electrical', this)">⚡ Electrical</button>
+            <button class="cat-btn" onclick="filterCatalog('msp', this)">🌐 MSP</button>
+            <button class="cat-btn" onclick="filterCatalog('cyber', this)">🔒 Cybersecurity</button>
+            <button class="cat-btn" onclick="filterCatalog('dev', this)">👨‍💻 Dev</button>
+            <button class="cat-btn" onclick="filterCatalog('parts', this)">📦 Parts</button>
+          </div>
+          <div class="service-grid" id="service-catalog"></div>
+        </div>
+      </div>
+
+      <!-- CUSTOM LINE ITEM -->
+      <div class="panel">
+        <div class="panel-header"><span class="icon">➕</span> Add Custom Line Item</div>
+        <div class="panel-body">
+          <div class="grid-4" style="align-items:end">
+            <div class="form-group" style="margin:0">
+              <label>Description</label>
+              <input type="text" id="custom-desc" placeholder="Custom service..." />
+            </div>
+            <div class="form-group" style="margin:0">
+              <label>Unit</label>
+              <select id="custom-unit">
+                <option>flat</option>
+                <option>hr</option>
+                <option>each</option>
+                <option>mo</option>
+                <option>day</option>
+                <option>ft</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label>Rate ($)</label>
+              <input type="number" id="custom-rate" placeholder="0.00" step="0.01" min="0" />
+            </div>
+            <div class="form-group" style="margin:0">
+              <label>Qty</label>
+              <input type="number" id="custom-qty" placeholder="1" value="1" min="0.5" step="0.5" />
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn btn-secondary" onclick="addCustomLine()">➕ Add Line Item</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINE ITEMS -->
+      <div class="panel">
+        <div class="panel-header" style="justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:10px"><span class="icon">📋</span> Quote Line Items</div>
+          <button class="btn btn-secondary btn-sm" onclick="clearLines()">🗑 Clear All</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <table class="line-items-table" id="line-table">
+            <thead>
+              <tr>
+                <th style="width:35%">Description</th>
+                <th style="width:12%">Qty</th>
+                <th style="width:12%">Unit</th>
+                <th style="width:14%">Rate</th>
+                <th style="width:14%">Total</th>
+                <th style="width:13%">Action</th>
+              </tr>
+            </thead>
+            <tbody id="line-items-body">
+              <tr><td colspan="6" class="empty-state" style="padding:32px;text-align:center;color:var(--text-muted)">
+                No items added yet — click services above or add a custom item
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NOTES & TERMS -->
+      <div class="panel">
+        <div class="panel-header"><span class="icon">📄</span> Notes &amp; Terms</div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>Internal Notes (not shown on PDF)</label>
+            <textarea id="internal-notes" placeholder="Internal team notes, special considerations..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Terms &amp; Conditions (shown on PDF)</label>
+            <textarea id="quote-terms" rows="4">• Payment due within 30 days of invoice date.
+• 50% deposit required for projects over $500.
+• Parts/materials non-refundable once ordered.
+• Quote valid for the stated period. Prices subject to change after expiry.
+• Travel charges may apply for locations outside Temecula, CA (50+ mile radius).</textarea>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- END LEFT -->
+
+    <!-- RIGHT COLUMN: TOTALS & ACTIONS -->
+    <div>
+      <div class="totals-panel">
+        <div style="font-weight:700;font-size:15px;margin-bottom:16px">💰 Quote Summary</div>
+
+        <!-- Quote Number -->
+        <div style="margin-bottom:14px">
+          <div class="form-group" style="margin-bottom:8px">
+            <label>Quote #</label>
+            <input type="text" id="quote-number" />
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label>Date</label>
+            <input type="date" id="quote-date" />
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Discount -->
+        <div class="form-group">
+          <label>Discount (%)</label>
+          <input type="number" id="discount-pct" value="0" min="0" max="100" step="1" onchange="calcTotals()" />
+        </div>
+        <div class="form-group">
+          <label>Tax Rate (%)</label>
+          <input type="number" id="tax-rate" value="8.25" min="0" max="30" step="0.25" onchange="calcTotals()" />
+        </div>
+
+        <hr class="divider">
+
+        <div class="total-row">
+          <span class="total-label">Subtotal</span>
+          <span class="total-value" id="total-subtotal">$0.00</span>
+        </div>
+        <div class="total-row" id="discount-row" style="display:none">
+          <span class="total-label">Discount (<span id="disc-pct-display">0</span>%)</span>
+          <span class="total-value text-amber" id="total-discount">-$0.00</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Tax (<span id="tax-pct-display">8.25</span>%)</span>
+          <span class="total-value" id="total-tax">$0.00</span>
+        </div>
+        <div class="total-row grand">
+          <span>TOTAL</span>
+          <span id="grand-total">$0.00</span>
+        </div>
+
+        <hr class="divider">
+
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">
+          <div>Items: <strong id="item-count">0</strong></div>
+          <div>Labor hours: <strong id="labor-hours">0</strong></div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-primary w-full" onclick="generatePDF()">📄 Generate PDF Quote</button>
+          <button class="btn btn-success w-full" onclick="saveQuote()">💾 Save Quote</button>
+          <button class="btn btn-amber w-full" onclick="openSignatureModal()">✍️ Add E-Signature</button>
+          <button class="btn btn-secondary w-full" onclick="resetBuilder()">🔄 New Quote</button>
+        </div>
+
+        <hr class="divider">
+
+        <!-- E-SIGNATURE STATUS -->
+        <div id="sig-status" style="font-size:12px;color:var(--text-muted)">✍️ No signature captured</div>
+      </div>
+    </div><!-- END RIGHT -->
+  </div>
+</div>
+</div><!-- END BUILDER PAGE -->
+
+
+<!-- ═══════════════════════════════════ PAGE: HISTORY ═══════════════════════════════════ -->
+<div class="page" id="page-history">
+<div class="container">
+  <div class="flex justify-between items-center mb-16">
+    <h2 style="font-size:20px;font-weight:700">Quote History</h2>
+    <div class="flex gap-8">
+      <input type="text" id="search-quotes" placeholder="🔍 Search client, #..." 
+             style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:7px 12px;font-size:13px;outline:none;width:220px"
+             oninput="renderHistory()" />
+      <select id="status-filter" onchange="renderHistory()"
+              style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:7px 12px;font-size:13px;outline:none">
+        <option value="">All Statuses</option>
+        <option value="draft">Draft</option>
+        <option value="sent">Sent</option>
+        <option value="accepted">Accepted</option>
+        <option value="declined">Declined</option>
+        <option value="followup">Follow-up</option>
+      </select>
+      <button class="btn btn-secondary" onclick="exportAllJSON()">📥 Export JSON</button>
+      <button class="btn btn-secondary" onclick="importJSON()">📤 Import JSON</button>
+      <input type="file" id="import-file" style="display:none" accept=".json" onchange="handleImport(event)" />
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="grid-4 mb-16" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Quotes</div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Accepted Value</div>
+      <div class="stat-value" id="stat-accepted">$0</div>
+      <div class="stat-sub">Won revenue</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Value</div>
+      <div class="stat-value" id="stat-pending">$0</div>
+      <div class="stat-sub">Sent + follow-up</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Win Rate</div>
+      <div class="stat-value" id="stat-winrate">—</div>
+      <div class="stat-sub">Accepted / sent</div>
+      <div class="progress-bar"><div class="progress-fill" id="winrate-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-body" style="padding:0;overflow-x:auto">
+      <table class="history-table" id="history-table">
+        <thead>
+          <tr>
+            <th>Quote #</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Valid Until</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="history-body">
+          <tr><td colspan="8" class="empty-state" style="padding:48px;text-align:center;color:var(--text-muted)">
+            <div style="font-size:32px;margin-bottom:8px">📋</div>
+            No quotes saved yet — create one in the New Quote tab
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════ PAGE: REMINDERS ═══════════════════════════════════ -->
+<div class="page" id="page-reminders">
+<div class="container">
+  <div class="flex justify-between items-center mb-16">
+    <h2 style="font-size:20px;font-weight:700">Follow-up Reminders</h2>
+    <button class="btn btn-primary" onclick="openReminderModal()">➕ Add Reminder</button>
+  </div>
+
+  <!-- OVERDUE -->
+  <div class="panel mb-16" id="overdue-panel">
+    <div class="panel-header" style="color:var(--red)"><span class="icon">🚨</span> Overdue Follow-ups</div>
+    <div class="panel-body" id="overdue-body">
+      <div class="text-muted text-sm">No overdue follow-ups ✅</div>
+    </div>
+  </div>
+
+  <!-- DUE TODAY -->
+  <div class="panel mb-16" id="today-panel">
+    <div class="panel-header" style="color:var(--amber)"><span class="icon">📅</span> Due Today</div>
+    <div class="panel-body" id="today-body">
+      <div class="text-muted text-sm">Nothing due today</div>
+    </div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="panel">
+    <div class="panel-header" style="color:var(--cyan)"><span class="icon">📌</span> Upcoming</div>
+    <div class="panel-body" id="upcoming-body">
+      <div class="text-muted text-sm">No upcoming reminders</div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════ PAGE: PRICING DB ═══════════════════════════════════ -->
+<div class="page" id="page-pricing">
+<div class="container">
+  <div class="flex justify-between items-center mb-16">
+    <h2 style="font-size:20px;font-weight:700">Pricing Database</h2>
+    <div class="flex gap-8">
+      <button class="btn btn-primary" onclick="openAddServiceModal()">➕ Add Service</button>
+      <button class="btn btn-secondary" onclick="resetPricingDB()">↺ Reset to Defaults</button>
+    </div>
+  </div>
+  <div id="pricing-tables"></div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════ PAGE: SETTINGS ═══════════════════════════════════ -->
+<div class="page" id="page-settings">
+<div class="container" style="max-width:700px">
+  <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Settings</h2>
+
+  <div class="panel">
+    <div class="panel-header"><span class="icon">🏢</span> Company Information</div>
+    <div class="panel-body">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="s-company" value="Tech & Electrical Services LLC" />
+        </div>
+        <div class="form-group">
+          <label>Owner Name</label>
+          <input type="text" id="s-owner" value="Irvin Avitia" />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="s-phone" value="(951) 555-0100" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="s-email" value="irvin@techandelectrical.com" />
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="text" id="s-website" value="www.techandelectrical.com" />
+        </div>
+        <div class="form-group">
+          <label>License / Certification</label>
+          <input type="text" id="s-license" value="CompTIA Security+, BICSI, CA Lic #EC-XXXXX" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" id="s-address" value="Temecula, CA 92591 | Serving Inland Empire & San Diego County" />
+      </div>
+      <div class="form-group">
+        <label>Quote Number Prefix</label>
+        <input type="text" id="s-prefix" value="TES" style="width:120px" />
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="icon">💰</span> Default Rates</div>
+    <div class="panel-body">
+      <div class="grid-3">
+        <div class="form-group">
+          <label>Standard Labor ($/hr)</label>
+          <input type="number" id="s-rate-standard" value="85" />
+        </div>
+        <div class="form-group">
+          <label>Micro-Solder ($/hr)</label>
+          <input type="number" id="s-rate-solder" value="125" />
+        </div>
+        <div class="form-group">
+          <label>Emergency ($/hr)</label>
+          <input type="number" id="s-rate-emergency" value="150" />
+        </div>
+        <div class="form-group">
+          <label>Electrical ($/hr)</label>
+          <input type="number" id="s-rate-electrical" value="95" />
+        </div>
+        <div class="form-group">
+          <label>MSP Rate ($/hr)</label>
+          <input type="number" id="s-rate-msp" value="110" />
+        </div>
+        <div class="form-group">
+          <label>Dev Rate ($/hr)</label>
+          <input type="number" id="s-rate-dev" value="120" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="icon">📄</span> PDF Options</div>
+    <div class="panel-body">
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Include Terms & Conditions</div>
+          <div class="settings-sub">Print terms on PDF quote</div>
+        </div>
+        <input type="checkbox" id="pdf-terms" checked style="width:18px;height:18px;cursor:pointer" />
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Include Signature Block</div>
+          <div class="settings-sub">Print signature area on PDF</div>
+        </div>
+        <input type="checkbox" id="pdf-sig" checked style="width:18px;height:18px;cursor:pointer" />
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Show Unit Prices</div>
+          <div class="settings-sub">Show rate per unit on line items</div>
+        </div>
+        <input type="checkbox" id="pdf-unitprice" checked style="width:18px;height:18px;cursor:pointer" />
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px">
+    <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+    <button class="btn btn-secondary" style="margin-left:10px" onclick="clearAllData()">🗑 Clear All Data</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+
+<!-- E-SIGNATURE MODAL -->
+<div class="modal-overlay" id="sig-modal">
+  <div class="modal">
+    <div class="modal-title">✍️ E-Signature Capture</div>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:14px">
+      Draw your signature below. This will be embedded in the PDF quote.
+    </p>
+    <canvas id="sig-canvas" width="440" height="160"></canvas>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="clearSig()">🗑 Clear</button>
+      <button class="btn btn-secondary" onclick="closeModal('sig-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSig()">✅ Accept Signature</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div class="modal-overlay" id="reminder-modal">
+  <div class="modal">
+    <div class="modal-title">🔔 Add Follow-up Reminder</div>
+    <div class="form-group">
+      <label>Client Name</label>
+      <input type="text" id="rem-client" placeholder="Client or company name" />
+    </div>
+    <div class="form-group">
+      <label>Quote #</label>
+      <input type="text" id="rem-quote" placeholder="TES-001" />
+    </div>
+    <div class="form-group">
+      <label>Reminder Date</label>
+      <input type="date" id="rem-date" />
+    </div>
+    <div class="form-group">
+      <label>Message / Notes</label>
+      <textarea id="rem-message" placeholder="Follow up on proposal — check if they have questions..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Priority</label>
+      <select id="rem-priority">
+        <option value="normal">Normal</option>
+        <option value="high">High — Hot Lead</option>
+        <option value="low">Low — Warm Lead</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('reminder-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReminder()">✅ Save Reminder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SERVICE MODAL -->
+<div class="modal-overlay" id="add-service-modal">
+  <div class="modal">
+    <div class="modal-title">➕ Add Custom Service</div>
+    <div class="form-group">
+      <label>Service Name</label>
+      <input type="text" id="ns-name" placeholder="Service name" />
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" id="ns-desc" placeholder="Brief description" />
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="ns-cat">
+        <option value="it">💻 IT Support</option>
+        <option value="board">🔬 Board Repair</option>
+        <option value="electrical">⚡ Electrical</option>
+        <option value="msp">🌐 MSP</option>
+        <option value="cyber">🔒 Cybersecurity</option>
+        <option value="dev">👨‍💻 Dev</option>
+        <option value="parts">📦 Parts/Materials</option>
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Default Rate ($)</label>
+        <input type="number" id="ns-rate" placeholder="0.00" step="0.01" />
+      </div>
+      <div class="form-group">
+        <label>Unit</label>
+        <select id="ns-unit">
+          <option value="flat">flat</option>
+          <option value="hr">hr</option>
+          <option value="each">each</option>
+          <option value="mo">mo</option>
+          <option value="day">day</option>
+          <option value="ft">ft</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('add-service-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewService()">✅ Add Service</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW QUOTE MODAL -->
+<div class="modal-overlay" id="view-quote-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-title">📋 Quote Details</div>
+    <div id="view-quote-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('view-quote-modal')">Close</button>
+      <button class="btn btn-primary" id="view-quote-pdf-btn">📄 Regenerate PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DEFAULT PRICING DATABASE
+// ═══════════════════════════════════════════════════
+const DEFAULT_SERVICES = [
+  // IT Support
+  { id:'it-01', name:'Diagnostic / Assessment', desc:'Full system diagnosis & written report', cat:'it', rate:49, unit:'flat' },
+  { id:'it-02', name:'OS Reinstall / Recovery', desc:'Windows/macOS clean install or recovery', cat:'it', rate:149, unit:'flat' },
+  { id:'it-03', name:'Virus & Malware Removal', desc:'Deep scan, remove, harden system', cat:'it', rate:99, unit:'flat' },
+  { id:'it-04', name:'Data Recovery (Basic)', desc:'Deleted files, corrupted partition', cat:'it', rate:199, unit:'flat' },
+  { id:'it-05', name:'Data Recovery (RAID/Advanced)', desc:'RAID array rebuild, advanced recovery', cat:'it', rate:499, unit:'flat' },
+  { id:'it-06', name:'Network Setup (Home)', desc:'Router config, Wi-Fi optimization', cat:'it', rate:125, unit:'flat' },
+  { id:'it-07', name:'Network Setup (Business)', desc:'VLAN, firewall, AP deployment', cat:'it', rate:350, unit:'flat' },
+  { id:'it-08', name:'IT Labor', desc:'Standard hourly IT support', cat:'it', rate:85, unit:'hr' },
+  { id:'it-09', name:'Emergency / After-Hours Labor', desc:'Priority response, after hours', cat:'it', rate:150, unit:'hr' },
+  { id:'it-10', name:'PC Build / Assembly', desc:'Custom PC build & bench test', cat:'it', rate:125, unit:'flat' },
+  // Board Repair / Micro-Soldering
+  { id:'br-01', name:'Micro-Solder Labor', desc:'Board-level repair labor rate', cat:'board', rate:125, unit:'hr' },
+  { id:'br-02', name:'MacBook Liquid Damage Repair', desc:'Board clean, reball, component replace', cat:'board', rate:299, unit:'flat' },
+  { id:'br-03', name:'iPhone/Android Board Repair', desc:'Micro-solder, connector, IC replace', cat:'board', rate:149, unit:'flat' },
+  { id:'br-04', name:'GPU Reflow / Reball', desc:'BGA reflow + reball service', cat:'board', rate:199, unit:'flat' },
+  { id:'br-05', name:'Laptop DC Jack Replace', desc:'Power jack micro-solder replacement', cat:'board', rate:99, unit:'flat' },
+  { id:'br-06', name:'Console Repair (PS5/Xbox)', desc:'HDMI port, BGA, fan, power', cat:'board', rate:129, unit:'flat' },
+  { id:'br-07', name:'Component-Level Diagnosis', desc:'Identify faulty components, written report', cat:'board', rate:75, unit:'flat' },
+  { id:'br-08', name:'Chip Replacement (IC/MOSFET)', desc:'Surface mount IC or MOSFET replacement', cat:'board', rate:89, unit:'each' },
+  // Electrical
+  { id:'el-01', name:'Electrical Labor', desc:'Licensed electrical work, hourly', cat:'electrical', rate:95, unit:'hr' },
+  { id:'el-02', name:'Panel Upgrade (100A→200A)', desc:'Main panel replacement & inspection', cat:'electrical', rate:1800, unit:'flat' },
+  { id:'el-03', name:'Circuit Install (20A)', desc:'New dedicated 20A circuit + breaker', cat:'electrical', rate:350, unit:'flat' },
+  { id:'el-04', name:'EV Charger Install (Level 2)', desc:'240V outlet + EVSE mount & wire', cat:'electrical', rate:650, unit:'flat' },
+  { id:'el-05', name:'Outlet / Switch Install', desc:'Per outlet or switch replacement', cat:'electrical', rate:85, unit:'each' },
+  { id:'el-06', name:'Lighting Install', desc:'Fixture install, per light', cat:'electrical', rate:75, unit:'each' },
+  { id:'el-07', name:'Smart Home Wiring', desc:'Cat6, HDMI, structured wiring rough-in', cat:'electrical', rate:110, unit:'hr' },
+  { id:'el-08', name:'Electrical Inspection & Report', desc:'Full residential/commercial assessment', cat:'electrical', rate:199, unit:'flat' },
+  { id:'el-09', name:'Generator Hookup', desc:'Transfer switch + generator connection', cat:'electrical', rate:800, unit:'flat' },
+  // MSP
+  { id:'msp-01', name:'MSP Basic (per seat/mo)', desc:'Monitoring, patching, helpdesk', cat:'msp', rate:49, unit:'mo' },
+  { id:'msp-02', name:'MSP Standard (per seat/mo)', desc:'Basic + backup + AV + priority support', cat:'msp', rate:89, unit:'mo' },
+  { id:'msp-03', name:'MSP Premium (per seat/mo)', desc:'Standard + vCISO + compliance + SLA', cat:'msp', rate:149, unit:'mo' },
+  { id:'msp-04', name:'Server Monitoring (mo)', desc:'24/7 server health & alert monitoring', cat:'msp', rate:299, unit:'mo' },
+  { id:'msp-05', name:'Backup as a Service (mo)', desc:'Cloud backup, retention, tested restores', cat:'msp', rate:149, unit:'mo' },
+  { id:'msp-06', name:'MSP Onboarding', desc:'RMM setup, documentation, asset inventory', cat:'msp', rate:500, unit:'flat' },
+  { id:'msp-07', name:'MSP Labor (on-site)', desc:'Managed services on-site labor', cat:'msp', rate:110, unit:'hr' },
+  // Cybersecurity
+  { id:'cy-01', name:'Security Assessment', desc:'Vulnerability scan + written report', cat:'cyber', rate:499, unit:'flat' },
+  { id:'cy-02', name:'Penetration Test (network)', desc:'External/internal pen test + report', cat:'cyber', rate:1200, unit:'flat' },
+  { id:'cy-03', name:'vCISO Service (mo)', desc:'Virtual CISO, strategy, compliance', cat:'cyber', rate:1500, unit:'mo' },
+  { id:'cy-04', name:'MSSP Monitoring (mo)', desc:'SOC alerts, incident response, reporting', cat:'cyber', rate:800, unit:'mo' },
+  { id:'cy-05', name:'Security Training Session', desc:'Staff phishing awareness, 1hr session', cat:'cyber', rate:299, unit:'flat' },
+  { id:'cy-06', name:'Firewall Deploy & Config', desc:'Deploy + harden enterprise firewall', cat:'cyber', rate:450, unit:'flat' },
+  { id:'cy-07', name:'Cybersecurity Labor', desc:'Security engineering hourly', cat:'cyber', rate:135, unit:'hr' },
+  // Dev
+  { id:'dv-01', name:'Dev Labor', desc:'Custom software / automation hourly', cat:'dev', rate:120, unit:'hr' },
+  { id:'dv-02', name:'Website (Static)', desc:'5-page static site, mobile responsive', cat:'dev', rate:800, unit:'flat' },
+  { id:'dv-03', name:'Website (Dynamic/CMS)', desc:'WordPress/custom CMS, full build', cat:'dev', rate:2500, unit:'flat' },
+  { id:'dv-04', name:'Custom Web App', desc:'React/Node web application', cat:'dev', rate:150, unit:'hr' },
+  { id:'dv-05', name:'API Integration', desc:'Third-party API connect & automation', cat:'dev', rate:350, unit:'flat' },
+  { id:'dv-06', name:'Script / Automation', desc:'Custom script, per project', cat:'dev', rate:200, unit:'flat' },
+  // Parts
+  { id:'pt-01', name:'Cat6 Cable (per ft)', desc:'CCA or pure copper Cat6', cat:'parts', rate:0.65, unit:'ft' },
+  { id:'pt-02', name:'RJ45 Keystone Jack', desc:'Punch-down Cat6 jack', cat:'parts', rate:4.50, unit:'each' },
+  { id:'pt-03', name:'Parts & Materials', desc:'General hardware / materials markup', cat:'parts', rate:0, unit:'flat' },
+  { id:'pt-04', name:'SSD (512GB NVMe)', desc:'M.2 NVMe SSD replacement', cat:'parts', rate:79, unit:'each' },
+  { id:'pt-05', name:'RAM DDR4 16GB', desc:'16GB DDR4-3200 SO-DIMM', cat:'parts', rate:45, unit:'each' },
+  { id:'pt-06', name:'Thermal Paste', desc:'Premium TIM application', cat:'parts', rate:8, unit:'flat' },
+  { id:'pt-07', name:'Solder / Flux (consumable)', desc:'Lead-free solder + flux per repair', cat:'parts', rate:5, unit:'flat' },
+];
+
+const CAT_LABELS = {
+  it: '💻 IT Support',
+  board: '🔬 Board Repair',
+  electrical: '⚡ Electrical',
+  msp: '🌐 MSP',
+  cyber: '🔒 Cybersecurity',
+  dev: '👨‍💻 Dev',
+  parts: '📦 Parts/Materials',
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let lineItems = [];
+let signatureData = null;
+let currentCategory = 'all';
+let editingQuoteId = null;
+
+// ═══════════════════════════════════════════════════
+// STORAGE HELPERS
+// ═══════════════════════════════════════════════════
+const LS = {
+  get: (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; }},
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+};
+
+function getServices() { return LS.get('tes_services', DEFAULT_SERVICES); }
+function getQuotes() { return LS.get('tes_quotes', []); }
+function getReminders() { return LS.get('tes_reminders', []); }
+function getSettings() {
+  return LS.get('tes_settings', {
+    company: 'Tech & Electrical Services LLC',
+    owner: 'Irvin Avitia',
+    phone: '(951) 555-0100',
+    email: 'irvin@techandelectrical.com',
+    website: 'www.techandelectrical.com',
+    license: 'CompTIA Security+, BICSI, CA Lic #EC-XXXXX',
+    address: 'Temecula, CA 92591 | Serving Inland Empire & San Diego County',
+    prefix: 'TES',
+    rates: { standard: 85, solder: 125, emergency: 150, electrical: 95, msp: 110, dev: 120 },
+    pdf: { terms: true, sig: true, unitprice: true },
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE ROUTING
+// ═══════════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'history') { renderHistory(); renderStats(); }
+  if (name === 'reminders') renderReminders();
+  if (name === 'pricing') renderPricingDB();
+  if (name === 'settings') loadSettings();
+}
+
+// ═══════════════════════════════════════════════════
+// CATALOG RENDER
+// ═══════════════════════════════════════════════════
+function filterCatalog(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCatalog();
+}
+
+function renderCatalog() {
+  const services = getServices();
+  const filtered = currentCategory === 'all' ? services : services.filter(s => s.cat === currentCategory);
+  const el = document.getElementById('service-catalog');
+  el.innerHTML = filtered.map(s => `
+    <div class="service-card" onclick="addServiceLine('${s.id}')">
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-price">$${fmt(s.rate)} <span class="svc-unit">/ ${s.unit}</span></div>
+    </div>
+  `).join('');
+}
+
+function addServiceLine(id) {
+  const s = getServices().find(x => x.id === id);
+  if (!s) return;
+  // Check if already in quote — offer to bump qty
+  const existing = lineItems.find(l => l.serviceId === id);
+  if (existing) {
+    existing.qty += 1;
+    renderLineItems();
+    calcTotals();
+    toast('Qty updated: ' + s.name, 'info');
+    return;
+  }
+  lineItems.push({
+    id: Date.now() + Math.random(),
+    serviceId: id,
+    desc: s.name,
+    unit: s.unit,
+    rate: s.rate,
+    qty: 1,
+    cat: s.cat,
+  });
+  renderLineItems();
+  calcTotals();
+  toast('Added: ' + s.name, 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// LINE ITEMS
+// ═══════════════════════════════════════════════════
+function renderLineItems() {
+  const tbody = document.getElementById('line-items-body');
+  if (lineItems.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">
+      No items added yet — click services above or add a custom item
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = lineItems.map((l, i) => `
+    <tr>
+      <td>
+        <input class="line-input" value="${escHtml(l.desc)}" onchange="updateLine(${i},'desc',this.value)" style="width:100%" />
+      </td>
+      <td>
+        <input class="line-input qty-input" type="number" value="${l.qty}" min="0.5" step="0.5"
+          onchange="updateLine(${i},'qty',+this.value)" style="width:60px" />
+      </td>
+      <td>
+        <select class="line-input" onchange="updateLine(${i},'unit',this.value)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 6px;font-size:12px;font-family:inherit;outline:none">
+          ${['flat','hr','each','mo','day','ft'].map(u => `<option ${l.unit===u?'selected':''}>${u}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <input class="line-input rate-input" type="number" value="${l.rate}" min="0" step="0.01"
+          onchange="updateLine(${i},'rate',+this.value)" style="width:90px" />
+      </td>
+      <td style="font-weight:600;color:var(--cyan)">$${fmt(l.qty * l.rate)}</td>
+      <td>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="removeLine(${i})">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function updateLine(i, field, val) {
+  lineItems[i][field] = val;
+  renderLineItems();
+  calcTotals();
+}
+
+function removeLine(i) {
+  lineItems.splice(i, 1);
+  renderLineItems();
+  calcTotals();
+}
+
+function clearLines() {
+  if (!lineItems.length) return;
+  if (confirm('Clear all line items?')) {
+    lineItems = [];
+    renderLineItems();
+    calcTotals();
+  }
+}
+
+function addCustomLine() {
+  const desc = document.getElementById('custom-desc').value.trim();
+  const unit = document.getElementById('custom-unit').value;
+  const rate = parseFloat(document.getElementById('custom-rate').value) || 0;
+  const qty = parseFloat(document.getElementById('custom-qty').value) || 1;
+  if (!desc) { toast('Enter a description first', 'error'); return; }
+  lineItems.push({ id: Date.now(), desc, unit, rate, qty, cat: 'custom' });
+  renderLineItems();
+  calcTotals();
+  document.getElementById('custom-desc').value = '';
+  document.getElementById('custom-rate').value = '';
+  document.getElementById('custom-qty').value = '1';
+  toast('Custom line item added', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// TOTALS CALC
+// ═══════════════════════════════════════════════════
+function calcTotals() {
+  const subtotal = lineItems.reduce((s, l) => s + (l.qty * l.rate), 0);
+  const discPct = parseFloat(document.getElementById('discount-pct').value) || 0;
+  const taxPct = parseFloat(document.getElementById('tax-rate').value) || 0;
+  const discount = subtotal * (discPct / 100);
+  const taxable = subtotal - discount;
+  const tax = taxable * (taxPct / 100);
+  const grand = taxable + tax;
+  const laborHrs = lineItems.filter(l => l.unit === 'hr').reduce((s, l) => s + l.qty, 0);
+
+  document.getElementById('total-subtotal').textContent = '$' + fmt(subtotal);
+  document.getElementById('total-discount').textContent = '-$' + fmt(discount);
+  document.getElementById('total-tax').textContent = '$' + fmt(tax);
+  document.getElementById('grand-total').textContent = '$' + fmt(grand);
+  document.getElementById('item-count').textContent = lineItems.length;
+  document.getElementById('labor-hours').textContent = laborHrs.toFixed(1);
+  document.getElementById('disc-pct-display').textContent = discPct;
+  document.getElementById('tax-pct-display').textContent = taxPct;
+  document.getElementById('discount-row').style.display = discPct > 0 ? 'flex' : 'none';
+
+  updateBadge();
+}
+
+// ═══════════════════════════════════════════════════
+// SAVE QUOTE
+// ═══════════════════════════════════════════════════
+function saveQuote() {
+  const clientName = document.getElementById('client-name').value.trim();
+  if (!clientName) { toast('Enter client name first', 'error'); return; }
+  if (!lineItems.length) { toast('Add at least one service', 'error'); return; }
+
+  const quotes = getQuotes();
+  const quoteNum = document.getElementById('quote-number').value;
+  const discPct = parseFloat(document.getElementById('discount-pct').value) || 0;
+  const taxPct = parseFloat(document.getElementById('tax-rate').value) || 0;
+  const subtotal = lineItems.reduce((s, l) => s + l.qty * l.rate, 0);
+  const discount = subtotal * (discPct / 100);
+  const tax = (subtotal - discount) * (taxPct / 100);
+  const grand = (subtotal - discount) + tax;
+  const validDays = parseInt(document.getElementById('quote-valid').value);
+  const quoteDate = document.getElementById('quote-date').value || today();
+  const validUntil = addDays(quoteDate, validDays);
+
+  const quote = {
+    id: editingQuoteId || ('q_' + Date.now()),
+    quoteNum,
+    date: quoteDate,
+    validUntil,
+    client: {
+      name: clientName,
+      company: document.getElementById('client-company').value.trim(),
+      email: document.getElementById('client-email').value.trim(),
+      phone: document.getElementById('client-phone').value.trim(),
+      address: document.getElementById('client-address').value.trim(),
+    },
+    project: document.getElementById('project-desc').value.trim(),
+    lineItems: [...lineItems],
+    discPct,
+    taxPct,
+    subtotal,
+    discount,
+    tax,
+    grand,
+    status: 'draft',
+    terms: document.getElementById('quote-terms').value,
+    internalNotes: document.getElementById('internal-notes').value,
+    signature: signatureData,
+    createdAt: new Date().toISOString(),
+  };
+
+  if (editingQuoteId) {
+    const idx = quotes.findIndex(q => q.id === editingQuoteId);
+    if (idx !== -1) {
+      quote.status = quotes[idx].status;
+      quotes[idx] = quote;
+    } else {
+      quotes.unshift(quote);
+    }
+  } else {
+    quotes.unshift(quote);
+  }
+
+  LS.set('tes_quotes', quotes);
+  editingQuoteId = quote.id;
+  updateBadge();
+  toast('Quote saved! ' + quoteNum, 'success');
+  return quote;
+}
+
+// ═══════════════════════════════════════════════════
+// PDF GENERATION
+// ═══════════════════════════════════════════════════
+async function generatePDF(quoteToPrint) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const cfg = getSettings();
+  const W = 612, margin = 40;
+  let y = margin;
+
+  const q = quoteToPrint || buildCurrentQuoteObj();
+  if (!q.client.name) { toast('Enter client name first', 'error'); return; }
+  if (!q.lineItems.length) { toast('Add at least one line item', 'error'); return; }
+
+  // ---- HEADER BAR ----
+  doc.setFillColor(13, 17, 23);
+  doc.rect(0, 0, W, 90, 'F');
+  // Accent line
+  doc.setFillColor(0, 212, 255);
+  doc.rect(0, 90, W, 3, 'F');
+
+  // Company name
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(0, 212, 255);
+  doc.text(cfg.company, margin, 35);
+
+  // Tagline
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(139, 148, 158);
+  doc.text('IT Infrastructure · Micro-Soldering · Electrical · Cybersecurity · MSP', margin, 50);
+
+  // Contact info (right side)
+  const contactLines = [cfg.owner, cfg.phone, cfg.email, cfg.website, cfg.address, cfg.license];
+  doc.setFontSize(8);
+  let cx = y;
+  contactLines.forEach((line, i) => {
+    const x = W - margin;
+    if (i === 0) { doc.setFont('helvetica', 'bold'); doc.setTextColor(230, 237, 243); }
+    else { doc.setFont('helvetica', 'normal'); doc.setTextColor(139, 148, 158); }
+    doc.text(line, x, 25 + i * 11, { align: 'right' });
+  });
+
+  y = 110;
+
+  // ---- QUOTE TITLE + META ----
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(230, 237, 243);
+  doc.text('PROPOSAL / QUOTE', margin, y + 18);
+
+  // Quote number + date box
+  doc.setFillColor(22, 27, 34);
+  doc.roundedRect(W - margin - 180, y, 180, 56, 4, 4, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(139, 148, 158);
+  doc.text('QUOTE NUMBER', W - margin - 170, y + 14);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(0, 212, 255);
+  doc.text(q.quoteNum, W - margin - 170, y + 28);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(139, 148, 158);
+  doc.text(`Date: ${fmtDate(q.date)}   Valid Until: ${fmtDate(q.validUntil)}`, W - margin - 170, y + 43);
+
+  y += 70;
+
+  // ---- CLIENT INFO ----
+  doc.setFillColor(22, 27, 34);
+  doc.roundedRect(margin, y, 240, 80, 4, 4, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(0, 212, 255);
+  doc.text('PREPARED FOR', margin + 12, y + 14);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(230, 237, 243);
+  doc.text(q.client.name, margin + 12, y + 28);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(139, 148, 158);
+  if (q.client.company) doc.text(q.client.company, margin + 12, y + 40);
+  const clientY = q.client.company ? y + 52 : y + 40;
+  if (q.client.phone) doc.text(q.client.phone, margin + 12, clientY);
+  if (q.client.email) doc.text(q.client.email, margin + 12, clientY + 11);
+  if (q.client.address) doc.text(q.client.address, margin + 12, clientY + 22);
+
+  // Project description box (right side)
+  if (q.project) {
+    doc.setFillColor(22, 27, 34);
+    doc.roundedRect(margin + 260, y, W - margin - margin - 260, 80, 4, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(245, 158, 11);
+    doc.text('PROJECT SCOPE', margin + 272, y + 14);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(230, 237, 243);
+    const descLines = doc.splitTextToSize(q.project, W - margin - margin - 285);
+    doc.text(descLines.slice(0, 5), margin + 272, y + 28);
+  }
+
+  y += 100;
+
+  // ---- LINE ITEMS TABLE ----
+  const tableHead = [['#', 'Description', 'Category', 'Qty', 'Unit', 'Rate', 'Total']];
+  const tableData = q.lineItems.map((l, i) => [
+    i + 1,
+    l.desc,
+    CAT_LABELS[l.cat]?.split(' ').slice(1).join(' ') || 'Custom',
+    l.qty,
+    l.unit,
+    '$' + fmt(l.rate),
+    '$' + fmt(l.qty * l.rate),
+  ]);
+
+  doc.autoTable({
+    startY: y,
+    head: tableHead,
+    body: tableData,
+    margin: { left: margin, right: margin },
+    styles: {
+      font: 'helvetica',
+      fontSize: 9,
+      cellPadding: 6,
+      textColor: [230, 237, 243],
+      lineColor: [48, 54, 61],
+      lineWidth: 0.5,
+    },
+    headStyles: {
+      fillColor: [13, 17, 23],
+      textColor: [0, 212, 255],
+      fontStyle: 'bold',
+      fontSize: 8,
+    },
+    alternateRowStyles: { fillColor: [22, 27, 34] },
+    bodyStyles: { fillColor: [33, 38, 45] },
+    columnStyles: {
+      0: { cellWidth: 22, halign: 'center' },
+      3: { cellWidth: 35, halign: 'center' },
+      4: { cellWidth: 35, halign: 'center' },
+      5: { cellWidth: 65, halign: 'right' },
+      6: { cellWidth: 72, halign: 'right', fontStyle: 'bold', textColor: [0, 212, 255] },
+    },
+  });
+
+  y = doc.lastAutoTable.finalY + 16;
+
+  // ---- TOTALS BOX ----
+  const totalsX = W - margin - 200;
+  doc.setFillColor(13, 17, 23);
+  doc.roundedRect(totalsX, y, 200, q.discPct > 0 ? 96 : 80, 4, 4, 'F');
+  let ty = y + 16;
+
+  const addTotalRow = (label, value, highlight = false) => {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(139, 148, 158);
+    doc.text(label, totalsX + 12, ty);
+    if (highlight) {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 212, 255);
+      doc.setFontSize(12);
+    } else {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(230, 237, 243);
+    }
+    doc.text(value, totalsX + 188, ty, { align: 'right' });
+    ty += highlight ? 0 : 14;
+  };
+
+  addTotalRow('Subtotal', '$' + fmt(q.subtotal));
+  if (q.discPct > 0) addTotalRow(`Discount (${q.discPct}%)`, '-$' + fmt(q.discount));
+  addTotalRow(`Tax (${q.taxPct}%)`, '$' + fmt(q.tax));
+  doc.setFillColor(0, 212, 255);
+  doc.rect(totalsX, ty - 4, 200, 1, 'F');
+  ty += 8;
+  addTotalRow('TOTAL DUE', '$' + fmt(q.grand), true);
+
+  y = doc.lastAutoTable.finalY + (q.discPct > 0 ? 116 : 100);
+
+  // ---- TERMS ----
+  if (cfg.pdf?.terms && q.terms) {
+    const pageH = doc.internal.pageSize.height;
+    if (y > pageH - 160) { doc.addPage(); y = margin; }
+
+    doc.setFillColor(22, 27, 34);
+    const termLines = doc.splitTextToSize(q.terms, W - margin * 2 - 24);
+    const termH = Math.min(termLines.length * 11 + 28, 140);
+    doc.roundedRect(margin, y, W - margin * 2, termH, 4, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(0, 212, 255);
+    doc.text('TERMS & CONDITIONS', margin + 12, y + 14);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(139, 148, 158);
+    doc.text(termLines, margin + 12, y + 26);
+    y += termH + 16;
+  }
+
+  // ---- SIGNATURE BLOCK ----
+  if (cfg.pdf?.sig) {
+    const pageH = doc.internal.pageSize.height;
+    if (y > pageH - 120) { doc.addPage(); y = margin; }
+
+    doc.setFillColor(13, 17, 23);
+    doc.roundedRect(margin, y, 240, 80, 4, 4, 'F');
+
+    if (q.signature) {
+      // Embed captured signature
+      doc.addImage(q.signature, 'PNG', margin + 10, y + 10, 220, 50);
+    } else {
+      doc.setDrawColor(48, 54, 61);
+      doc.line(margin + 12, y + 55, margin + 228, y + 55);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(139, 148, 158);
+      doc.text('Client Signature', margin + 12, y + 67);
+    }
+
+    doc.setFillColor(13, 17, 23);
+    doc.roundedRect(margin + 260, y, 200, 80, 4, 4, 'F');
+    doc.setDrawColor(48, 54, 61);
+    doc.line(margin + 272, y + 55, margin + 448, y + 55);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(139, 148, 158);
+    doc.text('Date', margin + 272, y + 67);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(0, 212, 255);
+    doc.text('ACCEPTANCE', margin + 12, y + 14);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(139, 148, 158);
+    doc.text('By signing, client agrees to the terms above.', margin + 12, y + 26);
+
+    y += 96;
+  }
+
+  // ---- FOOTER ----
+  const pages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= pages; p++) {
+    doc.setPage(p);
+    const pH = doc.internal.pageSize.height;
+    doc.setFillColor(13, 17, 23);
+    doc.rect(0, pH - 30, W, 30, 'F');
+    doc.setFillColor(0, 212, 255);
+    doc.rect(0, pH - 30, W, 1.5, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(139, 148, 158);
+    doc.text(`${cfg.company} · ${cfg.phone} · ${cfg.email}`, margin, pH - 12);
+    doc.text(`Page ${p} of ${pages}`, W - margin, pH - 12, { align: 'right' });
+  }
+
+  const fname = `${q.quoteNum}_${(q.client.name || 'quote').replace(/\s+/g,'_')}.pdf`;
+  doc.save(fname);
+  toast('PDF saved: ' + fname, 'success');
+}
+
+function buildCurrentQuoteObj() {
+  const discPct = parseFloat(document.getElementById('discount-pct').value) || 0;
+  const taxPct = parseFloat(document.getElementById('tax-rate').value) || 0;
+  const subtotal = lineItems.reduce((s, l) => s + l.qty * l.rate, 0);
+  const discount = subtotal * (discPct / 100);
+  const tax = (subtotal - discount) * (taxPct / 100);
+  const grand = (subtotal - discount) + tax;
+  return {
+    quoteNum: document.getElementById('quote-number').value || nextQuoteNum(),
+    date: document.getElementById('quote-date').value || today(),
+    validUntil: addDays(document.getElementById('quote-date').value || today(), parseInt(document.getElementById('quote-valid').value) || 30),
+    client: {
+      name: document.getElementById('client-name').value.trim(),
+      company: document.getElementById('client-company').value.trim(),
+      email: document.getElementById('client-email').value.trim(),
+      phone: document.getElementById('client-phone').value.trim(),
+      address: document.getElementById('client-address').value.trim(),
+    },
+    project: document.getElementById('project-desc').value.trim(),
+    lineItems: [...lineItems],
+    discPct, taxPct, subtotal, discount, tax, grand,
+    terms: document.getElementById('quote-terms').value,
+    signature: signatureData,
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// QUOTE HISTORY
+// ═══════════════════════════════════════════════════
+function renderHistory() {
+  const quotes = getQuotes();
+  const search = (document.getElementById('search-quotes')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('status-filter')?.value || '';
+
+  const filtered = quotes.filter(q => {
+    const matchSearch = !search ||
+      q.client.name.toLowerCase().includes(search) ||
+      (q.client.company || '').toLowerCase().includes(search) ||
+      q.quoteNum.toLowerCase().includes(search);
+    const matchStatus = !statusFilter || q.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  const tbody = document.getElementById('history-body');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="padding:48px;text-align:center;color:var(--text-muted)">
+      <div style="font-size:32px;margin-bottom:8px">📋</div>
+      ${quotes.length ? 'No quotes match your search' : 'No quotes saved yet'}
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(q => `
+    <tr>
+      <td><span style="font-weight:600;color:var(--cyan)">${q.quoteNum}</span></td>
+      <td>${fmtDate(q.date)}</td>
+      <td>
+        <div style="font-weight:600">${escHtml(q.client.name)}</div>
+        ${q.client.company ? `<div style="color:var(--text-muted);font-size:11px">${escHtml(q.client.company)}</div>` : ''}
+      </td>
+      <td>${q.lineItems.length} items</td>
+      <td style="font-weight:700;color:var(--green)">$${fmt(q.grand)}</td>
+      <td>
+        <select class="status-select" onchange="updateStatus('${q.id}', this.value)"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 8px;font-size:12px;font-family:inherit;outline:none;cursor:pointer">
+          ${['draft','sent','accepted','declined','followup'].map(s =>
+            `<option value="${s}" ${q.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td style="color:${isExpired(q.validUntil)?'var(--red)':'var(--text-muted)'}">
+        ${fmtDate(q.validUntil)} ${isExpired(q.validUntil)?'⚠️ Expired':''}
+      </td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="viewQuote('${q.id}')">👁</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadQuoteToBuilder('${q.id}')">✏️</button>
+          <button class="btn btn-primary btn-sm" onclick="reprintQuote('${q.id}')">📄</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteQuote('${q.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderStats() {
+  const quotes = getQuotes();
+  const accepted = quotes.filter(q => q.status === 'accepted');
+  const pending = quotes.filter(q => q.status === 'sent' || q.status === 'followup');
+  const nonDraft = quotes.filter(q => q.status !== 'draft');
+  const winRate = nonDraft.length ? Math.round(accepted.length / nonDraft.length * 100) : 0;
+
+  document.getElementById('stat-total').textContent = quotes.length;
+  document.getElementById('stat-accepted').textContent = '$' + fmtK(accepted.reduce((s,q) => s + q.grand, 0));
+  document.getElementById('stat-pending').textContent = '$' + fmtK(pending.reduce((s,q) => s + q.grand, 0));
+  document.getElementById('stat-winrate').textContent = nonDraft.length ? winRate + '%' : '—';
+  document.getElementById('winrate-bar').style.width = winRate + '%';
+}
+
+function updateStatus(id, status) {
+  const quotes = getQuotes();
+  const q = quotes.find(x => x.id === id);
+  if (q) {
+    q.status = status;
+    LS.set('tes_quotes', quotes);
+    renderStats();
+    toast('Status updated to: ' + status, 'info');
+  }
+}
+
+function deleteQuote(id) {
+  if (!confirm('Delete this quote? This cannot be undone.')) return;
+  const quotes = getQuotes().filter(q => q.id !== id);
+  LS.set('tes_quotes', quotes);
+  renderHistory();
+  renderStats();
+  updateBadge();
+  toast('Quote deleted', 'info');
+}
+
+function reprintQuote(id) {
+  const q = getQuotes().find(x => x.id === id);
+  if (q) generatePDF(q);
+}
+
+function viewQuote(id) {
+  const q = getQuotes().find(x => x.id === id);
+  if (!q) return;
+  const content = document.getElementById('view-quote-content');
+  content.innerHTML = `
+    <div style="font-size:13px">
+      <div class="grid-2" style="margin-bottom:16px">
+        <div><span class="text-muted">Quote #</span><br><strong class="text-cyan">${q.quoteNum}</strong></div>
+        <div><span class="text-muted">Date</span><br>${fmtDate(q.date)}</div>
+        <div><span class="text-muted">Client</span><br><strong>${escHtml(q.client.name)}</strong>${q.client.company?'<br><span style="color:var(--text-muted)">'+escHtml(q.client.company)+'</span>':''}</div>
+        <div><span class="text-muted">Status</span><br><span class="status-badge status-${q.status}">${q.status}</span></div>
+      </div>
+      <hr class="divider">
+      <div style="margin-bottom:12px">
+        ${q.lineItems.map(l => `
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)">
+            <span>${escHtml(l.desc)} <span class="text-muted">(${l.qty} ${l.unit})</span></span>
+            <span style="font-weight:600;color:var(--cyan)">$${fmt(l.qty*l.rate)}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div style="text-align:right">
+        <div class="text-muted" style="font-size:12px">Total: <strong style="color:var(--green);font-size:16px">$${fmt(q.grand)}</strong></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('view-quote-pdf-btn').onclick = () => reprintQuote(id);
+  document.getElementById('view-quote-modal').classList.add('open');
+}
+
+function loadQuoteToBuilder(id) {
+  const q = getQuotes().find(x => x.id === id);
+  if (!q) return;
+  editingQuoteId = q.id;
+  document.getElementById('client-name').value = q.client.name;
+  document.getElementById('client-company').value = q.client.company || '';
+  document.getElementById('client-email').value = q.client.email || '';
+  document.getElementById('client-phone').value = q.client.phone || '';
+  document.getElementById('client-address').value = q.client.address || '';
+  document.getElementById('project-desc').value = q.project || '';
+  document.getElementById('quote-number').value = q.quoteNum;
+  document.getElementById('quote-date').value = q.date;
+  document.getElementById('discount-pct').value = q.discPct || 0;
+  document.getElementById('tax-rate').value = q.taxPct || 8.25;
+  document.getElementById('quote-terms').value = q.terms || '';
+  document.getElementById('internal-notes').value = q.internalNotes || '';
+  lineItems = q.lineItems.map(l => ({...l}));
+  signatureData = q.signature || null;
+  document.getElementById('sig-status').textContent = signatureData ? '✅ Signature captured' : '✍️ No signature captured';
+  renderLineItems();
+  calcTotals();
+  // Switch to builder tab
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-builder').classList.add('active');
+  document.querySelectorAll('.nav-tab')[0].classList.add('active');
+  toast('Quote loaded for editing', 'info');
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════
+// REMINDERS
+// ═══════════════════════════════════════════════════
+function renderReminders() {
+  const reminders = getReminders();
+  const todayStr = today();
+  const overdue = reminders.filter(r => r.date < todayStr && !r.done);
+  const due = reminders.filter(r => r.date === todayStr && !r.done);
+  const upcoming = reminders.filter(r => r.date > todayStr && !r.done);
+
+  document.getElementById('overdue-body').innerHTML = overdue.length
+    ? overdue.map(r => reminderCard(r, 'overdue')).join('')
+    : '<div class="text-muted text-sm">No overdue follow-ups ✅</div>';
+  document.getElementById('today-body').innerHTML = due.length
+    ? due.map(r => reminderCard(r, 'today')).join('')
+    : '<div class="text-muted text-sm">Nothing due today</div>';
+  document.getElementById('upcoming-body').innerHTML = upcoming.length
+    ? upcoming.map(r => reminderCard(r, 'upcoming')).join('')
+    : '<div class="text-muted text-sm">No upcoming reminders</div>';
+}
+
+function reminderCard(r, type) {
+  const icons = { overdue: '🚨', today: '📅', upcoming: '📌' };
+  return `
+    <div class="reminder-card">
+      <div class="icon">${icons[type]}</div>
+      <div class="reminder-text">
+        <div class="reminder-client">${escHtml(r.client)} ${r.quoteNum ? '— ' + r.quoteNum : ''}</div>
+        <div class="reminder-sub">${fmtDate(r.date)} · ${escHtml(r.message || 'Follow up')}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-success btn-sm" onclick="doneReminder('${r.id}')">✅ Done</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteReminder('${r.id}')">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function openReminderModal() {
+  document.getElementById('rem-date').value = addDays(today(), 3);
+  document.getElementById('reminder-modal').classList.add('open');
+}
+
+function saveReminder() {
+  const client = document.getElementById('rem-client').value.trim();
+  const date = document.getElementById('rem-date').value;
+  if (!client || !date) { toast('Client and date required', 'error'); return; }
+  const reminders = getReminders();
+  reminders.push({
+    id: 'r_' + Date.now(),
+    client,
+    quoteNum: document.getElementById('rem-quote').value.trim(),
+    date,
+    message: document.getElementById('rem-message').value.trim(),
+    priority: document.getElementById('rem-priority').value,
+    done: false,
+  });
+  LS.set('tes_reminders', reminders);
+  closeModal('reminder-modal');
+  renderReminders();
+  toast('Reminder saved', 'success');
+  document.getElementById('rem-client').value = '';
+  document.getElementById('rem-quote').value = '';
+  document.getElementById('rem-message').value = '';
+}
+
+function doneReminder(id) {
+  const reminders = getReminders();
+  const r = reminders.find(x => x.id === id);
+  if (r) { r.done = true; LS.set('tes_reminders', reminders); }
+  renderReminders();
+  toast('Reminder marked done', 'success');
+}
+
+function deleteReminder(id) {
+  LS.set('tes_reminders', getReminders().filter(r => r.id !== id));
+  renderReminders();
+  toast('Reminder deleted', 'info');
+}
+
+// ═══════════════════════════════════════════════════
+// PRICING DATABASE
+// ═══════════════════════════════════════════════════
+function renderPricingDB() {
+  const services = getServices();
+  const cats = [...new Set(services.map(s => s.cat))];
+  const el = document.getElementById('pricing-tables');
+  el.innerHTML = cats.map(cat => `
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="icon">${CAT_LABELS[cat]?.split(' ')[0] || '📦'}</span> ${CAT_LABELS[cat] || cat}</div>
+      <div class="panel-body" style="padding:0;overflow-x:auto">
+        <table class="history-table">
+          <thead>
+            <tr><th>Service</th><th>Description</th><th>Rate</th><th>Unit</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            ${services.filter(s => s.cat === cat).map(s => `
+              <tr>
+                <td style="font-weight:600">${escHtml(s.name)}</td>
+                <td style="color:var(--text-muted)">${escHtml(s.desc)}</td>
+                <td style="color:var(--cyan);font-weight:700">$${fmt(s.rate)}</td>
+                <td>/ ${s.unit}</td>
+                <td>
+                  <div style="display:flex;gap:6px">
+                    <button class="btn btn-secondary btn-sm" onclick="editServicePrice('${s.id}')">✏️ Edit Price</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteService('${s.id}')">🗑</button>
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editServicePrice(id) {
+  const services = getServices();
+  const s = services.find(x => x.id === id);
+  if (!s) return;
+  const newRate = prompt(`Update price for "${s.name}" (currently $${s.rate}/${s.unit}):`, s.rate);
+  if (newRate === null) return;
+  const parsed = parseFloat(newRate);
+  if (isNaN(parsed)) { toast('Invalid price', 'error'); return; }
+  s.rate = parsed;
+  LS.set('tes_services', services);
+  renderPricingDB();
+  renderCatalog();
+  toast('Price updated: ' + s.name + ' → $' + fmt(parsed), 'success');
+}
+
+function deleteService(id) {
+  if (!confirm('Remove this service from the catalog?')) return;
+  LS.set('tes_services', getServices().filter(s => s.id !== id));
+  renderPricingDB();
+  renderCatalog();
+  toast('Service removed', 'info');
+}
+
+function openAddServiceModal() {
+  document.getElementById('add-service-modal').classList.add('open');
+}
+
+function saveNewService() {
+  const name = document.getElementById('ns-name').value.trim();
+  const rate = parseFloat(document.getElementById('ns-rate').value);
+  if (!name || isNaN(rate)) { toast('Name and rate required', 'error'); return; }
+  const services = getServices();
+  services.push({
+    id: 'custom_' + Date.now(),
+    name,
+    desc: document.getElementById('ns-desc').value.trim(),
+    cat: document.getElementById('ns-cat').value,
+    rate,
+    unit: document.getElementById('ns-unit').value,
+  });
+  LS.set('tes_services', services);
+  closeModal('add-service-modal');
+  renderPricingDB();
+  renderCatalog();
+  toast('Service added: ' + name, 'success');
+  document.getElementById('ns-name').value = '';
+  document.getElementById('ns-desc').value = '';
+  document.getElementById('ns-rate').value = '';
+}
+
+function resetPricingDB() {
+  if (!confirm('Reset pricing to defaults? Custom services will be lost.')) return;
+  LS.set('tes_services', DEFAULT_SERVICES);
+  renderPricingDB();
+  renderCatalog();
+  toast('Pricing reset to defaults', 'info');
+}
+
+// ═══════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════
+function loadSettings() {
+  const cfg = getSettings();
+  document.getElementById('s-company').value = cfg.company || '';
+  document.getElementById('s-owner').value = cfg.owner || '';
+  document.getElementById('s-phone').value = cfg.phone || '';
+  document.getElementById('s-email').value = cfg.email || '';
+  document.getElementById('s-website').value = cfg.website || '';
+  document.getElementById('s-license').value = cfg.license || '';
+  document.getElementById('s-address').value = cfg.address || '';
+  document.getElementById('s-prefix').value = cfg.prefix || 'TES';
+  document.getElementById('s-rate-standard').value = cfg.rates?.standard || 85;
+  document.getElementById('s-rate-solder').value = cfg.rates?.solder || 125;
+  document.getElementById('s-rate-emergency').value = cfg.rates?.emergency || 150;
+  document.getElementById('s-rate-electrical').value = cfg.rates?.electrical || 95;
+  document.getElementById('s-rate-msp').value = cfg.rates?.msp || 110;
+  document.getElementById('s-rate-dev').value = cfg.rates?.dev || 120;
+  document.getElementById('pdf-terms').checked = cfg.pdf?.terms !== false;
+  document.getElementById('pdf-sig').checked = cfg.pdf?.sig !== false;
+  document.getElementById('pdf-unitprice').checked = cfg.pdf?.unitprice !== false;
+}
+
+function saveSettings() {
+  LS.set('tes_settings', {
+    company: document.getElementById('s-company').value,
+    owner: document.getElementById('s-owner').value,
+    phone: document.getElementById('s-phone').value,
+    email: document.getElementById('s-email').value,
+    website: document.getElementById('s-website').value,
+    license: document.getElementById('s-license').value,
+    address: document.getElementById('s-address').value,
+    prefix: document.getElementById('s-prefix').value,
+    rates: {
+      standard: +document.getElementById('s-rate-standard').value,
+      solder: +document.getElementById('s-rate-solder').value,
+      emergency: +document.getElementById('s-rate-emergency').value,
+      electrical: +document.getElementById('s-rate-electrical').value,
+      msp: +document.getElementById('s-rate-msp').value,
+      dev: +document.getElementById('s-rate-dev').value,
+    },
+    pdf: {
+      terms: document.getElementById('pdf-terms').checked,
+      sig: document.getElementById('pdf-sig').checked,
+      unitprice: document.getElementById('pdf-unitprice').checked,
+    },
+  });
+  toast('Settings saved', 'success');
+}
+
+function clearAllData() {
+  if (!confirm('⚠️ Delete ALL quotes, reminders, and settings? This cannot be undone.')) return;
+  ['tes_quotes','tes_reminders','tes_settings','tes_services'].forEach(k => localStorage.removeItem(k));
+  resetBuilder();
+  updateBadge();
+  toast('All data cleared', 'info');
+}
+
+// ═══════════════════════════════════════════════════
+// E-SIGNATURE
+// ═══════════════════════════════════════════════════
+let sigDrawing = false, sigCtx = null, sigLast = {x:0, y:0};
+
+function openSignatureModal() {
+  document.getElementById('sig-modal').classList.add('open');
+  initSigCanvas();
+}
+
+function initSigCanvas() {
+  const canvas = document.getElementById('sig-canvas');
+  canvas.width = canvas.offsetWidth || 440;
+  canvas.height = 160;
+  sigCtx = canvas.getContext('2d');
+  sigCtx.clearRect(0, 0, canvas.width, canvas.height);
+  sigCtx.strokeStyle = '#00d4ff';
+  sigCtx.lineWidth = 2.5;
+  sigCtx.lineCap = 'round';
+  sigCtx.lineJoin = 'round';
+
+  const getPos = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  };
+
+  canvas.onmousedown = canvas.ontouchstart = (e) => {
+    sigDrawing = true;
+    const pos = getPos(e);
+    sigLast = pos;
+    sigCtx.beginPath();
+    sigCtx.moveTo(pos.x, pos.y);
+    e.preventDefault();
+  };
+  canvas.onmousemove = canvas.ontouchmove = (e) => {
+    if (!sigDrawing) return;
+    const pos = getPos(e);
+    sigCtx.lineTo(pos.x, pos.y);
+    sigCtx.stroke();
+    sigLast = pos;
+    e.preventDefault();
+  };
+  canvas.onmouseup = canvas.ontouchend = () => { sigDrawing = false; };
+  canvas.onmouseleave = () => { sigDrawing = false; };
+}
+
+function clearSig() {
+  if (sigCtx) sigCtx.clearRect(0, 0, document.getElementById('sig-canvas').width, 160);
+}
+
+function saveSig() {
+  const canvas = document.getElementById('sig-canvas');
+  signatureData = canvas.toDataURL('image/png');
+  document.getElementById('sig-status').textContent = '✅ Signature captured';
+  closeModal('sig-modal');
+  toast('Signature saved', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════
+function exportAllJSON() {
+  const data = {
+    exported: new Date().toISOString(),
+    quotes: getQuotes(),
+    reminders: getReminders(),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `tes_quotes_${today()}.json`;
+  a.click();
+  toast('Exported to JSON', 'success');
+}
+
+function importJSON() { document.getElementById('import-file').click(); }
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.quotes) {
+        const existing = getQuotes();
+        const merged = [...data.quotes, ...existing.filter(q => !data.quotes.find(x => x.id === q.id))];
+        LS.set('tes_quotes', merged);
+      }
+      if (data.reminders) {
+        const existing = getReminders();
+        const merged = [...data.reminders, ...existing.filter(r => !data.reminders.find(x => x.id === r.id))];
+        LS.set('tes_reminders', merged);
+      }
+      renderHistory();
+      renderStats();
+      updateBadge();
+      toast(`Imported ${data.quotes?.length || 0} quotes`, 'success');
+    } catch {
+      toast('Invalid JSON file', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function fmt(n) {
+  return (+n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtK(n) {
+  if (n >= 1000) return (n/1000).toFixed(1) + 'k';
+  return fmt(n);
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y, m, day] = d.split('-');
+  return `${m}/${day}/${y}`;
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+function addDays(dateStr, n) {
+  if (!dateStr) dateStr = today();
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
+}
+function isExpired(dateStr) { return dateStr && dateStr < today(); }
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function nextQuoteNum() {
+  const cfg = getSettings();
+  const prefix = cfg.prefix || 'TES';
+  const quotes = getQuotes();
+  const nums = quotes
+    .map(q => parseInt(q.quoteNum?.replace(/[^0-9]/g, '') || '0'))
+    .filter(n => !isNaN(n));
+  const next = nums.length ? Math.max(...nums) + 1 : 1;
+  return prefix + '-' + String(next).padStart(3, '0');
+}
+
+function updateBadge() {
+  const count = getQuotes().length;
+  document.getElementById('quote-count-badge').textContent = count + (count === 1 ? ' quote' : ' quotes');
+}
+
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${escHtml(msg)}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function resetBuilder() {
+  editingQuoteId = null;
+  lineItems = [];
+  signatureData = null;
+  ['client-name','client-company','client-email','client-phone','client-address','project-desc','internal-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('discount-pct').value = '0';
+  document.getElementById('tax-rate').value = '8.25';
+  document.getElementById('quote-terms').value = `• Payment due within 30 days of invoice date.
+• 50% deposit required for projects over $500.
+• Parts/materials non-refundable once ordered.
+• Quote valid for the stated period. Prices subject to change after expiry.
+• Travel charges may apply for locations outside Temecula, CA (50+ mile radius).`;
+  document.getElementById('sig-status').textContent = '✍️ No signature captured';
+  // New quote number
+  document.getElementById('quote-number').value = nextQuoteNum();
+  document.getElementById('quote-date').value = today();
+  renderLineItems();
+  calcTotals();
+  toast('New quote ready', 'info');
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+(function init() {
+  // Initialize services if not set
+  if (!localStorage.getItem('tes_services')) {
+    LS.set('tes_services', DEFAULT_SERVICES);
+  }
+  // Set quote number and date
+  document.getElementById('quote-number').value = nextQuoteNum();
+  document.getElementById('quote-date').value = today();
+  // Render catalog
+  renderCatalog();
+  // Calc initial totals
+  calcTotals();
+  // Update badge
+  updateBadge();
+  // Check overdue reminders
+  const reminders = getReminders();
+  const overdue = reminders.filter(r => r.date < today() && !r.done).length;
+  if (overdue > 0) toast(`⚠️ ${overdue} overdue follow-up${overdue > 1 ? 's' : ''}!`, 'error');
+})();
+</script>
+</body>
+</html>

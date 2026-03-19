@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLA Reference Guide — Tech &amp; Electrical Services LLC</title>
+  <style>
+    /* ── Variables ── */
+    :root {
+      --brand-primary: #003366;
+      --brand-accent:  #0077cc;
+      --brand-electric:#00aaff;
+      --brand-amber:   #f59e0b;
+      --brand-danger:  #dc2626;
+      --brand-warn:    #d97706;
+      --brand-ok:      #16a34a;
+      --bg:            #f8fafc;
+      --surface:       #ffffff;
+      --border:        #cbd5e1;
+      --text:          #1e293b;
+      --text-muted:    #64748b;
+      --radius:        6px;
+    }
+
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ── Layout wrapper ── */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+    }
+
+    /* ── Header / Cover ── */
+    .doc-header {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #001a3d 100%);
+      color: #fff;
+      padding: 48px 40px 40px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .doc-header::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(0,170,255,.12);
+    }
+    .doc-header .logo-line {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--brand-electric);
+      margin-bottom: 10px;
+    }
+    .doc-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      margin-bottom: 6px;
+    }
+    .doc-header .sub {
+      font-size: 15px;
+      color: rgba(255,255,255,.75);
+      margin-bottom: 20px;
+    }
+    .doc-header .meta-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .doc-header .pill {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: #e2e8f0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      margin-bottom: 32px;
+    }
+    .toc h2 {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+      margin-bottom: 12px;
+    }
+    .toc ol {
+      columns: 2;
+      column-gap: 32px;
+      padding-left: 18px;
+    }
+    .toc li {
+      margin-bottom: 5px;
+    }
+    .toc a {
+      color: var(--brand-accent);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Section ── */
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .section-header {
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-header .sec-num {
+      background: rgba(255,255,255,.15);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .section-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .section-body {
+      padding: 24px;
+    }
+
+    /* ── Sub-section ── */
+    .subsection {
+      margin-bottom: 24px;
+    }
+    .subsection:last-child { margin-bottom: 0; }
+    .subsection h3 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+      border-bottom: 2px solid var(--brand-electric);
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+
+    /* ── Tables ── */
+    .tbl-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: #f1f5f9; }
+    tbody tr:hover { background: #e2eaf5; }
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    /* ── Tier Cards ── */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .tier-card {
+      border-radius: var(--radius);
+      border: 2px solid;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .tier-card.platinum { border-color: #94a3b8; }
+    .tier-card.gold     { border-color: #d97706; }
+    .tier-card.silver   { border-color: #64748b; }
+    .tier-card.bronze   { border-color: #92400e; }
+
+    .tier-card .tier-hd {
+      padding: 14px 16px;
+      color: #fff;
+      text-align: center;
+    }
+    .tier-card.platinum .tier-hd { background: linear-gradient(135deg,#475569,#94a3b8); }
+    .tier-card.gold     .tier-hd { background: linear-gradient(135deg,#b45309,#f59e0b); }
+    .tier-card.silver   .tier-hd { background: linear-gradient(135deg,#334155,#64748b); }
+    .tier-card.bronze   .tier-hd { background: linear-gradient(135deg,#78350f,#b45309); }
+
+    .tier-card .tier-hd .tier-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .tier-card .tier-hd .tier-tag {
+      font-size: 11px;
+      opacity: .85;
+      margin-top: 2px;
+    }
+    .tier-card .tier-body {
+      padding: 14px 16px;
+      flex: 1;
+    }
+    .tier-card .tier-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tier-card .tier-row:last-child { border-bottom: none; }
+    .tier-card .tier-row .lbl { color: var(--text-muted); }
+    .tier-card .tier-row .val { font-weight: 600; color: var(--text); }
+
+    /* ── Priority Badges ── */
+    .p-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .p1 { background: #fee2e2; color: #991b1b; }
+    .p2 { background: #ffedd5; color: #9a3412; }
+    .p3 { background: #fef9c3; color: #713f12; }
+    .p4 { background: #dcfce7; color: #14532d; }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .t-plat { background: #e2e8f0; color: #334155; }
+    .t-gold { background: #fef3c7; color: #92400e; }
+    .t-silv { background: #f1f5f9; color: #475569; }
+    .t-brnz { background: #fef3c7; color: #78350f; }
+
+    /* ── Alert / Info Boxes ── */
+    .callout {
+      border-left: 4px solid;
+      padding: 12px 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+    .callout.info  { border-color: var(--brand-accent); background: #eff6ff; color: #1e40af; }
+    .callout.warn  { border-color: var(--brand-warn);  background: #fffbeb; color: #92400e; }
+    .callout.danger{ border-color: var(--brand-danger); background: #fef2f2; color: #991b1b; }
+    .callout.ok    { border-color: var(--brand-ok);    background: #f0fdf4; color: #14532d; }
+    .callout strong { font-weight: 700; }
+
+    /* ── Escalation Matrix ── */
+    .esc-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .esc-step:last-child { border-bottom: none; margin-bottom: 0; }
+    .esc-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .esc-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .esc-content p  { font-size: 13px; color: var(--text-muted); }
+    .esc-content .esc-who { font-size: 12px; color: var(--brand-accent); font-weight: 600; margin-top: 4px; }
+
+    /* ── Credit Calculator Box ── */
+    .credit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .credit-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .credit-card h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .credit-card .credit-val {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    .credit-card .credit-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── After-Hours Emergency Panel ── */
+    .emergency-panel {
+      background: linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .emergency-panel h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #c7d2fe;
+    }
+    .emergency-panel p { font-size: 13px; color: rgba(255,255,255,.8); margin-bottom: 16px; }
+    .emergency-contacts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .ec-card {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .ec-card .ec-role { font-size: 11px; color: #a5b4fc; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .ec-card .ec-name { font-weight: 700; font-size: 14px; }
+    .ec-card .ec-method { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 4px; }
+    .after-hours-steps {
+      margin-top: 16px;
+      counter-reset: ahstep;
+    }
+    .ah-step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .ah-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ah-step p { font-size: 13px; color: rgba(255,255,255,.85); }
+
+    /* ── Exclusion List ── */
+    .excl-list {
+      list-style: none;
+      padding: 0;
+    }
+    .excl-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .excl-list li:last-child { border-bottom: none; }
+    .excl-list li::before {
+      content: '✗';
+      color: var(--brand-danger);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Footer ── */
+    .doc-footer {
+      margin-top: 40px;
+      border-top: 2px solid var(--border);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .doc-footer strong { color: var(--text); }
+
+    /* ── Print Styles ── */
+    @media print {
+      body { background: #fff; font-size: 12px; }
+      .page-wrap { padding: 0; max-width: 100%; }
+      .doc-header { border-radius: 0; }
+
+      section { break-inside: avoid; page-break-inside: avoid; }
+      .tier-grid { grid-template-columns: repeat(4,1fr); }
+      .emergency-contacts { grid-template-columns: repeat(3,1fr); }
+      .credit-grid { grid-template-columns: 1fr 1fr; }
+
+      a { color: inherit; text-decoration: none; }
+      .toc { display: none; }
+
+      /* force page breaks before major sections */
+      section#sec-escalation,
+      section#sec-exclusions,
+      section#sec-credits,
+      section#sec-emergency { page-break-before: auto; }
+    }
+
+    @media (max-width: 760px) {
+      .tier-grid { grid-template-columns: repeat(2,1fr); }
+      .credit-grid { grid-template-columns: 1fr; }
+      .emergency-contacts { grid-template-columns: 1fr; }
+      .toc ol { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ══════════════════ COVER ══════════════════ -->
+  <header class="doc-header">
+    <div class="logo-line">Tech &amp; Electrical Services LLC</div>
+    <h1>Service Level Agreement (SLA)<br>Reference Guide</h1>
+    <p class="sub">Response Time Commitments · Resolution Targets · Escalation Procedures</p>
+    <div class="meta-pills">
+      <span class="pill">Version 1.0</span>
+      <span class="pill">Effective: 2026-01-01</span>
+      <span class="pill">Next Review: 2027-01-01</span>
+      <span class="pill">Temecula, CA</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════ TOC ══════════════════ -->
+  <nav class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#sec-tiers">SLA Service Tiers</a></li>
+      <li><a href="#sec-priorities">Priority Definitions (P1–P4)</a></li>
+      <li><a href="#sec-response">Response Time Commitments</a></li>
+      <li><a href="#sec-resolution">Resolution Time Targets</a></li>
+      <li><a href="#sec-escalation">Escalation Matrix</a></li>
+      <li><a href="#sec-exclusions">Exclusions</a></li>
+      <li><a href="#sec-credits">Credit / Service Fee Structure</a></li>
+      <li><a href="#sec-emergency">Emergency After-Hours Procedures</a></li>
+    </ol>
+  </nav>
+
+  <!-- ══════════════════ SECTION 1 — TIERS ══════════════════ -->
+  <section id="sec-tiers">
+    <div class="section-header">
+      <span class="sec-num">01</span>
+      <h2>SLA Service Tiers</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="tier-grid">
+        <!-- PLATINUM -->
+        <div class="tier-card platinum">
+          <div class="tier-hd">
+            <div class="tier-name">⬡ Platinum</div>
+            <div class="tier-tag">Mission-Critical Enterprise</div>
+          </div>
+          <div class="tier-body">
+            <div class="tier-row"><span class="lbl">Monthly Fee</span><span class="val">$2,500+</span></div>
+            <div class="tier-row"><span class="lbl">Support Hours</span><span class="val">24 / 7 / 365</span></div>
+            <div class="tier-row"><span class="lbl">P1 Response</span><span class="val">15 min</span></div>
+            <div class="tier-row"><span class="lbl">Uptime SLA</span><span class="val">99.99%</span></div>
+            <div class="tier-row"><span class="lbl">On-Site Response</span><span class="val">≤ 2 hr</span></div>
+            <div class="tier-row"><span class="lbl">Account Manager</span><span class="val">Dedicated</span></div>
+            <div class="tier-row"><span class="lbl">QBR</span><span class="val">Quarterly</span></div>
+            <div class="tier-row"><span class="lbl">Credit Cap</span><span class="val">50% monthly</span></div>
+          </div>
+        </div>
+
+        <!-- GOLD -->
+        <div class="tier-card gold">
+          <div class="tier-hd">
+            <div class="tier-name">★ Gold</div>
+            <div class="tier-tag">Business-Critical</div>
+          </div>
+          <div class="tier-body">
+            <div class="tier-row"><span class="lbl">Monthly Fee</span><span class="val">$1,200–$2,499</span></div>
+            <div class="tier-row"><span class="lbl">Support Hours</span><span class="val">24 / 7 (on-call)</span></div>
+            <div class="tier-row"><span class="lbl">P1 Response</span><span class="val">30 min</span></div>
+            <div class="tier-row"><span class="lbl">Uptime SLA</span><span class="val">99.9%</span></div>
+            <div class="tier-row"><span class="lbl">On-Site Response</span><span class="val">≤ 4 hr</span></div>
+            <div class="tier-row"><span class="lbl">Account Manager</span><span class="val">Shared</span></div>
+            <div class="tier-row"><span class="lbl">QBR</span><span class="val">Semi-Annual</span></div>
+            <div class="tier-row"><span class="lbl">Credit Cap</span><span class="val">30% monthly</span></div>
+          </div>
+        </div>
+
+        <!-- SILVER -->
+        <div class="tier-card silver">
+          <div class="tier-hd">
+            <div class="tier-name">◈ Silver</div>
+            <div class="tier-tag">Standard Business</div>
+          </div>
+          <div class="tier-body">
+            <div class="tier-row"><span class="lbl">Monthly Fee</span><span class="val">$500–$1,199</span></div>
+            <div class="tier-row"><span class="lbl">Support Hours</span><span class="val">Mon–Fri 8 AM–6 PM</span></div>
+            <div class="tier-row"><span class="lbl">P1 Response</span><span class="val">1 hr</span></div>
+            <div class="tier-row"><span class="lbl">Uptime SLA</span><span class="val">99.5%</span></div>
+            <div class="tier-row"><span class="lbl">On-Site Response</span><span class="val">Next Business Day</span></div>
+            <div class="tier-row"><span class="lbl">Account Manager</span><span class="val">Pool</span></div>
+            <div class="tier-row"><span class="lbl">QBR</span><span class="val">Annual</span></div>
+            <div class="tier-row"><span class="lbl">Credit Cap</span><span class="val">20% monthly</span></div>
+          </div>
+        </div>
+
+        <!-- BRONZE -->
+        <div class="tier-card bronze">
+          <div class="tier-hd">
+            <div class="tier-name">◇ Bronze</div>
+            <div class="tier-tag">Essential / Break-Fix</div>
+          </div>
+          <div class="tier-body">
+            <div class="tier-row"><span class="lbl">Monthly Fee</span><span class="val">$0–$499</span></div>
+            <div class="tier-row"><span class="lbl">Support Hours</span><span class="val">Mon–Fri 9 AM–5 PM</span></div>
+            <div class="tier-row"><span class="lbl">P1 Response</span><span class="val">4 hr</span></div>
+            <div class="tier-row"><span class="lbl">Uptime SLA</span><span class="val">Best-Effort</span></div>
+            <div class="tier-row"><span class="lbl">On-Site Response</span><span class="val">2–3 Business Days</span></div>
+            <div class="tier-row"><span class="lbl">Account Manager</span><span class="val">None</span></div>
+            <div class="tier-row"><span class="lbl">QBR</span><span class="val">None</span></div>
+            <div class="tier-row"><span class="lbl">Credit Cap</span><span class="val">10% monthly</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Tier Assignment:</strong> SLA tier is determined by the signed Master Service Agreement (MSA). Tier upgrades take effect on the first day of the following billing month. Downgrades require 30 days written notice.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 2 — PRIORITY DEFINITIONS ══════════════════ -->
+  <section id="sec-priorities">
+    <div class="section-header">
+      <span class="sec-num">02</span>
+      <h2>Priority Definitions (P1–P4)</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Label</th>
+              <th>Definition</th>
+              <th>Business Impact</th>
+              <th>Examples</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="p-badge p1">P1</span></td>
+              <td><strong>Critical</strong></td>
+              <td>Complete service outage or security breach affecting entire business operations.</td>
+              <td>All users/sites down. Revenue directly impacted. Potential data loss or breach.</td>
+              <td>Server down, ransomware attack, total network failure, electrical fault causing shutdown, POS system failure during peak hours</td>
+            </tr>
+            <tr>
+              <td><span class="p-badge p2">P2</span></td>
+              <td><strong>High</strong></td>
+              <td>Major functionality impaired; significant performance degradation; no viable workaround.</td>
+              <td>Large group of users impacted. Core business functions degraded.</td>
+              <td>VPN inaccessible, email service down, backup failures, internet degraded &gt;50%, critical device offline, HVAC/electrical affecting server room</td>
+            </tr>
+            <tr>
+              <td><span class="p-badge p3">P3</span></td>
+              <td><strong>Medium</strong></td>
+              <td>Partial functionality loss; workaround available; non-critical system affected.</td>
+              <td>Limited number of users impacted. Business continues with workaround.</td>
+              <td>Single workstation failure, slow Wi-Fi in one area, printer issues, minor software errors, non-critical device down</td>
+            </tr>
+            <tr>
+              <td><span class="p-badge p4">P4</span></td>
+              <td><strong>Low</strong></td>
+              <td>Minor issue, routine request, question, or enhancement.</td>
+              <td>No immediate business impact. Can be scheduled.</td>
+              <td>Password reset, software installation, training request, feature questions, scheduled maintenance, cable management</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn" style="margin-top:16px;">
+        <strong>Priority Assignment:</strong> Tech &amp; Electrical Services LLC reserves the right to adjust priority classification based on technical assessment. Clients may request a review of priority assignment within 1 hour of ticket creation.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 3 — RESPONSE TIMES ══════════════════ -->
+  <section id="sec-response">
+    <div class="section-header">
+      <span class="sec-num">03</span>
+      <h2>Response Time Commitments</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <h3>Initial Response Time by Tier &amp; Priority</h3>
+        <div class="callout info" style="margin-bottom:14px;">
+          <strong>Response Time</strong> = Time from ticket submission via approved channel to initial technician acknowledgment and assignment.
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th><span class="tier-badge t-plat">Platinum</span></th>
+                <th><span class="tier-badge t-gold">Gold</span></th>
+                <th><span class="tier-badge t-silv">Silver</span></th>
+                <th><span class="tier-badge t-brnz">Bronze</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="p-badge p1">P1 Critical</span></td>
+                <td><strong>15 minutes</strong></td>
+                <td><strong>30 minutes</strong></td>
+                <td><strong>1 hour</strong></td>
+                <td><strong>4 hours</strong></td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p2">P2 High</span></td>
+                <td><strong>30 minutes</strong></td>
+                <td><strong>1 hour</strong></td>
+                <td><strong>2 hours</strong></td>
+                <td><strong>8 hours</strong></td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p3">P3 Medium</span></td>
+                <td><strong>1 hour</strong></td>
+                <td><strong>2 hours</strong></td>
+                <td><strong>4 hours</strong></td>
+                <td><strong>Next Business Day</strong></td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p4">P4 Low</span></td>
+                <td><strong>2 hours</strong></td>
+                <td><strong>4 hours</strong></td>
+                <td><strong>8 hours</strong></td>
+                <td><strong>72 hours</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>On-Site Response Times</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>P1 On-Site</th>
+                <th>P2 On-Site</th>
+                <th>P3 On-Site</th>
+                <th>P4 On-Site</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tier-badge t-plat">Platinum</span></td>
+                <td>≤ 2 hours</td>
+                <td>≤ 4 hours</td>
+                <td>Same business day</td>
+                <td>Next business day</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-gold">Gold</span></td>
+                <td>≤ 4 hours</td>
+                <td>Same business day</td>
+                <td>Next business day</td>
+                <td>2–3 business days</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-silv">Silver</span></td>
+                <td>Next business day</td>
+                <td>Next business day</td>
+                <td>2–3 business days</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-brnz">Bronze</span></td>
+                <td>2–3 business days</td>
+                <td>2–3 business days</td>
+                <td>Scheduled</td>
+                <td>Scheduled</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info" style="margin-top:12px;">
+          <strong>Service Area:</strong> Standard on-site SLA covers Temecula, Murrieta, and surrounding Inland Empire areas (within 30-mile radius). Locations beyond 30 miles may incur travel fees and extended on-site response times.
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Approved Ticket Submission Channels</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Channel</th>
+                <th>Available To</th>
+                <th>SLA Clock Starts</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🌐 Client Portal (primary)</td>
+                <td>All tiers</td>
+                <td>Immediately on submission</td>
+                <td>Preferred channel — auto-routing, tracking, history</td>
+              </tr>
+              <tr>
+                <td>📧 Email: support@tes-llc.com</td>
+                <td>All tiers</td>
+                <td>Receipt of email during support hours</td>
+                <td>Auto-creates ticket; include priority keyword in subject</td>
+              </tr>
+              <tr>
+                <td>📞 Phone: (951) 555-0100</td>
+                <td>Silver, Gold, Platinum</td>
+                <td>When technician picks up or voicemail left</td>
+                <td>P1/P2 calls receive immediate attention</td>
+              </tr>
+              <tr>
+                <td>📱 Emergency Hotline</td>
+                <td>Gold, Platinum only</td>
+                <td>Immediately (24/7)</td>
+                <td>For P1/P2 outside business hours only</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 4 — RESOLUTION TIMES ══════════════════ -->
+  <section id="sec-resolution">
+    <div class="section-header">
+      <span class="sec-num">04</span>
+      <h2>Resolution Time Targets</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info" style="margin-bottom:16px;">
+        <strong>Resolution Time</strong> = Time from ticket submission to issue fully resolved <em>or</em> a mutually agreed-upon workaround provided. Complex issues may have interim workarounds while permanent resolution is in progress.
+      </div>
+
+      <div class="subsection">
+        <h3>Target Resolution Times by Tier &amp; Priority</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th><span class="tier-badge t-plat">Platinum</span></th>
+                <th><span class="tier-badge t-gold">Gold</span></th>
+                <th><span class="tier-badge t-silv">Silver</span></th>
+                <th><span class="tier-badge t-brnz">Bronze</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="p-badge p1">P1 Critical</span></td>
+                <td>4 hours</td>
+                <td>4 hours</td>
+                <td>8 hours</td>
+                <td>24 hours</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p2">P2 High</span></td>
+                <td>8 hours</td>
+                <td>12 hours</td>
+                <td>24 hours</td>
+                <td>72 hours</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p3">P3 Medium</span></td>
+                <td>24 hours</td>
+                <td>48 hours</td>
+                <td>72 hours</td>
+                <td>5 business days</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p4">P4 Low</span></td>
+                <td>72 hours</td>
+                <td>5 business days</td>
+                <td>7 business days</td>
+                <td>14 business days</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Uptime Guarantees</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Service Component</th>
+                <th><span class="tier-badge t-plat">Platinum</span></th>
+                <th><span class="tier-badge t-gold">Gold</span></th>
+                <th><span class="tier-badge t-silv">Silver</span></th>
+                <th><span class="tier-badge t-brnz">Bronze</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Managed Network / Infrastructure</td>
+                <td><strong>99.99%</strong></td>
+                <td><strong>99.9%</strong></td>
+                <td><strong>99.5%</strong></td>
+                <td>Best-Effort</td>
+              </tr>
+              <tr>
+                <td>Security Monitoring (MSSP)</td>
+                <td><strong>99.9%</strong></td>
+                <td><strong>99.5%</strong></td>
+                <td>99.0%</td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td>Cloud Services (managed)</td>
+                <td><strong>99.99%</strong></td>
+                <td><strong>99.9%</strong></td>
+                <td><strong>99.5%</strong></td>
+                <td>N/A</td>
+              </tr>
+              <tr>
+                <td>Help Desk Availability</td>
+                <td>24/7 continuous</td>
+                <td>24/7 on-call</td>
+                <td>Bus. hours only</td>
+                <td>Bus. hours only</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout ok" style="margin-top:12px;">
+          <strong>Uptime Formula:</strong> Uptime % = (Total Minutes − Unplanned Downtime Minutes) / Total Minutes × 100. Scheduled maintenance windows are excluded from downtime calculations.
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Monthly Allowed Downtime</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>SLA Level</th>
+                <th>Uptime</th>
+                <th>Max Monthly Downtime</th>
+                <th>Max Annual Downtime</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tier-badge t-plat">Platinum</span></td>
+                <td>99.99%</td>
+                <td>4 min 21 sec</td>
+                <td>52 min 36 sec</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-gold">Gold</span></td>
+                <td>99.9%</td>
+                <td>43 min 48 sec</td>
+                <td>8 hrs 45 min</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-silv">Silver</span></td>
+                <td>99.5%</td>
+                <td>3 hrs 39 min</td>
+                <td>43 hrs 48 min</td>
+              </tr>
+              <tr>
+                <td><span class="tier-badge t-brnz">Bronze</span></td>
+                <td>Best-Effort</td>
+                <td>No guarantee</td>
+                <td>No guarantee</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 5 — ESCALATION MATRIX ══════════════════ -->
+  <section id="sec-escalation">
+    <div class="section-header">
+      <span class="sec-num">05</span>
+      <h2>Escalation Matrix</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <h3>Escalation Trigger Thresholds</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th>Auto-Escalate After</th>
+                <th>Escalation Level 1</th>
+                <th>Escalation Level 2</th>
+                <th>Escalation Level 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="p-badge p1">P1</span></td>
+                <td>15 min from open (if unassigned)</td>
+                <td>Senior Technician</td>
+                <td>Lead Engineer (30 min)</td>
+                <td>Owner / Director (60 min)</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p2">P2</span></td>
+                <td>30 min from open</td>
+                <td>Senior Technician</td>
+                <td>Lead Engineer (2 hr)</td>
+                <td>Owner / Director (4 hr)</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p3">P3</span></td>
+                <td>50% of resolution window elapsed</td>
+                <td>Technician (peer)</td>
+                <td>Senior Technician</td>
+                <td>Lead Engineer</td>
+              </tr>
+              <tr>
+                <td><span class="p-badge p4">P4</span></td>
+                <td>75% of resolution window elapsed</td>
+                <td>Same technician</td>
+                <td>Senior Technician</td>
+                <td>Lead Engineer</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Escalation Steps — P1 Critical Incident</h3>
+        <div class="esc-step">
+          <div class="esc-num">1</div>
+          <div class="esc-content">
+            <h4>T+0: Ticket Created</h4>
+            <p>Client submits via portal, email, or emergency hotline. Auto-classification triggers P1 alert. On-call technician paged immediately.</p>
+            <div class="esc-who">Owner: On-Call Technician</div>
+          </div>
+        </div>
+        <div class="esc-step">
+          <div class="esc-num">2</div>
+          <div class="esc-content">
+            <h4>T+15 min: First Escalation (if not acknowledged)</h4>
+            <p>If ticket is unacknowledged after 15 minutes, system auto-escalates to Senior Technician. Client receives update acknowledging the issue.</p>
+            <div class="esc-who">Owner: Senior Technician</div>
+          </div>
+        </div>
+        <div class="esc-step">
+          <div class="esc-num">3</div>
+          <div class="esc-content">
+            <h4>T+30 min: Second Escalation</h4>
+            <p>If no resolution path identified, Lead Engineer is notified. Bridge call established with client. Root cause analysis begins. On-site dispatch authorized if required.</p>
+            <div class="esc-who">Owner: Lead Engineer + Senior Technician</div>
+          </div>
+        </div>
+        <div class="esc-step">
+          <div class="esc-num">4</div>
+          <div class="esc-content">
+            <h4>T+60 min: Third Escalation (Executive)</h4>
+            <p>Owner / Director notified. All-hands response authorized. Third-party vendor escalation initiated if applicable. Client receives executive-level communication.</p>
+            <div class="esc-who">Owner: Irvin Avitia (Owner) + Lead Engineer</div>
+          </div>
+        </div>
+        <div class="esc-step">
+          <div class="esc-num">5</div>
+          <div class="esc-content">
+            <h4>T+4 hr (Platinum) / T+8 hr (Gold): SLA Breach Declaration</h4>
+            <p>If not resolved by resolution target, incident declared SLA breach. Client notified in writing. Post-incident report (PIR) scheduled within 24 hours of resolution. Credits applied automatically.</p>
+            <div class="esc-who">Owner: Irvin Avitia + Account Manager</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Escalation Contact Directory</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Contact</th>
+                <th>Method</th>
+                <th>Availability</th>
+                <th>Escalation Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Help Desk / Tier 1</td>
+                <td>TES Help Desk</td>
+                <td>Portal / Email</td>
+                <td>Per tier SLA hours</td>
+                <td>First contact</td>
+              </tr>
+              <tr>
+                <td>Senior Technician</td>
+                <td>TES Senior Tech</td>
+                <td>Phone / Portal</td>
+                <td>Business hours + on-call</td>
+                <td>Level 1</td>
+              </tr>
+              <tr>
+                <td>Lead Engineer</td>
+                <td>TES Lead Engineer</td>
+                <td>Phone / Direct</td>
+                <td>On-call 24/7 (P1/P2)</td>
+                <td>Level 2</td>
+              </tr>
+              <tr>
+                <td>Owner / Director</td>
+                <td>Irvin Avitia</td>
+                <td>Direct line / Text</td>
+                <td>P1 escalations only</td>
+                <td>Level 3 (Executive)</td>
+              </tr>
+              <tr>
+                <td>Electrical Partner</td>
+                <td>Charles Garcia (Licensed Electrician)</td>
+                <td>Phone</td>
+                <td>Business hours + emergency</td>
+                <td>Electrical P1/P2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Client-Initiated Escalation</h3>
+        <p style="font-size:13px;margin-bottom:10px;">Clients may escalate a ticket at any time by:</p>
+        <ul style="font-size:13px;padding-left:20px;line-height:1.9;">
+          <li>Changing ticket priority via the client portal</li>
+          <li>Calling the support line and requesting escalation by ticket number</li>
+          <li>Emailing <strong>escalations@tes-llc.com</strong> with the ticket number and reason</li>
+          <li>Contacting their dedicated Account Manager (Gold/Platinum)</li>
+        </ul>
+        <div class="callout warn" style="margin-top:12px;">
+          <strong>Note:</strong> Abuse of escalation (repeated non-critical escalations) may be addressed in QBR reviews. TES reserves the right to reclassify priority based on technical assessment.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 6 — EXCLUSIONS ══════════════════ -->
+  <section id="sec-exclusions">
+    <div class="section-header">
+      <span class="sec-num">06</span>
+      <h2>Exclusions</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="callout warn" style="margin-bottom:16px;">
+        <strong>Important:</strong> The following events and conditions are excluded from SLA calculations. Downtime or response delays caused by excluded events will not trigger SLA credits.
+      </div>
+
+      <div class="subsection">
+        <h3>SLA Clock Exclusions</h3>
+        <ul class="excl-list">
+          <li><strong>Scheduled Maintenance:</strong> Planned maintenance during approved windows (Sundays 2 AM–6 AM PST) with 72-hour advance notice provided to client.</li>
+          <li><strong>Client-Caused Delays:</strong> Client fails to provide timely access, credentials, approvals, or information required to proceed with resolution.</li>
+          <li><strong>Client-Initiated Changes:</strong> Client makes unauthorized changes to systems, configurations, or infrastructure that directly cause or contribute to the incident.</li>
+          <li><strong>Force Majeure:</strong> Natural disasters, earthquakes, floods, fires, pandemics, acts of war, civil unrest, or other events beyond reasonable control.</li>
+          <li><strong>Third-Party Service Failures:</strong> Outages or failures by ISPs, cloud providers (AWS, Azure, Google Cloud), telecom carriers, utility companies, or other third parties not under TES management.</li>
+          <li><strong>Internet / Utility Outages:</strong> Loss of internet connectivity or electrical power at client site due to ISP/utility provider failure.</li>
+          <li><strong>Hardware Failure Outside Scope:</strong> Failure of client-owned hardware not under a TES hardware management contract or outside the covered hardware list.</li>
+          <li><strong>Software Vendor Issues:</strong> Bugs, outages, or degraded service caused by third-party software vendors (Microsoft, Adobe, QuickBooks, etc.).</li>
+          <li><strong>Security Incidents Caused by Client:</strong> Security breaches, data loss, or malware infections resulting from client failure to implement recommended security controls.</li>
+          <li><strong>Non-Covered Locations:</strong> Sites beyond the agreed service area (30-mile radius from Temecula) unless a separate on-site SLA has been negotiated.</li>
+          <li><strong>Out-of-Scope Work:</strong> Requests for services not covered under the current MSA or SOW without an approved change order.</li>
+          <li><strong>Emergency Maintenance:</strong> Urgent maintenance required to prevent imminent security risk or catastrophic failure; client notified with minimum 2-hour notice when feasible.</li>
+          <li><strong>Waived Credits:</strong> Credits are voided if client has any outstanding invoices past 30 days due at time of SLA breach.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Uptime Exclusions</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Excluded Event</th>
+                <th>Condition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Scheduled maintenance downtime</td>
+                <td>72-hour advance notice provided; performed in approved window</td>
+              </tr>
+              <tr>
+                <td>Emergency maintenance</td>
+                <td>Required to prevent imminent failure; 2-hour notice minimum</td>
+              </tr>
+              <tr>
+                <td>Client-requested downtime</td>
+                <td>Client initiated the maintenance or change</td>
+              </tr>
+              <tr>
+                <td>Third-party provider outage</td>
+                <td>Upstream ISP, cloud platform, or utility failure</td>
+              </tr>
+              <tr>
+                <td>Force majeure</td>
+                <td>As defined in MSA Section — Force Majeure</td>
+              </tr>
+              <tr>
+                <td>Beta / preview services</td>
+                <td>Features or services explicitly marked as beta or pre-release</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 7 — CREDITS ══════════════════ -->
+  <section id="sec-credits">
+    <div class="section-header">
+      <span class="sec-num">07</span>
+      <h2>Credit / Service Fee Structure</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <h3>SLA Breach Credits</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Breach Type</th>
+                <th>Credit Amount</th>
+                <th>Applied To</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>P1 Response Time Miss</td>
+                <td>10% of monthly service fee <em>per incident</em></td>
+                <td>Next invoice</td>
+                <td>Capped at tier credit limit</td>
+              </tr>
+              <tr>
+                <td>P2 Response Time Miss</td>
+                <td>5% of monthly service fee <em>per incident</em></td>
+                <td>Next invoice</td>
+                <td>Capped at tier credit limit</td>
+              </tr>
+              <tr>
+                <td>P3/P4 Response Time Miss</td>
+                <td>2% of monthly service fee <em>per incident</em></td>
+                <td>Next invoice</td>
+                <td>Capped at tier credit limit</td>
+              </tr>
+              <tr>
+                <td>Uptime Miss (per 0.1% below target)</td>
+                <td>5% of monthly service fee</td>
+                <td>Next invoice</td>
+                <td>Capped at tier credit limit</td>
+              </tr>
+              <tr>
+                <td>P1 Resolution Miss (per 1 hr over)</td>
+                <td>5% of monthly service fee <em>per hour</em></td>
+                <td>Next invoice</td>
+                <td>Max 3 incident hours counted</td>
+              </tr>
+              <tr>
+                <td>3 Consecutive Monthly SLA Misses</td>
+                <td>One month service credit</td>
+                <td>Account balance</td>
+                <td>Triggers mandatory performance review</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Monthly Credit Caps by Tier</h3>
+        <div class="credit-grid">
+          <div class="credit-card" style="border-color:#94a3b8;">
+            <h4>⬡ Platinum</h4>
+            <div class="credit-val">50%</div>
+            <div class="credit-note">of monthly service fee — maximum credits per billing cycle</div>
+          </div>
+          <div class="credit-card" style="border-color:#d97706;">
+            <h4>★ Gold</h4>
+            <div class="credit-val">30%</div>
+            <div class="credit-note">of monthly service fee — maximum credits per billing cycle</div>
+          </div>
+          <div class="credit-card" style="border-color:#64748b;">
+            <h4>◈ Silver</h4>
+            <div class="credit-val">20%</div>
+            <div class="credit-note">of monthly service fee — maximum credits per billing cycle</div>
+          </div>
+          <div class="credit-card" style="border-color:#92400e;">
+            <h4>◇ Bronze</h4>
+            <div class="credit-val">10%</div>
+            <div class="credit-note">of monthly service fee — maximum credits per billing cycle</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>After-Hours &amp; Emergency Service Fees</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Service Type</th>
+                <th>Platinum</th>
+                <th>Gold</th>
+                <th>Silver</th>
+                <th>Bronze</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>After-Hours Remote Support (evenings/weekends)</td>
+                <td>Included</td>
+                <td>Included (P1/P2)</td>
+                <td>+$75/hr surcharge</td>
+                <td>+$100/hr surcharge</td>
+              </tr>
+              <tr>
+                <td>Emergency On-Site Response (nights/weekends)</td>
+                <td>Included</td>
+                <td>+$150 dispatch fee</td>
+                <td>+$200 dispatch + $100/hr</td>
+                <td>+$250 dispatch + $125/hr</td>
+              </tr>
+              <tr>
+                <td>Holiday Support (major US holidays)</td>
+                <td>Included</td>
+                <td>+$200 dispatch fee</td>
+                <td>+$300 dispatch + $150/hr</td>
+                <td>+$350 dispatch + $175/hr</td>
+              </tr>
+              <tr>
+                <td>Emergency Electrical Response</td>
+                <td>Included</td>
+                <td>+$175 dispatch</td>
+                <td>+$225 dispatch + $115/hr</td>
+                <td>+$275 dispatch + $140/hr</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info" style="margin-top:12px;">
+          <strong>Business Hours:</strong> Monday–Friday, 8:00 AM–6:00 PM PST. After-hours rates apply outside these windows for Silver and Bronze tiers.
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Credit Request Process</h3>
+        <ol style="font-size:13px;padding-left:20px;line-height:2;">
+          <li>Client submits credit request via portal or email within <strong>10 business days</strong> of the SLA breach incident.</li>
+          <li>Request must include: ticket number, incident date/time, impact description, and SLA tier.</li>
+          <li>TES reviews request and responds within <strong>5 business days</strong>.</li>
+          <li>Approved credits are applied to the <strong>next monthly invoice</strong>.</li>
+          <li>Credits are non-transferable and have no cash value — sole remedy for SLA misses.</li>
+        </ol>
+        <div class="callout danger" style="margin-top:12px;">
+          <strong>Limitation of Liability:</strong> Service credits constitute Client's sole and exclusive remedy for SLA breaches. Credits do not include consequential, indirect, or punitive damages. Maximum aggregate liability is capped per the MSA.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ SECTION 8 — EMERGENCY AFTER-HOURS ══════════════════ -->
+  <section id="sec-emergency">
+    <div class="section-header">
+      <span class="sec-num">08</span>
+      <h2>Emergency After-Hours Procedures</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="callout danger" style="margin-bottom:20px;">
+        <strong>⚠ After-Hours Emergency Support</strong> is reserved for P1/P2 incidents only. Non-emergency contacts outside business hours will be addressed the next business day. Repeated non-emergency after-hours contacts may result in a policy review.
+      </div>
+
+      <div class="subsection">
+        <h3>Qualifying After-Hours Emergencies</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Qualifies as Emergency</th>
+                <th>Does NOT Qualify</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>✅ Complete network or server outage</td>
+                <td>❌ Password resets</td>
+              </tr>
+              <tr>
+                <td>✅ Active cybersecurity breach or ransomware</td>
+                <td>❌ Software installation requests</td>
+              </tr>
+              <tr>
+                <td>✅ POS / payment system failure</td>
+                <td>❌ Performance complaints (non-critical)</td>
+              </tr>
+              <tr>
+                <td>✅ Data loss or active exfiltration detected</td>
+                <td>❌ Feature requests or questions</td>
+              </tr>
+              <tr>
+                <td>✅ Electrical fault causing immediate safety risk</td>
+                <td>❌ Scheduled tasks that could wait</td>
+              </tr>
+              <tr>
+                <td>✅ Fire suppression / UPS / power failure in server room</td>
+                <td>❌ Printer / peripheral issues</td>
+              </tr>
+              <tr>
+                <td>✅ Physical security breach (cameras down, door access failure)</td>
+                <td>❌ Non-critical device failures</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>After-Hours Escalation Procedure</h3>
+        <div class="after-hours-steps">
+          <div class="ah-step">
+            <div class="ah-step-num">1</div>
+            <p><strong>Attempt Self-Service First:</strong> Check the TES Client Portal for known outages, maintenance notices, or status updates. Confirm the issue is production-impacting before escalating.</p>
+          </div>
+          <div class="ah-step">
+            <div class="ah-step-num">2</div>
+            <p><strong>Submit an Emergency Ticket:</strong> Log into the Client Portal and mark ticket priority as P1 or P2. Include: description, number of affected users, business impact, and any error messages.</p>
+          </div>
+          <div class="ah-step">
+            <div class="ah-step-num">3</div>
+            <p><strong>Call the Emergency Hotline (Gold/Platinum only):</strong> Call the dedicated after-hours emergency number. Have your client account number and ticket number ready. This line is monitored 24/7 by on-call staff.</p>
+          </div>
+          <div class="ah-step">
+            <div class="ah-step-num">4</div>
+            <p><strong>Silver/Bronze After-Hours:</strong> Submit the portal ticket. On-call technician will review P1/P2 tickets within 60–120 minutes. After-hours surcharge fees apply (see Section 7).</p>
+          </div>
+          <div class="ah-step">
+            <div class="ah-step-num">5</div>
+            <p><strong>Electrical Emergencies:</strong> For life-safety electrical emergencies (sparks, burning smell, tripped main breaker, flooding near electrical), call 911 first. Then contact the TES emergency line. Do NOT re-energize circuits without authorization from a licensed electrician.</p>
+          </div>
+          <div class="ah-step">
+            <div class="ah-step-num">6</div>
+            <p><strong>Await Confirmation:</strong> On-call technician will acknowledge within SLA windows and provide an estimated resolution time or on-site arrival window. Maintain communication until resolved.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Emergency Contact Reference</h3>
+        <div class="emergency-panel">
+          <h3>🚨 Tech &amp; Electrical Services LLC — Emergency Contacts</h3>
+          <p>The following contacts are active 24/7 for qualifying P1/P2 emergencies. Gold &amp; Platinum tiers only unless after-hours fees are pre-authorized.</p>
+          <div class="emergency-contacts">
+            <div class="ec-card">
+              <div class="ec-role">Primary On-Call</div>
+              <div class="ec-name">TES Help Desk</div>
+              <div class="ec-method">📞 (951) 555-0100 ext. 9</div>
+              <div class="ec-method">🌐 portal.tes-llc.com</div>
+              <div class="ec-method">Available: 24/7 monitoring</div>
+            </div>
+            <div class="ec-card">
+              <div class="ec-role">Escalation / Lead Engineer</div>
+              <div class="ec-name">TES Lead Engineer</div>
+              <div class="ec-method">📞 On-Call Line (dispatched)</div>
+              <div class="ec-method">Triggers at: T+30 min (P1)</div>
+              <div class="ec-method">Available: P1/P2 only</div>
+            </div>
+            <div class="ec-card">
+              <div class="ec-role">Executive / Owner</div>
+              <div class="ec-name">Irvin Avitia</div>
+              <div class="ec-method">📞 Direct (P1 escalation)</div>
+              <div class="ec-method">Triggers at: T+60 min (P1)</div>
+              <div class="ec-method">Available: Critical only</div>
+            </div>
+            <div class="ec-card">
+              <div class="ec-role">Electrical Emergency</div>
+              <div class="ec-name">Charles Garcia</div>
+              <div class="ec-method">📞 Licensed Electrician</div>
+              <div class="ec-method">🔌 Electrical P1/P2</div>
+              <div class="ec-method">⚠️ Call 911 for life safety first</div>
+            </div>
+            <div class="ec-card">
+              <div class="ec-role">Cybersecurity Incident</div>
+              <div class="ec-name">TES Security Team</div>
+              <div class="ec-method">📧 security@tes-llc.com</div>
+              <div class="ec-method">📞 Sec. Hotline (Plat/Gold)</div>
+              <div class="ec-method">Available: Active breach only</div>
+            </div>
+            <div class="ec-card">
+              <div class="ec-role">Backup / General</div>
+              <div class="ec-name">Support Email</div>
+              <div class="ec-method">📧 support@tes-llc.com</div>
+              <div class="ec-method">🌐 Client Portal (preferred)</div>
+              <div class="ec-method">Monitored: Continuously</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Post-Incident Requirements</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Deliverable</th>
+                <th>Timeline</th>
+                <th>Applies To</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Incident Closure Confirmation</td>
+                <td>Within 1 hour of resolution</td>
+                <td>All P1/P2</td>
+              </tr>
+              <tr>
+                <td>Root Cause Analysis (RCA) Summary</td>
+                <td>Within 24 hours of resolution</td>
+                <td>All P1</td>
+              </tr>
+              <tr>
+                <td>Post-Incident Report (PIR)</td>
+                <td>Within 5 business days</td>
+                <td>P1 Platinum &amp; Gold</td>
+              </tr>
+              <tr>
+                <td>Remediation Plan</td>
+                <td>Within 10 business days</td>
+                <td>P1 Platinum (chronic issues)</td>
+              </tr>
+              <tr>
+                <td>Credit Calculation Notice</td>
+                <td>With next invoice</td>
+                <td>Any SLA breach</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="doc-footer">
+    <div>
+      <strong>Tech &amp; Electrical Services LLC</strong><br>
+      Temecula, CA · support@tes-llc.com · (951) 555-0100<br>
+      <span>Version 1.0 — Effective January 1, 2026 — Supersedes all prior SLA documents</span>
+    </div>
+    <div style="text-align:right;">
+      <strong>SLA Reference Guide</strong><br>
+      Internal &amp; Client Distribution<br>
+      <em>Next Review: January 2027</em>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

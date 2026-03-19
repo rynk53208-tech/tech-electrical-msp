@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compliance Audit Tool — Tech & Electrical Services LLC</title>
+  <style>
+    /* ─── CSS Variables ─────────────────────────────── */
+    :root {
+      --brand-primary: #1a3a5c;
+      --brand-accent:  #e84c1e;
+      --brand-light:   #f0f6ff;
+      --green:  #16a34a;
+      --yellow: #ca8a04;
+      --red:    #dc2626;
+      --gray:   #64748b;
+      --border: #cbd5e1;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,.10);
+    }
+
+    /* ─── Reset & Base ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    /* ─── Header ────────────────────────────────────── */
+    header {
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: .3px; }
+    header p  { font-size: .82rem; opacity: .75; margin-top: 2px; }
+    .header-logo { font-size: 2rem; }
+
+    /* ─── Main Layout ───────────────────────────────── */
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* ─── Card ──────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title .icon { font-size: 1.2rem; }
+
+    /* ─── Client Info Form ──────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: .92rem;
+      font-family: inherit;
+      transition: border-color .2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+    }
+    .form-group.full { grid-column: 1 / -1; }
+
+    /* ─── Audit Sections ────────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 14px 0;
+      border-bottom: 2px solid var(--brand-light);
+      margin-bottom: 12px;
+      user-select: none;
+    }
+    .section-header:hover { color: var(--brand-primary); }
+    .section-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .section-score {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .score-badge {
+      font-size: .88rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e2e8f0;
+      color: #475569;
+      min-width: 54px;
+      text-align: center;
+    }
+    .score-badge.compliant   { background: #dcfce7; color: var(--green); }
+    .score-badge.partial     { background: #fef9c3; color: var(--yellow); }
+    .score-badge.noncompliant{ background: #fee2e2; color: var(--red); }
+    .toggle-icon { font-size: .85rem; color: var(--gray); }
+
+    /* ─── Checklist Items ───────────────────────────── */
+    .checklist { list-style: none; }
+    .check-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .check-label .q { font-weight: 600; font-size: .93rem; }
+    .check-label .hint { font-size: .78rem; color: var(--gray); }
+    .check-label .priority-tag {
+      display: inline-block;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 20px;
+      margin-top: 3px;
+      width: fit-content;
+      letter-spacing: .3px;
+    }
+    .priority-tag.critical  { background: #fee2e2; color: var(--red); }
+    .priority-tag.high      { background: #ffedd5; color: #c2410c; }
+    .priority-tag.medium    { background: #fef9c3; color: var(--yellow); }
+    .priority-tag.low       { background: #dcfce7; color: var(--green); }
+
+    .answer-group { display: flex; gap: 6px; flex-wrap: nowrap; align-items: center; }
+    .answer-btn {
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      color: #475569;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .answer-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+    .answer-btn.selected-yes  { background: var(--green);  color: #fff; border-color: var(--green); }
+    .answer-btn.selected-partial { background: var(--yellow); color: #fff; border-color: var(--yellow); }
+    .answer-btn.selected-no   { background: var(--red);    color: #fff; border-color: var(--red); }
+    .answer-btn.selected-na   { background: var(--gray);   color: #fff; border-color: var(--gray); }
+
+    /* ─── Score Bar ─────────────────────────────────── */
+    .score-bar-wrap { margin: 8px 0 4px; }
+    .score-bar-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .4s ease;
+      background: var(--green);
+    }
+    .score-bar-fill.partial     { background: var(--yellow); }
+    .score-bar-fill.noncompliant{ background: var(--red); }
+
+    /* ─── Overall Score Panel ───────────────────────── */
+    .overall-panel {
+      background: var(--brand-primary);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .overall-left h2 { font-size: 1.15rem; font-weight: 700; }
+    .overall-left p  { font-size: .82rem; opacity: .75; margin-top: 2px; }
+    .overall-score {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .overall-score small { font-size: 1.1rem; font-weight: 400; opacity: .7; }
+    .overall-status {
+      font-size: .95rem;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.15);
+    }
+    .overall-status.compliant    { background: rgba(22,163,74,.25); }
+    .overall-status.partial      { background: rgba(202,138,4,.3); }
+    .overall-status.noncompliant { background: rgba(220,38,38,.3); }
+
+    /* ─── Buttons ───────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .btn {
+      padding: 10px 22px;
+      border-radius: 6px;
+      border: none;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .btn:hover { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary   { background: var(--brand-primary); color: #fff; }
+    .btn-accent    { background: var(--brand-accent);  color: #fff; }
+    .btn-outline   { background: transparent; border: 2px solid var(--brand-primary); color: var(--brand-primary); }
+    .btn-danger    { background: #fee2e2; color: var(--red); border: 1.5px solid #fca5a5; }
+
+    /* ─── Report Panel ──────────────────────────────── */
+    #report-section { display: none; }
+    .report-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .report-meta { font-size: .82rem; color: var(--gray); margin-top: 4px; }
+
+    .findings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    .findings-table th {
+      background: var(--brand-light);
+      text-align: left;
+      padding: 8px 12px;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--brand-primary);
+    }
+    .findings-table td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .findings-table tr:hover td { background: #f8fafc; }
+
+    .rec-block {
+      border-left: 4px solid var(--border);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      border-radius: 0 6px 6px 0;
+      background: #f8fafc;
+    }
+    .rec-block.critical  { border-color: var(--red); }
+    .rec-block.high      { border-color: #f97316; }
+    .rec-block.medium    { border-color: var(--yellow); }
+    .rec-block.low       { border-color: var(--green); }
+    .rec-title { font-weight: 700; font-size: .9rem; margin-bottom: 3px; }
+    .rec-body  { font-size: .83rem; color: #475569; }
+
+    .cat-score-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: .9rem;
+    }
+    .cat-score-row:last-child { border-bottom: none; }
+    .cat-score-name { flex: 1; font-weight: 600; }
+    .cat-score-bar-wrap { flex: 2; }
+    .cat-score-num { width: 44px; text-align: right; font-weight: 700; font-size: .88rem; }
+
+    /* ─── Progress Indicator ────────────────────────── */
+    .progress-wrap { margin-bottom: 18px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: 5px; }
+    .progress-track { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill  { height: 100%; background: var(--brand-primary); border-radius: 99px; transition: width .3s; }
+
+    /* ─── Tabs ──────────────────────────────────────── */
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: none;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color .15s;
+    }
+    .tab-btn.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+    .tab-btn:hover  { color: var(--brand-primary); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ─── Notes ─────────────────────────────────────── */
+    .notes-field {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: .88rem;
+      resize: vertical;
+      min-height: 80px;
+      margin-top: 8px;
+    }
+
+    /* ─── Alert Banner ──────────────────────────────── */
+    .alert {
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .88rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .alert-info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .alert-success { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+    .alert-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+    /* ─── Footer ────────────────────────────────────── */
+    footer {
+      text-align: center;
+      font-size: .75rem;
+      color: var(--gray);
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* ─── Print Styles ──────────────────────────────── */
+    @media print {
+      body { background: #fff; font-size: 12pt; }
+      header { background: var(--brand-primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print, .btn-row, .tabs, .tab-btn, .answer-group, nav { display: none !important; }
+      .card { box-shadow: none; border: 1px solid #e2e8f0; page-break-inside: avoid; }
+      .overall-panel { background: var(--brand-primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #report-section { display: block !important; }
+      #audit-section  { display: none !important; }
+      .tab-content    { display: block !important; }
+      .score-bar-fill, .progress-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .rec-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .score-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .priority-tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ═════════════════════════════════════════ -->
+<header>
+  <div>
+    <h1>⚡ Compliance Audit Tool</h1>
+    <p>Tech &amp; Electrical Services LLC · SOC 2 Readiness &amp; Cybersecurity Baseline</p>
+  </div>
+  <div class="header-logo no-print">🛡️</div>
+</header>
+
+<!-- ══ MAIN ═══════════════════════════════════════════ -->
+<main>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap no-print">
+    <div class="progress-label">
+      <span id="progress-label-text">Audit Progress</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Overall Score Panel -->
+  <div class="overall-panel">
+    <div class="overall-left">
+      <h2>Overall Compliance Score</h2>
+      <p id="overall-sub">Answer all questions to generate your report</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div>
+        <div class="overall-score" id="overall-score-num">—</div>
+        <div style="font-size:.75rem;opacity:.6;margin-top:2px;">out of 100</div>
+      </div>
+      <div class="overall-status" id="overall-status-badge">Not Started</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs no-print">
+    <button class="tab-btn active" onclick="switchTab('audit')">📋 Audit Checklist</button>
+    <button class="tab-btn" onclick="switchTab('client')">🏢 Client Info</button>
+    <button class="tab-btn" onclick="switchTab('report')">📄 Report</button>
+  </div>
+
+  <!-- ── TAB: CLIENT INFO ──────────────────────────── -->
+  <div class="tab-content active" id="tab-client" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏢</span> Client Information</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="f-company" placeholder="Acme Corp" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" id="f-contact" placeholder="Jane Smith" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Contact Title</label>
+          <input type="text" id="f-title" placeholder="IT Manager" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="jane@acme.com" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="f-phone" placeholder="(555) 555-5555" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Industry</label>
+          <select id="f-industry" onchange="updateReport()">
+            <option value="">Select industry…</option>
+            <option>Healthcare</option>
+            <option>Finance / Banking</option>
+            <option>Legal</option>
+            <option>Retail</option>
+            <option>Manufacturing</option>
+            <option>Technology</option>
+            <option>Construction / Trades</option>
+            <option>Education</option>
+            <option>Non-Profit</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Employee Count</label>
+          <select id="f-employees" onchange="updateReport()">
+            <option value="">Select range…</option>
+            <option>1–10</option>
+            <option>11–50</option>
+            <option>51–200</option>
+            <option>201–500</option>
+            <option>500+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Audit Type</label>
+          <select id="f-audit-type" onchange="updateReport()">
+            <option>Initial Assessment</option>
+            <option>Quarterly Security Review</option>
+            <option>SOC 2 Preparation</option>
+            <option>Cyber Insurance Application</option>
+            <option>Annual Audit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Audit Date</label>
+          <input type="date" id="f-date" oninput="updateReport()" />
+        </div>
+        <div class="form-group">
+          <label>Auditor Name</label>
+          <input type="text" id="f-auditor" placeholder="Irvin Avitia" value="Irvin Avitia" oninput="updateReport()" />
+        </div>
+        <div class="form-group full">
+          <label>Notes / Scope</label>
+          <textarea id="f-notes" rows="3" placeholder="Describe audit scope, special considerations…" oninput="updateReport()"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: AUDIT CHECKLIST ──────────────────────── -->
+  <div class="tab-content active" id="tab-audit">
+    <div id="audit-section" class="audit-section"></div>
+    <div class="card no-print">
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateReport()">📄 Generate Report</button>
+        <button class="btn btn-outline" onclick="resetAll()">🔄 Reset Audit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: REPORT ───────────────────────────────── -->
+  <div class="tab-content" id="tab-report">
+    <div id="report-section">
+      <!-- populated by JS -->
+    </div>
+    <div class="card no-print" id="report-actions" style="display:none;">
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="btn btn-accent"  onclick="exportHTML()">💾 Export HTML</button>
+        <button class="btn btn-outline" onclick="switchTab('audit')">← Back to Audit</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Tech &amp; Electrical Services LLC · Compliance Audit Tool v1.0 · Confidential — For Internal Use Only
+</footer>
+
+<!-- ══ JAVASCRIPT ════════════════════════════════════ -->
+<script>
+// ──────────────────────────────────────────────────────
+// DATA — Audit Categories & Questions
+// ──────────────────────────────────────────────────────
+const AUDIT_DATA = [
+  {
+    id: 'network',
+    title: 'Network Security',
+    icon: '🌐',
+    weight: 18,
+    questions: [
+      { id: 'fw_active',    text: 'Firewall is active and configured on the network perimeter',              hint: 'Hardware or software firewall with active ruleset',          priority: 'critical', points: 15, reco: 'Deploy and configure a perimeter firewall (pfSense, Fortinet, Cisco ASA). Define default-deny rules.', recoFull: 'A properly configured firewall is the first line of network defense. Implement stateful inspection rules, segment guest/internal traffic, and document the ruleset.' },
+      { id: 'port_audit',   text: 'Unnecessary ports and services are closed / disabled',                    hint: 'Port scan performed; only required services listening',         priority: 'high',     points: 12, reco: 'Perform regular port scans (nmap). Close all unused ports and disable unnecessary services.', recoFull: 'Unnecessary open ports expand your attack surface. Use nmap to inventory all exposed services, then work with vendors to disable what is not needed.' },
+      { id: 'vpn',          text: 'VPN is used for all remote access to internal systems',                   hint: 'No direct RDP/SSH exposed to internet',                        priority: 'critical', points: 15, reco: 'Implement site-to-site or client VPN (WireGuard, OpenVPN, or commercial). Block direct internet exposure of RDP/SSH.', recoFull: 'Remote access without VPN is a top initial access vector. Require VPN with MFA for all remote connections. Never expose RDP directly to the internet.' },
+      { id: 'network_seg',  text: 'Network segmentation / VLANs are in place (IT, Guest, IoT)',             hint: 'Separate VLANs for different device classes',                  priority: 'high',     points: 12, reco: 'Implement VLAN segmentation separating corporate, guest, IoT, and server traffic.', recoFull: 'Flat networks allow lateral movement. Segment VLANs by function and enforce inter-VLAN firewall rules.' },
+      { id: 'wifi_sec',     text: 'Wi-Fi uses WPA3 or WPA2-Enterprise with strong passphrase',              hint: 'No WEP/WPA-TKIP; guest Wi-Fi isolated',                        priority: 'high',     points: 10, reco: 'Upgrade to WPA3 or WPA2-Enterprise. Use unique SSIDs and strong passphrases. Isolate guest Wi-Fi.', recoFull: 'Weak Wi-Fi security allows passive credential capture. Enforce WPA2-Enterprise with RADIUS or WPA3 minimum. Rotate passphrases quarterly.' },
+      { id: 'ids_ips',      text: 'IDS/IPS or network monitoring solution is deployed',                     hint: 'e.g., Snort, Suricata, CrowdStrike Falcon, or similar',        priority: 'medium',   points: 8,  reco: 'Deploy an IDS/IPS solution to detect and block malicious network traffic.', recoFull: 'Without network visibility, breaches go undetected for months. Deploy an IDS/IPS or NDR solution with alerting.' },
+      { id: 'dns_filter',   text: 'DNS filtering / web content filtering is active',                         hint: 'e.g., Cisco Umbrella, Cloudflare Gateway, pfBlockerNG',        priority: 'medium',   points: 8,  reco: 'Enable DNS filtering to block malicious domains, phishing sites, and unwanted content categories.', recoFull: 'DNS filtering is a high-leverage, low-cost control. Block C2 domains, phishing, and malware distribution sites.' },
+      { id: 'net_logs',     text: 'Network logs are collected and retained for ≥90 days',                   hint: 'Firewall, DNS, and DHCP logs centralized',                     priority: 'medium',   points: 8,  reco: 'Configure centralized logging (syslog/SIEM) for all network devices. Retain 90+ days.', recoFull: 'Log retention is required for SOC 2 and incident investigation. Implement a SIEM or log aggregation platform with 90-day minimum retention.' },
+      { id: 'change_mgmt',  text: 'Network changes follow a documented change management process',           hint: 'Change log, approvals, rollback plan',                          priority: 'low',      points: 6,  reco: 'Establish a formal change management process for all network configuration changes.', recoFull: 'Undocumented changes cause outages and security gaps. Implement a change request, approval, and rollback process.' },
+      { id: 'vuln_scan',    text: 'Vulnerability scans are performed at least quarterly',                    hint: 'e.g., Nessus, OpenVAS, Qualys',                                priority: 'high',     points: 6,  reco: 'Schedule quarterly vulnerability scans of all network-connected assets. Remediate critical/high findings within 30 days.', recoFull: 'Vulnerability scanning identifies known weaknesses before attackers exploit them. Scan all assets and track remediation in a risk register.' },
+    ]
+  },
+  {
+    id: 'endpoint',
+    title: 'Endpoint Protection',
+    icon: '💻',
+    weight: 16,
+    questions: [
+      { id: 'av_edr',       text: 'All endpoints have antivirus or EDR installed and active',                hint: 'Managed AV/EDR with real-time protection enabled',             priority: 'critical', points: 15, reco: 'Deploy a managed EDR solution (CrowdStrike, SentinelOne, Defender for Business) on all endpoints.', recoFull: 'Unprotected endpoints are primary ransomware entry points. Deploy centrally managed EDR with real-time protection, threat hunting, and automated response.' },
+      { id: 'os_patching',  text: 'Operating systems are patched within 30 days of release',                hint: 'Automated patch management in place',                          priority: 'critical', points: 15, reco: 'Implement automated patch management (WSUS, Intune, or RMM tool). Track patch compliance with reporting.', recoFull: 'Unpatched systems are exploited within days of CVE disclosure. Deploy automated patching and enforce a 30-day SLA for critical patches, 14 days for critical vulnerabilities.' },
+      { id: 'app_patching', text: 'Third-party applications are kept up to date',                           hint: 'Browser, Office, Adobe, Java, etc.',                            priority: 'high',     points: 10, reco: 'Extend patch management to cover third-party applications (browsers, Office, PDF readers, Java).', recoFull: 'Attackers frequently target third-party app vulnerabilities. Use a tool like Ninite, Chocolatey, or RMM automation to keep all apps current.' },
+      { id: 'disk_enc',     text: 'Full-disk encryption is enabled on all endpoints (BitLocker/FileVault)', hint: 'Encryption keys escrowed and managed',                         priority: 'high',     points: 10, reco: 'Enable BitLocker (Windows) or FileVault (macOS) on all endpoints. Escrow recovery keys in a management platform.', recoFull: 'Disk encryption prevents data exposure from lost or stolen devices. Enable BitLocker/FileVault with centrally stored recovery keys.' },
+      { id: 'uac',          text: 'Users operate as standard (non-admin) accounts on endpoints',            hint: 'Admin rights required via UAC/sudo prompt',                    priority: 'high',     points: 10, reco: 'Remove local admin rights from standard users. Use a PAM solution for privileged access.', recoFull: 'Local admin rights enable malware to persist and spread. Revoke admin rights from daily-use accounts and use a PAM tool for elevated tasks.' },
+      { id: 'usb_ctrl',     text: 'USB / removable media access is controlled or monitored',                hint: 'Policy restricting or logging USB storage',                    priority: 'medium',   points: 8,  reco: 'Implement USB device control policy via Group Policy, Intune, or endpoint security tool.', recoFull: 'Uncontrolled USB access enables data exfiltration and malware introduction. Block or log all removable media usage.' },
+      { id: 'screen_lock',  text: 'Screens auto-lock after ≤5 minutes of inactivity',                      hint: 'Enforced via GPO or MDM policy',                               priority: 'medium',   points: 6,  reco: 'Enforce screen lock timeout via Group Policy (≤5 minutes inactivity) across all endpoints.', recoFull: 'Unlocked screens in shared spaces enable unauthorized access. Enforce via Group Policy or MDM with no user override.' },
+      { id: 'mobile_mgmt',  text: 'Mobile devices accessing company data are managed via MDM',              hint: 'e.g., Intune, Jamf, or similar MDM',                           priority: 'medium',   points: 6,  reco: 'Enroll all company and BYOD devices that access corporate data in an MDM solution.', recoFull: 'Unmanaged mobile devices are a blind spot for data loss. Require MDM enrollment with remote wipe capability for all devices accessing corporate resources.' },
+    ]
+  },
+  {
+    id: 'access',
+    title: 'Access Control',
+    icon: '🔐',
+    weight: 18,
+    questions: [
+      { id: 'mfa_all',      text: 'Multi-factor authentication is enabled on all critical accounts',        hint: 'Email, VPN, admin portals, cloud services',                   priority: 'critical', points: 20, reco: 'Enforce MFA on all accounts — especially email, VPN, admin panels, and SaaS tools. Use an authenticator app, not SMS.', recoFull: 'MFA is the single most effective control against credential-based attacks. Enforce on all accounts with priority on email, admin consoles, cloud, and remote access.' },
+      { id: 'pw_policy',    text: 'Password policy enforces minimum 12 characters + complexity',            hint: 'No reuse, no dictionary words, expiry policy',                 priority: 'high',     points: 12, reco: 'Set password policy: 12+ characters, complexity rules, no reuse of last 12, 90-day max age.', recoFull: 'Weak passwords are trivially cracked. Enforce strong password policies via Active Directory or IdP. Better yet, pair with a company-wide password manager.' },
+      { id: 'pwd_manager',  text: 'Company-wide password manager is in use',                                hint: 'e.g., Bitwarden, 1Password, LastPass Teams',                   priority: 'high',     points: 10, reco: 'Deploy a business password manager (Bitwarden Teams, 1Password Business) for all staff.', recoFull: 'Humans reuse passwords without a manager. A shared vault enables strong unique credentials, secure sharing, and audit logs.' },
+      { id: 'least_priv',  text: 'Principle of least privilege is applied to all accounts',                hint: 'Users only have access needed for their role',                 priority: 'high',     points: 12, reco: 'Audit all account permissions. Remove excess access. Implement role-based access control (RBAC).', recoFull: 'Over-privileged accounts amplify breach impact. Conduct an access review, apply RBAC, and enforce just-in-time access for elevated operations.' },
+      { id: 'admin_sep',    text: 'Dedicated admin accounts separate from daily-use accounts',              hint: 'No admin accounts used for email/browsing',                    priority: 'high',     points: 10, reco: 'Create separate admin accounts for all IT/admin staff. Admin accounts must not be used for email or browsing.', recoFull: 'Using admin accounts for daily work dramatically increases risk. Create dedicated privileged accounts and require MFA for all admin access.' },
+      { id: 'offboarding',  text: 'Offboarding process immediately revokes all access',                     hint: 'Checklist: AD, email, SaaS apps, VPN, physical',              priority: 'high',     points: 10, reco: 'Create and enforce a formal offboarding checklist that disables accounts within 24 hours of departure.', recoFull: 'Stale accounts from departed employees are a persistent risk. Automate account disabling via HR triggers and maintain a SaaS access inventory for immediate revocation.' },
+      { id: 'access_review',text: 'Access rights are reviewed at least quarterly',                           hint: 'Periodic access certification process',                        priority: 'medium',   points: 8,  reco: 'Schedule quarterly access reviews for all systems. Document and remediate any excess privileges found.', recoFull: 'Access creep accumulates over time. Implement a quarterly access certification process where managers attest to their team\'s access rights.' },
+      { id: 'sso',          text: 'Single Sign-On (SSO) is used for SaaS application access',              hint: 'e.g., Azure AD, Okta, Google Workspace',                      priority: 'medium',   points: 6,  reco: 'Implement SSO for all SaaS applications to centralize authentication and access control.', recoFull: 'SSO centralizes authentication, reduces password sprawl, and enables rapid account disabling. Implement with an IdP like Azure AD or Okta.' },
+      { id: 'audit_logs',   text: 'Authentication and admin activity logs are collected and retained',      hint: 'Failed logins, privilege escalations, policy changes',         priority: 'medium',   points: 6,  reco: 'Enable and retain authentication logs across all systems. Alert on failed login spikes and after-hours access.', recoFull: 'Authentication logs are essential for detecting intrusions and meeting SOC 2 requirements. Centralize in a SIEM with 90-day+ retention.' },
+      { id: 'guest_access', text: 'Guest and contractor access is time-limited and monitored',              hint: 'Expiry dates set, access scoped to need',                      priority: 'low',      points: 6,  reco: 'Set expiry dates on all guest/contractor accounts. Scope access to minimum required resources.', recoFull: 'Contractors and guests often retain access long after need. Implement time-bound accounts with automatic expiry and access scoped to specific resources only.' },
+    ]
+  },
+  {
+    id: 'data',
+    title: 'Data Protection',
+    icon: '💾',
+    weight: 18,
+    questions: [
+      { id: 'backup_3_2_1', text: '3-2-1 backup rule is followed (3 copies, 2 media, 1 offsite)',          hint: 'Offsite or cloud backup in place; tested',                     priority: 'critical', points: 15, reco: 'Implement 3-2-1 backup strategy: 3 copies of data, 2 different media types, 1 offsite/cloud.', recoFull: 'The 3-2-1 backup rule is the gold standard for data resilience. Use local backup (NAS/server), a secondary device, and a cloud backup (Backblaze, Acronis, Veeam Cloud).' },
+      { id: 'backup_test',  text: 'Backups are tested and verified at least monthly',                       hint: 'Restore test performed and documented',                        priority: 'critical', points: 15, reco: 'Test backup restore procedures monthly. Document the test, time-to-restore, and data integrity results.', recoFull: 'Untested backups frequently fail when needed most. Schedule monthly restore tests, document results, and alert on any failures. "Hope is not a backup strategy."' },
+      { id: 'data_class',   text: 'Data classification policy is defined and enforced',                     hint: 'Public, Internal, Confidential, Restricted categories',        priority: 'high',     points: 10, reco: 'Create and publish a data classification policy with categories (Public, Internal, Confidential, Restricted).', recoFull: 'Without classification, all data gets the same (usually insufficient) protection. Define categories and apply controls appropriate to each sensitivity level.' },
+      { id: 'encrypt_rest', text: 'Sensitive data is encrypted at rest in databases and storage',           hint: 'AES-256 minimum; key management documented',                  priority: 'high',     points: 12, reco: 'Enable encryption at rest for all databases and storage volumes containing sensitive data. Document key management.', recoFull: 'Encryption at rest protects data if storage media is physically compromised. Use AES-256, implement key rotation, and document key management procedures.' },
+      { id: 'encrypt_trans',text: 'Data is encrypted in transit (TLS 1.2+ enforced)',                       hint: 'No plaintext HTTP, FTP, or Telnet on internal/external',       priority: 'high',     points: 10, reco: 'Enforce TLS 1.2+ on all web services and APIs. Disable legacy protocols (TLS 1.0, SSL). Use HTTPS everywhere.', recoFull: 'Unencrypted transit exposes credentials and sensitive data to interception. Force TLS 1.2+ on all services and scan for plaintext protocol usage (HTTP, FTP, Telnet).' },
+      { id: 'dlp',          text: 'Data Loss Prevention (DLP) controls are implemented',                    hint: 'Email DLP, endpoint DLP, or cloud DLP active',                 priority: 'medium',   points: 8,  reco: 'Implement DLP policies to detect and block exfiltration of sensitive data via email, web, and removable media.', recoFull: 'DLP prevents sensitive data from leaving controlled environments. Implement email scanning for SSNs/credit cards, and endpoint DLP to block unauthorized uploads.' },
+      { id: 'retention',    text: 'Data retention and disposal policy is documented and enforced',           hint: 'Legal hold, GDPR/CCPA compliance, secure deletion',           priority: 'medium',   points: 8,  reco: 'Create a data retention schedule. Define secure disposal procedures (DoD 5220.22-M or NIST 800-88).', recoFull: 'Keeping data longer than necessary increases breach impact and compliance risk. Define retention periods by data type, automate deletion, and use certified destruction for media.' },
+      { id: 'cloud_sec',    text: 'Cloud storage (O365, Google Drive, etc.) access is controlled',          hint: 'Sharing permissions audited; external sharing reviewed',        priority: 'medium',   points: 8,  reco: 'Audit all cloud storage sharing settings. Restrict external sharing to specific domains. Enable DLP in cloud platforms.', recoFull: 'Misconfigured cloud storage is a leading cause of data breaches. Review sharing permissions, require authentication for all links, and enable cloud DLP.' },
+      { id: 'privacy_reg',  text: 'Compliance with applicable privacy regulations (CCPA, HIPAA, etc.)',     hint: 'Privacy policy, data subject rights process in place',         priority: 'medium',   points: 6,  reco: 'Identify applicable privacy regulations. Implement required controls, privacy notices, and data subject rights processes.', recoFull: 'Non-compliance with privacy regulations carries significant fines. Map applicable laws, implement required controls, and document compliance evidence.' },
+      { id: 'pii_inventory',text: 'Inventory of PII / sensitive data locations is maintained',              hint: 'Data map / asset register updated regularly',                 priority: 'low',      points: 8,  reco: 'Create and maintain a data inventory/map documenting where PII and sensitive data is stored and processed.', recoFull: 'You cannot protect what you cannot find. Create a data inventory documenting all PII locations, processing activities, and third-party processors.' },
+    ]
+  },
+  {
+    id: 'physical',
+    title: 'Physical Security',
+    icon: '🏢',
+    weight: 10,
+    questions: [
+      { id: 'access_ctrl',  text: 'Physical access to server room / IT closet is restricted and logged',   hint: 'Key card, lock, camera, or access log in place',              priority: 'critical', points: 20, reco: 'Install key card access or physical lock on server room. Log all entry/exit events.', recoFull: 'Physical access to server hardware can bypass all logical controls. Implement key card access with logging, security cameras, and limit access to authorized IT personnel only.' },
+      { id: 'cctv',         text: 'Security cameras cover entry points, server room, and workstations',     hint: 'Footage retained ≥30 days',                                   priority: 'high',     points: 15, reco: 'Install IP cameras at all entry points, server room, and high-value areas. Retain footage 30+ days.', recoFull: 'Camera coverage provides accountability and evidence for incidents. Install cameras at all entry/exit points, server room, and data processing areas with minimum 30-day retention.' },
+      { id: 'visitor_log',  text: 'Visitors are logged and escorted in secure areas',                       hint: 'Sign-in log, badge, and escort policy',                        priority: 'high',     points: 15, reco: 'Implement visitor management: sign-in log, temporary badges, and require escort in secure areas.', recoFull: 'Unescorted visitors can install hardware keyloggers, access unsecured workstations, or photograph sensitive information. Require sign-in and escort in all non-public areas.' },
+      { id: 'device_lock',  text: 'Servers and network equipment are physically secured (rack locks, etc.)',hint: 'No unsecured equipment in public areas',                       priority: 'high',     points: 15, reco: 'Lock server rack doors, secure network closets, and remove all equipment from publicly accessible areas.', recoFull: 'Physical hardware access enables boot-level attacks and direct data extraction. Lock rack cabinets, cable-lock critical devices, and remove equipment from public spaces.' },
+      { id: 'clean_desk',   text: 'Clean desk policy is enforced (no sensitive data left visible)',         hint: 'Policy in place and enforced',                                 priority: 'medium',   points: 15, reco: 'Establish and enforce a clean desk policy. Train staff and conduct periodic walk-through inspections.', recoFull: 'Sensitive documents and credentials left on desks are easy targets for social engineering and opportunistic theft. Enforce clean desk policy and conduct regular audits.' },
+      { id: 'env_controls', text: 'Server room has appropriate environmental controls (temp, fire, UPS)',   hint: 'AC, humidity, fire suppression, UPS in place',                 priority: 'medium',   points: 10, reco: 'Ensure server room has temperature control, humidity monitoring, fire suppression, and UPS.', recoFull: 'Environmental failures cause significant downtime. Implement temperature monitoring with alerts, fire suppression, and UPS with sufficient runtime for controlled shutdown.' },
+      { id: 'media_sec',    text: 'Removable media and printed sensitive documents are securely stored/destroyed', hint: 'Shredder, locked storage, chain of custody',             priority: 'medium',   points: 10, reco: 'Provide cross-cut shredders for document destruction. Lock sensitive media in secure storage.', recoFull: 'Printed documents and removable media are frequent sources of data loss. Require cross-cut shredding of sensitive documents and locked storage for media.' },
+    ]
+  },
+  {
+    id: 'policies',
+    title: 'Policies & Documentation',
+    icon: '📋',
+    weight: 10,
+    questions: [
+      { id: 'isms_policy',  text: 'Written Information Security Policy (ISP) exists and is current',       hint: 'Reviewed and updated within 12 months; staff acknowledged',   priority: 'critical', points: 15, reco: 'Draft/update a comprehensive Information Security Policy. Have all staff acknowledge it annually.', recoFull: 'An ISP is foundational for SOC 2 and most compliance frameworks. Policies must be written, approved by leadership, communicated to staff, and reviewed at least annually.' },
+      { id: 'incident_resp',text: 'Incident Response Plan (IRP) exists and has been tested',                hint: 'Contact list, escalation path, tabletop exercise done',        priority: 'critical', points: 15, reco: 'Create an Incident Response Plan and conduct an annual tabletop exercise. Define roles, escalation paths, and breach notification procedures.', recoFull: 'Without an IRP, organizations respond chaotically to incidents — increasing damage and recovery time. Create an IRP, assign roles, and practice with tabletop exercises annually.' },
+      { id: 'bcp_dr',       text: 'Business Continuity / Disaster Recovery plan exists',                    hint: 'RTO/RPO defined; plan tested within 12 months',               priority: 'high',     points: 12, reco: 'Create a BCP/DR plan with defined RTO/RPO targets. Test the plan annually and update after infrastructure changes.', recoFull: 'A BCP/DR plan defines how the business recovers from major disruptions. Define RTOs and RPOs for critical systems, document recovery procedures, and test annually.' },
+      { id: 'sec_training', text: 'Annual security awareness training is completed by all staff',           hint: 'Phishing simulation, compliance training tracked',             priority: 'high',     points: 12, reco: 'Enroll all staff in annual security awareness training. Include phishing simulations and track completion rates.', recoFull: 'Humans are the most commonly exploited vulnerability. Security awareness training reduces phishing susceptibility significantly. Include simulated phishing and track completion.' },
+      { id: 'vendor_mgmt',  text: 'Third-party vendor security assessment process is in place',             hint: 'BAAs, vendor questionnaires, SLA security requirements',       priority: 'high',     points: 10, reco: 'Implement vendor risk management: security questionnaires, contractual security requirements, and periodic reviews.', recoFull: 'Supply chain attacks often originate from vendors with poor security. Assess vendor security posture, require contractual security obligations, and monitor for vendor breaches.' },
+      { id: 'risk_register',text: 'Risk register is maintained and reviewed quarterly',                      hint: 'Identified risks with owner, rating, and mitigation status',  priority: 'high',     points: 10, reco: 'Create and maintain a risk register. Assign owners, rate risks (likelihood × impact), and track mitigations.', recoFull: 'A risk register provides visibility into the organization\'s threat landscape and drives prioritized remediation. Required by most compliance frameworks.' },
+      { id: 'asset_inv',    text: 'Hardware and software asset inventory is maintained',                     hint: 'Updated within 90 days; includes all endpoints, servers, SaaS', priority: 'high',   points: 10, reco: 'Implement automated asset discovery. Maintain an inventory of all hardware, software, and SaaS applications.', recoFull: 'You cannot secure what you don\'t know exists. Implement automated asset discovery and maintain a CMDB or asset spreadsheet updated at least quarterly.' },
+      { id: 'acceptable_use',text: 'Acceptable Use Policy (AUP) is in place and acknowledged by staff',     hint: 'Covers IT resources, internet, email, BYOD',                  priority: 'medium',   points: 8,  reco: 'Create and distribute an Acceptable Use Policy. Require annual acknowledgment by all staff.', recoFull: 'An AUP sets expectations for appropriate use of IT resources and provides legal basis for enforcement. Include provisions for BYOD, internet use, and remote work.' },
+      { id: 'change_policy',text: 'Change management policy covers all IT infrastructure changes',           hint: 'Request, approval, testing, rollback documented',             priority: 'medium',   points: 8,  reco: 'Document change management procedures covering request, approval, testing, and rollback processes.', recoFull: 'Undocumented changes cause outages and create security gaps. Implement a formal change management process with approval gates and mandatory rollback plans.' },
+    ]
+  },
+  {
+    id: 'soc2',
+    title: 'SOC 2 Readiness',
+    icon: '📊',
+    weight: 10,
+    questions: [
+      { id: 'tsc_defined',  text: 'Applicable Trust Service Criteria (TSC) are identified and documented',  hint: 'Security, Availability, Confidentiality, Privacy, Processing Integrity', priority: 'critical', points: 15, reco: 'Identify which SOC 2 Trust Service Criteria apply to your services. Document the scope.', recoFull: 'SOC 2 scope definition is the foundation of readiness. Work with your auditor to define applicable TSCs based on your service commitments. Common: Security (all), Availability (uptime SLAs), Confidentiality.' },
+      { id: 'controls_map', text: 'Security controls are mapped to relevant SOC 2 criteria',                hint: 'Control matrix / CCM in place',                                priority: 'high',     points: 15, reco: 'Create a controls matrix mapping each security control to the applicable SOC 2 criteria.', recoFull: 'A controls matrix demonstrates evidence readiness for auditors. Map each control to relevant TSC sub-criteria and document evidence of implementation.' },
+      { id: 'audit_evidence',text: 'Evidence collection process is in place for audit readiness',           hint: 'Screenshots, logs, policies organized for auditor access',     priority: 'high',     points: 12, reco: 'Establish an evidence collection system. Gather policies, screenshots, logs, and configurations that demonstrate control effectiveness.', recoFull: 'SOC 2 auditors require evidence of control operation over a 12-month period. Implement ongoing evidence collection, ideally automated, covering all in-scope controls.' },
+      { id: 'monitoring',   text: 'Continuous monitoring and alerting is implemented',                       hint: 'Security events, availability metrics, performance dashboards', priority: 'high',    points: 12, reco: 'Implement continuous monitoring for security events, uptime, and performance. Configure alerts for anomalies.', recoFull: 'SOC 2 requires evidence of ongoing monitoring. Implement a SIEM or monitoring platform that continuously checks security controls and alerts on deviations.' },
+      { id: 'pen_test',     text: 'Annual penetration test conducted by qualified third party',              hint: 'Report and remediation tracking documented',                  priority: 'high',     points: 12, reco: 'Engage a qualified third-party penetration tester annually. Document findings and track remediation to closure.', recoFull: 'Annual penetration testing validates your security controls against real-world attack techniques. Findings must be tracked and remediated; retesting should confirm remediation.' },
+      { id: 'mgmt_review',  text: 'Management formally reviews security program at least annually',          hint: 'Meeting minutes, risk acceptance decisions documented',         priority: 'medium',   points: 8,  reco: 'Schedule annual management review of the security program, risk register, and audit findings.', recoFull: 'SOC 2 requires evidence of management oversight. Document formal reviews of the security program, including risk acceptance decisions and remediation tracking.' },
+      { id: 'soc2_policy',  text: 'SOC 2-specific policies are written, approved, and distributed',         hint: 'Covers all required policy areas per AICPA guidance',          priority: 'high',     points: 8,  reco: 'Develop all policies required by SOC 2: Information Security, Access Control, Incident Response, Change Management, Risk Management, etc.', recoFull: 'SOC 2 requires a comprehensive policy library. Work with your auditor or use an MSP to develop policies that meet AICPA requirements for your applicable TSCs.' },
+      { id: 'subservice',   text: 'Subservice organizations (cloud providers, SaaS) are inventoried',       hint: 'AWS, Azure, Salesforce, etc. included in scope',               priority: 'medium',   points: 8,  reco: 'Inventory all subservice organizations and obtain their SOC 2 or security reports annually.', recoFull: 'Subservice organizations are part of your SOC 2 scope. Inventory all vendors that process customer data and obtain their attestations (SOC 2 reports or equivalent).' },
+      { id: 'gap_assess',   text: 'Formal SOC 2 gap assessment has been completed',                          hint: 'Against chosen TSC with remediation roadmap',                 priority: 'medium',   points: 10, reco: 'Engage Tech & Electrical Services to conduct a formal SOC 2 gap assessment and build a remediation roadmap.', recoFull: 'A gap assessment provides a roadmap to SOC 2 readiness. It identifies the delta between current state and audit requirements, prioritized by risk and effort.' },
+    ]
+  }
+];
+
+// ──────────────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────────────
+const state = {};        // { questionId: 'yes'|'partial'|'no'|'na' }
+const notes = {};        // { sectionId: 'text' }
+let reportGenerated = false;
+
+// ──────────────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date default
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  renderAuditSections();
+  updateScores();
+  switchTab('audit');
+});
+
+// ──────────────────────────────────────────────────────
+// RENDER AUDIT SECTIONS
+// ──────────────────────────────────────────────────────
+function renderAuditSections() {
+  const container = document.getElementById('audit-section');
+  container.innerHTML = '';
+
+  AUDIT_DATA.forEach(section => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'section-card-' + section.id;
+
+    const totalPoints = section.questions.reduce((s, q) => s + q.points, 0);
+
+    card.innerHTML = `
+      <div class="section-header" onclick="toggleSection('${section.id}')">
+        <div class="section-title">
+          <span>${section.icon}</span>
+          <span>${section.title}</span>
+          <span style="font-size:.75rem;font-weight:400;color:var(--gray)">(${section.questions.length} items)</span>
+        </div>
+        <div class="section-score">
+          <div class="score-bar-wrap" style="width:120px">
+            <div class="score-bar-track">
+              <div class="score-bar-fill" id="bar-${section.id}" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="score-badge" id="badge-${section.id}">—</div>
+          <span class="toggle-icon" id="toggle-${section.id}">▼</span>
+        </div>
+      </div>
+      <div id="section-body-${section.id}">
+        <ul class="checklist" id="checklist-${section.id}"></ul>
+        <div style="margin-top:10px;">
+          <label style="font-size:.78rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;">Section Notes</label>
+          <textarea class="notes-field" id="notes-${section.id}" placeholder="Add auditor notes for this section…" oninput="saveNotes('${section.id}')"></textarea>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+    const list = document.getElementById('checklist-' + section.id);
+    section.questions.forEach(q => {
+      const li = document.createElement('li');
+      li.className = 'check-item';
+      li.innerHTML = `
+        <div class="check-label">
+          <span class="q">${q.text}</span>
+          <span class="hint">${q.hint}</span>
+          <span class="priority-tag ${q.priority}">${q.priority.toUpperCase()}</span>
+        </div>
+        <div class="answer-group">
+          <button class="answer-btn" onclick="setAnswer('${q.id}','yes',   '${section.id}')" id="btn-yes-${q.id}">✅ Yes</button>
+          <button class="answer-btn" onclick="setAnswer('${q.id}','partial','${section.id}')" id="btn-partial-${q.id}">⚠️ Partial</button>
+          <button class="answer-btn" onclick="setAnswer('${q.id}','no',    '${section.id}')" id="btn-no-${q.id}">❌ No</button>
+          <button class="answer-btn" onclick="setAnswer('${q.id}','na',    '${section.id}')" id="btn-na-${q.id}">N/A</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  });
+}
+
+// ──────────────────────────────────────────────────────
+// TOGGLE SECTION
+// ──────────────────────────────────────────────────────
+function toggleSection(id) {
+  const body   = document.getElementById('section-body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  const hidden = body.style.display === 'none';
+  body.style.display   = hidden ? '' : 'none';
+  toggle.textContent   = hidden ? '▼' : '▶';
+}
+
+// ──────────────────────────────────────────────────────
+// SET ANSWER
+// ──────────────────────────────────────────────────────
+function setAnswer(qid, val, sid) {
+  state[qid] = val;
+
+  // Update button styles
+  const types = ['yes','partial','no','na'];
+  types.forEach(t => {
+    const btn = document.getElementById(`btn-${t}-${qid}`);
+    btn.className = 'answer-btn' + (val === t ? ` selected-${t}` : '');
+  });
+
+  updateScores();
+}
+
+function saveNotes(sid) {
+  notes[sid] = document.getElementById('notes-' + sid).value;
+}
+
+// ──────────────────────────────────────────────────────
+// SCORING
+// ──────────────────────────────────────────────────────
+function calcSectionScore(section) {
+  let earned = 0, possible = 0, answered = 0;
+  section.questions.forEach(q => {
+    const ans = state[q.id];
+    if (!ans || ans === 'na') return;
+    answered++;
+    possible += q.points;
+    if (ans === 'yes')     earned += q.points;
+    if (ans === 'partial') earned += q.points * 0.5;
+  });
+  const score = possible > 0 ? Math.round((earned / possible) * 100) : null;
+  return { score, answered, total: section.questions.length };
+}
+
+function calcOverallScore() {
+  let weightedSum = 0, totalWeight = 0;
+  AUDIT_DATA.forEach(section => {
+    const { score } = calcSectionScore(section);
+    if (score !== null) {
+      weightedSum  += score * section.weight;
+      totalWeight  += section.weight;
+    }
+  });
+  return totalWeight > 0 ? Math.round(weightedSum / totalWeight) : null;
+}
+
+function scoreToStatus(score) {
+  if (score === null) return 'unknown';
+  if (score >= 80) return 'compliant';
+  if (score >= 50) return 'partial';
+  return 'noncompliant';
+}
+
+function statusLabel(score) {
+  const s = scoreToStatus(score);
+  if (s === 'compliant')    return 'Compliant';
+  if (s === 'partial')      return 'Partial';
+  if (s === 'noncompliant') return 'Non-Compliant';
+  return 'Not Started';
+}
+
+function updateScores() {
+  // Section scores
+  AUDIT_DATA.forEach(section => {
+    const { score, answered, total } = calcSectionScore(section);
+    const bar   = document.getElementById('bar-' + section.id);
+    const badge = document.getElementById('badge-' + section.id);
+    if (score === null) {
+      bar.style.width = '0%';
+      bar.className = 'score-bar-fill';
+      badge.textContent = '—';
+      badge.className = 'score-badge';
+    } else {
+      const status = scoreToStatus(score);
+      bar.style.width = score + '%';
+      bar.className   = 'score-bar-fill' + (status !== 'compliant' ? ' ' + status : '');
+      badge.textContent = score + '%';
+      badge.className = 'score-badge ' + status;
+    }
+  });
+
+  // Overall
+  const overall = calcOverallScore();
+  const scoreEl  = document.getElementById('overall-score-num');
+  const statusEl = document.getElementById('overall-status-badge');
+  const subEl    = document.getElementById('overall-sub');
+
+  if (overall === null) {
+    scoreEl.textContent  = '—';
+    statusEl.textContent = 'Not Started';
+    statusEl.className   = 'overall-status';
+    subEl.textContent    = 'Answer all questions to generate your report';
+  } else {
+    scoreEl.textContent  = overall;
+    const status = scoreToStatus(overall);
+    statusEl.textContent = statusLabel(overall);
+    statusEl.className   = 'overall-status ' + status;
+    subEl.textContent    = `Based on answered questions · ${statusLabel(overall)}`;
+  }
+
+  // Progress
+  updateProgress();
+}
+
+function updateProgress() {
+  const allQs   = AUDIT_DATA.flatMap(s => s.questions);
+  const answered = allQs.filter(q => state[q.id]).length;
+  const pct = Math.round((answered / allQs.length) * 100);
+  document.getElementById('progress-fill').style.width  = pct + '%';
+  document.getElementById('progress-pct').textContent   = pct + '%';
+  document.getElementById('progress-label-text').textContent = `Audit Progress (${answered}/${allQs.length} questions)`;
+}
+
+// ──────────────────────────────────────────────────────
+// GENERATE REPORT
+// ──────────────────────────────────────────────────────
+function generateReport() {
+  const overall = calcOverallScore();
+  if (overall === null) {
+    alert('Please answer at least one question before generating a report.');
+    return;
+  }
+
+  const company  = document.getElementById('f-company').value   || 'Client Company';
+  const contact  = document.getElementById('f-contact').value   || '';
+  const auditor  = document.getElementById('f-auditor').value   || 'Tech & Electrical Services LLC';
+  const auditType= document.getElementById('f-audit-type').value || 'Security Assessment';
+  const auditDate= document.getElementById('f-date').value       || new Date().toISOString().split('T')[0];
+  const industry = document.getElementById('f-industry').value   || '';
+  const employees= document.getElementById('f-employees').value  || '';
+  const scopeNotes=document.getElementById('f-notes').value      || '';
+
+  // Build findings
+  const findings = [];
+  AUDIT_DATA.forEach(section => {
+    section.questions.forEach(q => {
+      const ans = state[q.id];
+      if (ans && ans !== 'na' && ans !== 'yes') {
+        findings.push({ section: section.title, icon: section.icon, ...q, answer: ans });
+      }
+    });
+  });
+
+  // Sort by priority severity
+  const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+  findings.sort((a, b) => (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9));
+
+  // Category scores table data
+  const catScores = AUDIT_DATA.map(s => {
+    const { score } = calcSectionScore(s);
+    return { title: s.title, icon: s.icon, score };
+  });
+
+  // Answered summary
+  const allQs    = AUDIT_DATA.flatMap(s => s.questions);
+  const answered = allQs.filter(q => state[q.id]).length;
+  const yesCount = allQs.filter(q => state[q.id] === 'yes').length;
+  const partCount = allQs.filter(q => state[q.id] === 'partial').length;
+  const noCount  = allQs.filter(q => state[q.id] === 'no').length;
+  const naCount  = allQs.filter(q => state[q.id] === 'na').length;
+
+  const reportEl = document.getElementById('report-section');
+  const status   = scoreToStatus(overall);
+  const statusText = statusLabel(overall);
+
+  const statusColor = status === 'compliant' ? '#16a34a' : status === 'partial' ? '#ca8a04' : '#dc2626';
+  const statusBg    = status === 'compliant' ? '#dcfce7' : status === 'partial' ? '#fef9c3' : '#fee2e2';
+
+  reportEl.innerHTML = `
+    <!-- Report Header -->
+    <div class="card">
+      <div class="report-header">
+        <div>
+          <div style="font-size:.78rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Confidential Security Assessment Report</div>
+          <h2 style="font-size:1.4rem;font-weight:800;color:var(--brand-primary);margin-top:4px;">
+            ${company} — ${auditType}
+          </h2>
+          <div class="report-meta">
+            ${contact ? `Contact: ${contact} · ` : ''}
+            ${industry ? `Industry: ${industry} · ` : ''}
+            ${employees ? `Employees: ${employees} · ` : ''}
+            Audited by: ${auditor} · Date: ${auditDate}
+          </div>
+          ${scopeNotes ? `<div class="report-meta" style="margin-top:6px;font-style:italic;">${scopeNotes}</div>` : ''}
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:3rem;font-weight:800;color:${statusColor};line-height:1;">${overall}</div>
+          <div style="font-size:.75rem;color:var(--gray);">out of 100</div>
+          <div style="font-size:.88rem;font-weight:700;background:${statusBg};color:${statusColor};padding:4px 14px;border-radius:20px;margin-top:6px;">${statusText}</div>
+        </div>
+      </div>
+
+      <!-- Summary stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:12px;">
+        ${summaryTile('✅', yesCount, 'Compliant', '#dcfce7', '#16a34a')}
+        ${summaryTile('⚠️', partCount, 'Partial', '#fef9c3', '#ca8a04')}
+        ${summaryTile('❌', noCount, 'Non-Compliant', '#fee2e2', '#dc2626')}
+        ${summaryTile('➖', naCount, 'N/A', '#f1f5f9', '#64748b')}
+        ${summaryTile('📊', answered, 'Answered', '#eff6ff', '#1d4ed8')}
+      </div>
+    </div>
+
+    <!-- Category Scores -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Category Scores</div>
+      ${catScores.map(c => {
+        const s = scoreToStatus(c.score);
+        const clr = s === 'compliant' ? '#16a34a' : s === 'partial' ? '#ca8a04' : s === 'noncompliant' ? '#dc2626' : '#94a3b8';
+        return `
+          <div class="cat-score-row">
+            <div class="cat-score-name">${c.icon} ${c.title}</div>
+            <div class="cat-score-bar-wrap">
+              <div class="score-bar-track">
+                <div class="score-bar-fill ${s}" style="width:${c.score ?? 0}%;background:${clr}"></div>
+              </div>
+            </div>
+            <div class="cat-score-num" style="color:${clr}">${c.score !== null ? c.score + '%' : 'N/A'}</div>
+            <div class="score-badge ${s}" style="min-width:100px;text-align:center">${c.score !== null ? statusLabel(c.score) : 'Not Answered'}</div>
+          </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Findings -->
+    ${findings.length > 0 ? `
+    <div class="card">
+      <div class="card-title"><span class="icon">🔍</span> Findings (${findings.length})</div>
+      <table class="findings-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Finding</th>
+            <th>Status</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${findings.map(f => `
+            <tr>
+              <td><strong>${f.icon} ${f.section}</strong></td>
+              <td>${f.text}</td>
+              <td><span class="score-badge ${f.answer === 'partial' ? 'partial' : 'noncompliant'}" style="font-size:.78rem">${f.answer === 'partial' ? 'Partial' : 'Non-Compliant'}</span></td>
+              <td><span class="priority-tag ${f.priority}">${f.priority.toUpperCase()}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : `<div class="card"><div class="alert alert-success">🎉 No critical findings. All answered questions are compliant or N/A.</div></div>`}
+
+    <!-- Recommendations -->
+    ${findings.length > 0 ? `
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Recommendations by Priority</div>
+      ${['critical','high','medium','low'].map(p => {
+        const items = findings.filter(f => f.priority === p);
+        if (!items.length) return '';
+        const labels = { critical: '🔴 Critical', high: '🟠 High', medium: '🟡 Medium', low: '🟢 Low' };
+        return `
+          <div style="margin-bottom:6px;font-weight:700;font-size:.9rem;margin-top:18px;color:${p==='critical'?'#dc2626':p==='high'?'#c2410c':p==='medium'?'#92400e':'#16a34a'}">${labels[p]} Priority</div>
+          ${items.map(f => `
+            <div class="rec-block ${p}">
+              <div class="rec-title">${f.icon} ${f.section} — ${f.text.split('(')[0].trim()}</div>
+              <div class="rec-body">${f.recoFull}</div>
+            </div>`).join('')}`;
+      }).join('')}
+    </div>` : ''}
+
+    <!-- Section Notes -->
+    ${AUDIT_DATA.some(s => notes[s.id]) ? `
+    <div class="card">
+      <div class="card-title"><span class="icon">📝</span> Auditor Notes</div>
+      ${AUDIT_DATA.filter(s => notes[s.id]).map(s => `
+        <div style="margin-bottom:14px;">
+          <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">${s.icon} ${s.title}</div>
+          <div style="font-size:.88rem;color:#475569;white-space:pre-wrap;">${escapeHtml(notes[s.id])}</div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    <!-- Attestation -->
+    <div class="card" style="page-break-inside:avoid;">
+      <div class="card-title"><span class="icon">✍️</span> Attestation</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;">
+        <div>
+          <div style="border-bottom:1.5px solid #1a3a5c;margin-bottom:6px;padding-bottom:30px;"></div>
+          <div style="font-size:.82rem;color:var(--gray);">Auditor Signature</div>
+          <div style="font-size:.88rem;font-weight:600;margin-top:2px;">${auditor}</div>
+          <div style="font-size:.78rem;color:var(--gray);">Tech &amp; Electrical Services LLC</div>
+        </div>
+        <div>
+          <div style="border-bottom:1.5px solid #1a3a5c;margin-bottom:6px;padding-bottom:30px;"></div>
+          <div style="font-size:.82rem;color:var(--gray);">Client Representative Signature</div>
+          <div style="font-size:.88rem;font-weight:600;margin-top:2px;">${contact || '___________________________'}</div>
+          <div style="font-size:.78rem;color:var(--gray);">${company}</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;font-size:.75rem;color:var(--gray);border-top:1px solid var(--border);padding-top:12px;">
+        This report is confidential and intended solely for the use of ${company} and Tech &amp; Electrical Services LLC.
+        Generated: ${new Date().toLocaleString()} · Compliance Audit Tool v1.0
+      </div>
+    </div>
+  `;
+
+  reportGenerated = true;
+  document.getElementById('report-actions').style.display = 'block';
+  switchTab('report');
+}
+
+function summaryTile(emoji, count, label, bg, color) {
+  return `<div style="background:${bg};border-radius:8px;padding:12px;text-align:center;">
+    <div style="font-size:1.6rem;">${emoji}</div>
+    <div style="font-size:1.4rem;font-weight:800;color:${color}">${count}</div>
+    <div style="font-size:.72rem;color:${color};font-weight:600;margin-top:2px;">${label}</div>
+  </div>`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ──────────────────────────────────────────────────────
+// TABS
+// ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => { c.style.display = 'none'; c.classList.remove('active'); });
+
+  const tabMap = { audit: 'tab-audit', client: 'tab-client', report: 'tab-report' };
+  const tabIdx = { audit: 0, client: 1, report: 2 };
+
+  document.querySelectorAll('.tab-btn')[tabIdx[tab]].classList.add('active');
+  const el = document.getElementById(tabMap[tab]);
+  el.style.display = 'block';
+  el.classList.add('active');
+
+  if (tab === 'report' && !reportGenerated) {
+    document.getElementById('report-section').innerHTML = `
+      <div class="card">
+        <div class="alert alert-info">📋 Complete the audit checklist and click <strong>Generate Report</strong> to view your compliance report here.</div>
+      </div>`;
+  }
+  if (tab === 'report') {
+    document.getElementById('report-actions').style.display = reportGenerated ? 'block' : 'none';
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// EXPORT HTML
+// ──────────────────────────────────────────────────────
+function exportHTML() {
+  const html = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>Compliance Report — ${document.getElementById('f-company').value || 'Client'}</title>
+<style>${getComputedStyleString()}</style>
+</head><body>
+<header style="background:#1a3a5c;color:#fff;padding:18px 32px;">
+  <h1>⚡ Compliance Audit Report — Tech &amp; Electrical Services LLC</h1>
+</header>
+<main style="max-width:1000px;margin:0 auto;padding:24px 16px;">
+${document.getElementById('report-section').innerHTML}
+</main>
+<footer style="text-align:center;font-size:.75rem;color:#64748b;padding:20px;border-top:1px solid #e2e8f0;">
+  Tech &amp; Electrical Services LLC · Compliance Audit Tool v1.0 · Confidential
+</footer>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function getComputedStyleString() {
+  let css = '';
+  for (const sheet of document.styleSheets) {
+    try {
+      for (const rule of sheet.cssRules) {
+        css += rule.cssText + '\n';
+      }
+    } catch(e) {}
+  }
+  return css;
+}
+
+// ──────────────────────────────────────────────────────
+// RESET
+// ──────────────────────────────────────────────────────
+function resetAll() {
+  if (!confirm('Reset all answers? This cannot be undone.')) return;
+  Object.keys(state).forEach(k => delete state[k]);
+  Object.keys(notes).forEach(k => delete notes[k]);
+  reportGenerated = false;
+  renderAuditSections();
+  updateScores();
+  switchTab('audit');
+}
+
+// ──────────────────────────────────────────────────────
+// UPDATE REPORT (client info changes)
+// ──────────────────────────────────────────────────────
+function updateReport() {
+  if (reportGenerated) {
+    // Re-render silently
+    generateReport();
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLA Compliance Report</title>
+  <style>
+    body{font-family: Arial, Helvetica, sans-serif; margin:0; padding:0; color:#333;}
+    .container{padding:24px 32px; max-width: 1100px; margin:0 auto;}
+    header{border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:16px;}
+    h1{font-size:28px; margin:0 0 6px;}
+    .subtitle{color:#666; font-size:14px; margin-bottom:14px;}
+    section{margin:28px 0;}
+    h2{font-size:20px; border-left:4px solid #2e6da4; padding-left:8px; margin:0 0 12px;}
+    table{width:100%; border-collapse: collapse; margin-top:6px;}
+    th,td{border:1px solid #ddd; padding:8px; text-align:left;}
+    th{background:#f5f5f5; font-size:14px;}
+    .kpi{display:flex; gap:20px; flex-wrap:wrap;}
+    .card{flex:1 1 200px; border:1px solid #ddd; border-radius:6px; padding:12px 14px; background:#fff; min-width:180px;}
+    .trend{height:180px; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#888; font-family: monospace;}
+    .footer{font-size:12px; color:#777; margin-top:20px;}
+    @media print{ .container{padding:12px 12px} .trend{border:0; height:200px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SLA Compliance Report</h1>
+      <div class="subtitle">Placeholder data for client-ready SLA overview. Auto-generated template for regular reporting.</div>
+    </header>
+
+    <section>
+      <h2>Overall SLA performance</h2>
+      <div class="kpi">
+        <div class="card" style="min-width:260px;">
+          <div style="font-size:12px; color:#666;">Overall SLA Compliance</div>
+          <div style="font-size:28px; font-weight:bold;">92.5%</div>
+        </div>
+        <div class="card" style="min-width:260px;">
+          <div style="font-size:12px; color:#666;">Tickets SLA Breaches (YTD)</div>
+          <div style="font-size:20px; font-weight:bold;">24</div>
+        </div>
+      </div>
+      <div class="trend" aria-label="trend-chart">Trend chart placeholder</div>
+    </section>
+
+    <section>
+      <h2>Response time metrics</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Avg</td><td>2h 15m</td><td>Across all P1/P2/P3</td></tr>
+          <tr><td>Min</td><td>15m</td><td></td></tr>
+          <tr><td>Max</td><td>6h 40m</td><td></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Resolution time metrics</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Avg Resolution Time</td><td>5h 40m</td></tr>
+          <tr><td>Median</td><td>4h 20m</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Breakdown by priority</h2>
+      <table>
+        <thead><tr><th>Priority</th><th>Count</th><th>SLA Met</th><th>SLA Breached</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>8</td><td>7</td><td>1</td></tr>
+          <tr><td>P2</td><td>15</td><td>13</td><td>2</td></tr>
+          <tr><td>P3</td><td>9</td><td>9</td><td>0</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Tickets meeting vs missing SLA</h2>
+      <table>
+        <thead><tr><th>Status</th><th>Count</th><th>Percentage</th></tr></thead>
+        <tbody>
+          <tr><td>Met SLA</td><td>28</td><td>70%</td></tr>
+          <tr><td>Missed SLA</td><td>12</td><td>30%</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Top issues / categories</h2>
+      <ul>
+        <li>Response delays in P2 incidents (13 instances)</li>
+        <li>Escalations due to assignment gaps</li>
+        <li>Knowledge base gaps affecting FCR</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Recommendations</h2>
+      <ol>
+        <li>Increase SLA monitoring frequency to daily by priority.</li>
+        <li>Implement automated alerts for breaches >2 hours.</li>
+        <li>Review P1 routing to ensure fastest resolution path.</li>
+      </ol>
+    </section>
+
+    <div class="footer">This is a placeholder template with example values intended for client review and internal demos.</div>
+  </div>
+</body>
+</html>

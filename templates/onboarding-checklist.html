@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusIT - Client Onboarding Checklist</title>
+  <style>
+    @media print {
+      body {
+        margin: 0;
+        padding: 10mm;
+      }
+      .checklist {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .page-break {
+        page-break-after: always;
+        break-after: page;
+      }
+      input[type="checkbox"] {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #000;
+        border-radius: 2px;
+        cursor: pointer;
+        margin-right: 8px;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 8.5in;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1a2744 100%);
+      color: white;
+      padding: 25px 30px;
+      text-align: center;
+      border-bottom: 4px solid #3b82f6;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    /* Info Section */
+    .info-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      padding: 20px 30px;
+      background-color: #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+
+    .info-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .info-value {
+      color: #1e293b;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 3px;
+      min-height: 18px;
+    }
+
+    /* Checklist Content */
+    .content {
+      padding: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .section-header {
+      background-color: #3b82f6;
+      color: white;
+      padding: 12px 15px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-icon {
+      font-size: 16px;
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: #3b82f6;
+    }
+
+    .checklist-item label {
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .checklist-text {
+      flex: 1;
+    }
+
+    .checklist-sub {
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 2px;
+      margin-left: 28px;
+      font-style: italic;
+    }
+
+    /* Notes Section */
+    .notes-section {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 4px;
+    }
+
+    .notes-title {
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .notes-area {
+      width: 100%;
+      height: 80px;
+      border: 1px solid #cbd5e1;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      border-radius: 3px;
+    }
+
+    /* Signature Section */
+    .signature-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e2e8f0;
+      font-size: 12px;
+    }
+
+    .sig-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sig-line {
+      border-bottom: 1px solid #1e293b;
+      height: 40px;
+      margin-bottom: 5px;
+    }
+
+    .sig-label {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 11px;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #f1f5f9;
+      padding: 15px 30px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .page-break {
+      page-break-after: always;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 3px dashed #cbd5e1;
+    }
+
+    /* Print Button */
+    .print-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 30px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .print-button:hover {
+      background-color: #1e40af;
+    }
+
+    @media print {
+      .print-button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">⬡ NexusIT</div>
+      <h1>Client Onboarding Checklist</h1>
+      <p>Field Technician Implementation Guide</p>
+    </div>
+
+    <!-- Client Info -->
+    <div class="info-section">
+      <div class="info-group">
+        <span class="info-label">Client Name</span>
+        <span class="info-value">_________________________________</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">Onboarding Date</span>
+        <span class="info-value">_________________________________</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">Technician Name</span>
+        <span class="info-value">_________________________________</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">Primary Contact</span>
+        <span class="info-value">_________________________________</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Day 1: Initial Setup & Discovery -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">📋</span>
+          Day 1: Initial Setup & Network Discovery
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify network access and connectivity to all network segments</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Obtain administrative credentials and document access procedures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Complete network topology scan and document all devices</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create device inventory spreadsheet (servers, workstations, printers, IoT)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document firewall configuration and rules</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Identify network segmentation and VLANs</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Test network performance (bandwidth, latency, packet loss)</span>
+            </label>
+          </div>
+          <div class="checklist-sub">Take baseline screenshots and measurements for future comparison</div>
+        </div>
+      </div>
+
+      <!-- Day 1: Security Assessment -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🔒</span>
+          Day 1: Security Assessment
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Scan for active malware, ransomware, and security threats</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document all active security software (AV, EDR, firewalls)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify OS and application patch levels</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Check for outdated/unsupported operating systems</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Review user account permissions and identify privileged accounts</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Check password policies and compliance</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document any security gaps and vulnerabilities found</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2-3: Monitoring Deployment -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">📊</span>
+          Days 2-3: Monitoring & Agent Deployment
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Deploy NexusIT monitoring agent to all servers</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Deploy NexusIT monitoring agent to all workstations</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify all agents are reporting to monitoring dashboard</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Configure monitoring alerts (CPU, disk, memory, network)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Set alert thresholds appropriate for client environment</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Configure email/SMS notifications for critical alerts</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Test alert system with a test trigger</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document monitoring dashboard access for client</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Break -->
+      <div class="page-break"></div>
+
+      <!-- Backup & Recovery -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">💾</span>
+          Backup & Disaster Recovery
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Identify all critical data and systems requiring backup</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document existing backup solutions and retention policies</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify backup job success rates over past 30 days</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Test restore procedure on at least one backup</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document Recovery Time Objective (RTO) and Recovery Point Objective (RPO)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify offsite backup or cloud replication is active</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document backup location and access procedures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create disaster recovery runbook with client contact info</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Provisioning -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">👤</span>
+          Account Provisioning & Access Management
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create NexusIT service accounts with minimal required privileges</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Set up privileged account management (PAM) if applicable</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Audit existing user accounts and disable unused ones</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify multi-factor authentication (MFA) is enabled</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document all system administrative accounts</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create password management procedures with client</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Set up audit logging for administrative actions</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hardening & Configuration -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🛡️</span>
+          Security Hardening & Configuration
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Apply baseline hardening policies to all servers</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Enable Windows Defender/equivalent antimalware on all endpoints</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Deploy and configure software firewall on workstations</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Disable unnecessary services and ports</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Enable encrypted communications (HTTPS, VPN, SSH)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Configure centralized logging and log retention</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Review and optimize firewall rules</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Enable full-disk encryption on sensitive systems</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Break -->
+      <div class="page-break"></div>
+
+      <!-- Compliance & Documentation -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">📄</span>
+          Compliance & Documentation
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Identify applicable compliance requirements (HIPAA, PCI, SOC2, etc.)</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document current compliance gaps and remediation plan</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create IT policies and procedures documentation</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document disaster recovery and business continuity procedures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create system inventory and software license tracking</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document network diagram and architecture</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Create escalation procedures and contact list</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Provide client with copies of all documentation</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knowledge Transfer -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🎓</span>
+          Knowledge Transfer & Training
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Conduct overview training on monitoring dashboard access</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Train client on alert escalation procedures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Review backup and recovery procedures with client</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Explain security policies and required compliance measures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Provide IT support contact information and SLA expectations</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Walk through ticketing system and support procedures</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Schedule follow-up training sessions if needed</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Verification -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">✅</span>
+          Final Verification & Handoff
+        </div>
+        <div class="checklist-items">
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify all monitoring agents are healthy and reporting</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Verify all backups are running successfully</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Confirm security tools are active and updated</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Test support ticket submission and response time</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Schedule 7-day check-in meeting</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Provide client with master checklist and documentation</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Document all findings in onboarding report</span>
+            </label>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox">
+            <label>
+              <span class="checklist-text">Notify account manager of completion status</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes & Issues -->
+      <div class="notes-section">
+        <div class="notes-title">📝 Notes, Issues & Follow-ups:</div>
+        <textarea class="notes-area" placeholder="Record any issues found, recommendations, or items for follow-up..."></textarea>
+      </div>
+
+      <!-- Signature Section -->
+      <div class="signature-section">
+        <div class="sig-block">
+          <div class="sig-line"></div>
+          <div class="sig-label">Technician Signature / Date</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-line"></div>
+          <div class="sig-label">Client Representative / Date</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <strong>NexusIT Client Onboarding Checklist</strong><br>
+      This checklist must be completed for all new clients. Keep original on file and provide copy to client.
+    </div>
+  </div>
+
+  <button class="print-button" onclick="window.print()">🖨️ Print Checklist</button>
+</body>
+</html>

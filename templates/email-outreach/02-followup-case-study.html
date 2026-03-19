@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: left;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .body-section {
+            padding: 30px 20px;
+        }
+        .body-section p {
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .case-study {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .case-study-title {
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .case-study-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+        .case-study-metric:last-child {
+            border-bottom: none;
+        }
+        .metric-label {
+            color: #666;
+        }
+        .metric-value {
+            font-weight: 600;
+            color: #0066cc;
+        }
+        .highlight-box {
+            background-color: #fff8e6;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #0066cc;
+            color: white !important;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .cta-button:hover {
+            background-color: #0052a3;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quick Win: What They Found in 60 Minutes</h1>
+            <p>A real example from a company just like yours</p>
+        </div>
+
+        <div class="body-section">
+            <p>Hi {{FIRST_NAME}},</p>
+
+            <p>Following up on my last email—I wanted to share something concrete.</p>
+
+            <p>Last quarter, we ran our security assessment with a mid-market MSP (similar size/complexity to {{COMPANY}}). Here's what happened:</p>
+
+            <div class="case-study">
+                <div class="case-study-title">Client: Regional MSP | 35 Employees | 200+ Customers</div>
+                <div class="case-study-metric">
+                    <span class="metric-label">Critical Findings:</span>
+                    <span class="metric-value">7 Critical | 12 High Risk</span>
+                </div>
+                <div class="case-study-metric">
+                    <span class="metric-label">Time to discovery:</span>
+                    <span class="metric-value">60 minutes</span>
+                </div>
+                <div class="case-study-metric">
+                    <span class="metric-label">Largest risk:</span>
+                    <span class="metric-value">Unpatched domain controllers (3 years old)</span>
+                </div>
+                <div class="case-study-metric">
+                    <span class="metric-label">Exposure window:</span>
+                    <span class="metric-value">Estimated 18+ months</span>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>The kicker:</strong> They thought their security posture was solid. They'd passed their last compliance audit. But they were one ransomware attack away from losing customer data and their business.
+            </div>
+
+            <p>What made the difference?</p>
+            <ul>
+                <li>We didn't just run generic scans—we applied Northrop-level frameworks to their actual infrastructure</li>
+                <li>We looked for what attackers actually exploit, not just checkbox compliance</li>
+                <li>We delivered a clear roadmap: quick wins (30 days), medium-term (90 days), strategic (12 months)</li>
+            </ul>
+
+            <p>The client implemented the quick wins immediately. 90 days later, they had enterprise-grade security without the enterprise price tag.</p>
+
+            <p>This is exactly what we can do for {{COMPANY}}.</p>
+
+            <p style="text-align: center;">
+                <a href="{{CALENDLY_LINK}}" class="cta-button">Let's Run Your Assessment</a>
+            </p>
+
+            <p>Even if you move forward with someone else, getting a fresh external perspective on your security posture is never a bad call.</p>
+
+            <div class="signature">
+                <p style="margin: 0;">Best,</p>
+                <p style="margin: 5px 0 0 0;"><strong>Irvin Avitia</strong></p>
+                <p style="margin: 2px 0 0 0;">Cyber Systems Engineer | MSP Security Specialist</p>
+                <p style="margin: 2px 0 0 0;">{{PHONE}}</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">You're receiving this because we identified {{COMPANY}} as a strong fit for security modernization. <a href="{{UNSUBSCRIBE_LINK}}" style="color: #0066cc; text-decoration: none;">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>

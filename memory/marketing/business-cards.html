@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Cards — Tech &amp; Electrical Services LLC</title>
+  <style>
+    /* =====================================================
+       GLOBAL & PRINT SETUP
+       Business card: 3.5" × 2" = 1050px × 600px @ 300dpi
+       For screen preview: 700px × 400px (2:1 ratio)
+    ===================================================== */
+    :root {
+      --brand-dark:    #0a0e1a;
+      --brand-navy:    #0d1b2e;
+      --brand-blue:    #0a2342;
+      --accent-cyan:   #00d4ff;
+      --accent-amber:  #f59e0b;
+      --accent-gold:   #d4a017;
+      --text-light:    #e8edf5;
+      --text-muted:    #8a9bb8;
+      --border-subtle: rgba(0, 212, 255, 0.2);
+
+      /* Print card size: exactly 3.5" × 2" */
+      --card-w: 3.5in;
+      --card-h: 2in;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+      background: #111827;
+      color: #e8edf5;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h1.page-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+    }
+
+    /* =====================================================
+       CARD CONTAINER
+    ===================================================== */
+    .card-group {
+      margin-bottom: 60px;
+    }
+    .card-group-label {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-amber);
+      margin-bottom: 20px;
+    }
+
+    .card-row {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .card-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* =====================================================
+       BASE CARD — screen preview size
+       3.5" × 2" at 200px/in = 700 × 400px
+    ===================================================== */
+    .card {
+      width: 700px;
+      height: 400px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.15),
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(0, 212, 255, 0.05);
+      flex-shrink: 0;
+    }
+
+    /* =====================================================
+       FRONT CARD
+    ===================================================== */
+    .card-front {
+      background: linear-gradient(135deg,
+        #0a0e1a 0%,
+        #0d1b2e 40%,
+        #0a1628 70%,
+        #091020 100%
+      );
+    }
+
+    /* Circuit-board decorative lines */
+    .card-front::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    /* Glow accent orb */
+    .card-front::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(0, 212, 255, 0.12) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* Cyan accent bar — left edge */
+    .front-accent-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg,
+        var(--accent-cyan) 0%,
+        var(--accent-amber) 100%
+      );
+    }
+
+    /* Bottom amber line */
+    .front-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg,
+        var(--accent-amber) 0%,
+        var(--accent-cyan) 50%,
+        transparent 100%
+      );
+    }
+
+    .front-content {
+      position: absolute;
+      inset: 0;
+      padding: 28px 32px 24px 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Logo + Company name block */
+    .front-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* SVG logo inline */
+    .logo-icon svg {
+      width: 52px;
+      height: 52px;
+    }
+
+    .company-name-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .company-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .company-name span.highlight {
+      color: var(--accent-cyan);
+    }
+    .company-llc {
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* Tagline */
+    .front-tagline {
+      font-size: 0.72rem;
+      color: var(--accent-amber);
+      letter-spacing: 1.5px;
+      font-style: italic;
+      font-weight: 500;
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    /* Services pills */
+    .services-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .services-label {
+      font-size: 0.58rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .services-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pill {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .pill-cyan {
+      border-color: rgba(0, 212, 255, 0.4);
+      color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.07);
+    }
+    .pill-amber {
+      border-color: rgba(245, 158, 11, 0.4);
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.07);
+    }
+    .pill-white {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: rgba(255,255,255,0.75);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* =====================================================
+       BACK CARD
+    ===================================================== */
+    .card-back {
+      background: linear-gradient(145deg,
+        #0d1b2e 0%,
+        #091424 50%,
+        #060d1a 100%
+      );
+    }
+
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 80% 20%, rgba(0,212,255,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 10% 80%, rgba(245,158,11,0.05) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    /* Cyan top border */
+    .back-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg,
+        var(--accent-cyan) 0%,
+        var(--accent-amber) 60%,
+        transparent 100%
+      );
+    }
+
+    /* Amber right edge */
+    .back-right-bar {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg,
+        var(--accent-amber) 0%,
+        var(--accent-cyan) 100%
+      );
+    }
+
+    .back-content {
+      position: absolute;
+      inset: 0;
+      padding: 24px 28px 20px 28px;
+      display: flex;
+      gap: 20px;
+    }
+
+    /* Left column: contact info + certs */
+    .back-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .back-person-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .back-person-title {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    .contact-block {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 14px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .contact-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contact-icon svg {
+      width: 13px;
+      height: 13px;
+      fill: var(--accent-cyan);
+    }
+    .contact-text {
+      font-size: 0.64rem;
+      color: var(--text-light);
+      font-weight: 400;
+      line-height: 1.3;
+    }
+    .contact-text a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Certs block */
+    .certs-block {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 212, 255, 0.12);
+    }
+    .certs-label {
+      font-size: 0.54rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .certs-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .cert-badge {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--accent-amber);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.06);
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .cert-badge.blue {
+      color: var(--accent-cyan);
+      border-color: rgba(0, 212, 255, 0.35);
+      background: rgba(0, 212, 255, 0.06);
+    }
+
+    /* Right column: QR code + website */
+    .back-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 148px;
+      flex-shrink: 0;
+    }
+
+    .qr-placeholder {
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(0, 212, 255, 0.25);
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* QR corner brackets */
+    .qr-placeholder::before,
+    .qr-placeholder::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: var(--accent-cyan);
+      border-style: solid;
+    }
+    .qr-placeholder::before {
+      top: 4px;
+      left: 4px;
+      border-width: 2px 0 0 2px;
+    }
+    .qr-placeholder::after {
+      bottom: 4px;
+      right: 4px;
+      border-width: 0 2px 2px 0;
+    }
+
+    .qr-inner-dots {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap: 1.5px;
+      opacity: 0.35;
+    }
+    .qr-dot {
+      background: var(--accent-cyan);
+      border-radius: 0.5px;
+    }
+
+    .qr-label {
+      font-size: 0.54rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .website-url {
+      font-size: 0.6rem;
+      color: var(--accent-cyan);
+      letter-spacing: 0.5px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* =====================================================
+       PRINT STYLES
+       @page sets 3.5" × 2" physical card
+    ===================================================== */
+    @media print {
+      @page {
+        size: 3.5in 2in;
+        margin: 0;
+      }
+
+      body {
+        background: #000;
+        padding: 0;
+        margin: 0;
+      }
+
+      h1.page-title,
+      .page-subtitle,
+      .card-group-label,
+      .card-label,
+      .print-instructions,
+      .separator {
+        display: none !important;
+      }
+
+      .card-group,
+      .card-row,
+      .card-wrap {
+        display: block;
+        margin: 0;
+        padding: 0;
+      }
+
+      .card {
+        width: 3.5in;
+        height: 2in;
+        border-radius: 0;
+        box-shadow: none;
+        page-break-after: always;
+        display: block;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Reset font sizes for print (approx 1:3.5 of screen) */
+      .company-name      { font-size: 9.5pt; }
+      .company-llc       { font-size: 5pt; }
+      .front-tagline     { font-size: 5.8pt; }
+      .services-label,
+      .certs-label,
+      .qr-label          { font-size: 4.5pt; }
+      .pill              { font-size: 5pt; padding: 2px 6px; }
+      .back-person-name  { font-size: 8.5pt; }
+      .back-person-title { font-size: 5.3pt; }
+      .contact-text      { font-size: 5.2pt; }
+      .cert-badge        { font-size: 4.5pt; padding: 1.5px 5px; }
+      .website-url       { font-size: 5pt; }
+
+      .logo-icon, .logo-icon svg { width: 40pt; height: 40pt; }
+      .qr-placeholder { width: 90pt; height: 90pt; }
+      .qr-inner-dots  { width: 54pt; height: 54pt; }
+    }
+
+    /* =====================================================
+       UI: Print button + instructions
+    ===================================================== */
+    .print-instructions {
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      background: rgba(0, 212, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.15);
+      border-radius: 8px;
+      padding: 16px 22px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .print-instructions strong {
+      color: var(--accent-cyan);
+    }
+    .print-btn {
+      display: block;
+      margin: 0 auto 30px auto;
+      padding: 10px 32px;
+      background: linear-gradient(90deg, var(--accent-cyan), #007799);
+      color: #000;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+      transition: opacity 0.2s;
+    }
+    .print-btn:hover { opacity: 0.85; }
+
+    .separator {
+      border: none;
+      border-top: 1px solid rgba(0, 212, 255, 0.1);
+      max-width: 760px;
+      margin: 50px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">⚡ Tech &amp; Electrical Services LLC</h1>
+  <p class="page-subtitle">Business Card Suite · Print-Ready · 3.5" × 2"</p>
+
+  <div class="print-instructions">
+    <strong>Print Instructions:</strong> Click "Print / Export PDF" below. In the print dialog,
+    set paper size to <strong>3.5" × 2"</strong> (or "Business Card"), margins to <strong>None</strong>,
+    and enable <strong>background graphics</strong>. For professional printing, send the HTML to a print shop
+    and specify 3.5" × 2" business card size on 14pt gloss or matte card stock.
+    Each card prints on its own page.
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨 Print / Export PDF</button>
+
+  <!-- ═══════════════════════════════════════════
+       IRVIN'S CARDS
+  ═══════════════════════════════════════════ -->
+  <div class="card-group">
+    <div class="card-group-label">✦ Irvin Avitia — Owner / DevOps Engineer ✦</div>
+
+    <div class="card-row">
+
+      <!-- IRVIN FRONT -->
+      <div class="card-wrap">
+        <div class="card-label">Front</div>
+        <div class="card card-front">
+          <div class="front-accent-bar"></div>
+          <div class="front-bottom-bar"></div>
+          <div class="front-content">
+
+            <!-- Header: Logo + Name -->
+            <div class="front-header">
+              <div class="logo-icon">
+                <!-- TES Logo: lightning bolt + circuit node -->
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Outer hexagon ring -->
+                  <polygon points="26,2 48,14 48,38 26,50 4,38 4,14"
+                    stroke="url(#cyangold)" stroke-width="1.5" fill="none"/>
+                  <!-- Inner filled hex -->
+                  <polygon points="26,8 43,17.5 43,34.5 26,44 9,34.5 9,17.5"
+                    fill="url(#darkfill)" />
+                  <!-- Lightning bolt -->
+                  <path d="M30 10 L20 27 H27 L22 42 L34 23 H27 Z"
+                    fill="url(#boltgrad)" />
+                  <!-- Circuit dots -->
+                  <circle cx="10" cy="26" r="2" fill="#00d4ff" opacity="0.6"/>
+                  <circle cx="42" cy="26" r="2" fill="#f59e0b" opacity="0.6"/>
+                  <circle cx="26" cy="5"  r="1.5" fill="#00d4ff" opacity="0.5"/>
+                  <!-- Gradients -->
+                  <defs>
+                    <linearGradient id="cyangold" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%"   stop-color="#00d4ff"/>
+                      <stop offset="100%" stop-color="#f59e0b"/>
+                    </linearGradient>
+                    <linearGradient id="darkfill" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%"   stop-color="#0d1b2e"/>
+                      <stop offset="100%" stop-color="#060d1a"/>
+                    </linearGradient>
+                    <linearGradient id="boltgrad" x1="0" y1="0" x2="0.5" y2="1">
+                      <stop offset="0%"   stop-color="#00d4ff"/>
+                      <stop offset="100%" stop-color="#f59e0b"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <div class="company-name-block">
+                <div class="company-name">
+                  <span class="highlight">Tech</span> &amp; Electrical<br>Services
+                </div>
+                <div class="company-llc">LLC &nbsp;·&nbsp; Temecula, CA</div>
+              </div>
+            </div>
+
+            <!-- Tagline -->
+            <div class="front-tagline">
+              "Defense-Grade IT. Local Speed. Electrified."
+            </div>
+
+            <!-- Services -->
+            <div class="services-block">
+              <div class="services-label">Services</div>
+              <div class="services-pills">
+                <span class="pill pill-cyan">Cybersecurity</span>
+                <span class="pill pill-cyan">MSP / MSSP</span>
+                <span class="pill pill-cyan">DevOps &amp; Cloud</span>
+                <span class="pill pill-amber">Electrical</span>
+                <span class="pill pill-white">Board-Level Repair</span>
+                <span class="pill pill-white">Custom Builds</span>
+                <span class="pill pill-white">Network Infra</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- IRVIN BACK -->
+      <div class="card-wrap">
+        <div class="card-label">Back</div>
+        <div class="card card-back">
+          <div class="back-top-bar"></div>
+          <div class="back-right-bar"></div>
+          <div class="back-content">
+
+            <div class="back-left">
+              <div>
+                <div class="back-person-name">Irvin Avitia</div>
+                <div class="back-person-title">Owner &nbsp;/&nbsp; DevOps Engineer</div>
+
+                <div class="contact-block">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">(951) 555-0142</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">irvin@techelectricalservices.com</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">Temecula, CA · Serving IE &amp; SD</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">techelectricalservices.com</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">linkedin.com/in/irvin-avitia</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="certs-block">
+                <div class="certs-label">Credentials</div>
+                <div class="certs-row">
+                  <span class="cert-badge">CompTIA Sec+</span>
+                  <span class="cert-badge blue">MS CompSci</span>
+                  <span class="cert-badge blue">BS IT</span>
+                  <span class="cert-badge">Northrop Grumman</span>
+                  <span class="cert-badge blue">DevOps · Cloud</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="back-right">
+              <!-- QR Code Placeholder -->
+              <div class="qr-placeholder">
+                <!-- Decorative dot grid to simulate QR -->
+                <div class="qr-inner-dots" id="qr-irvin"></div>
+              </div>
+              <div class="qr-label">Scan for<br>free assessment</div>
+              <div class="website-url">techelectricalservices.com</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="separator">
+
+  <!-- ═══════════════════════════════════════════
+       CHARLES' CARDS
+  ═══════════════════════════════════════════ -->
+  <div class="card-group">
+    <div class="card-group-label">✦ Charles Garcia — Electrical Services ✦</div>
+
+    <div class="card-row">
+
+      <!-- CHARLES FRONT -->
+      <div class="card-wrap">
+        <div class="card-label">Front</div>
+        <div class="card card-front" style="
+          background: linear-gradient(135deg, #0d1005 0%, #1a2a0a 40%, #111f06 70%, #0a1603 100%);
+        ">
+          <!-- Slightly green-tinted variant for Charles' card -->
+          <div class="front-accent-bar" style="background: linear-gradient(180deg, #f59e0b 0%, #22c55e 100%);"></div>
+          <div class="front-bottom-bar" style="background: linear-gradient(90deg, #22c55e 0%, #f59e0b 50%, transparent 100%);"></div>
+          <div class="front-content">
+
+            <div class="front-header">
+              <div class="logo-icon">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="26,2 48,14 48,38 26,50 4,38 4,14"
+                    stroke="url(#ambgreen)" stroke-width="1.5" fill="none"/>
+                  <polygon points="26,8 43,17.5 43,34.5 26,44 9,34.5 9,17.5"
+                    fill="url(#darkfill2)" />
+                  <path d="M30 10 L20 27 H27 L22 42 L34 23 H27 Z"
+                    fill="url(#boltgrad2)" />
+                  <circle cx="10" cy="26" r="2" fill="#22c55e" opacity="0.6"/>
+                  <circle cx="42" cy="26" r="2" fill="#f59e0b" opacity="0.6"/>
+                  <circle cx="26" cy="5"  r="1.5" fill="#f59e0b" opacity="0.5"/>
+                  <defs>
+                    <linearGradient id="ambgreen" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%"   stop-color="#f59e0b"/>
+                      <stop offset="100%" stop-color="#22c55e"/>
+                    </linearGradient>
+                    <linearGradient id="darkfill2" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%"   stop-color="#1a2a0a"/>
+                      <stop offset="100%" stop-color="#0a1603"/>
+                    </linearGradient>
+                    <linearGradient id="boltgrad2" x1="0" y1="0" x2="0.5" y2="1">
+                      <stop offset="0%"   stop-color="#f59e0b"/>
+                      <stop offset="100%" stop-color="#22c55e"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <div class="company-name-block">
+                <div class="company-name">
+                  Tech &amp; <span style="color: #f59e0b;">Electrical</span><br>Services
+                </div>
+                <div class="company-llc">LLC &nbsp;·&nbsp; Temecula, CA</div>
+              </div>
+            </div>
+
+            <div class="front-tagline" style="color: #22c55e;">
+              "Wired Right. Powered On. Done on Time."
+            </div>
+
+            <div class="services-block">
+              <div class="services-label">Electrical Services</div>
+              <div class="services-pills">
+                <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#f59e0b;background:rgba(245,158,11,0.07);">Residential Wiring</span>
+                <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#f59e0b;background:rgba(245,158,11,0.07);">Commercial Electric</span>
+                <span class="pill" style="border-color:rgba(34,197,94,0.5);color:#22c55e;background:rgba(34,197,94,0.07);">Panel Upgrades</span>
+                <span class="pill" style="border-color:rgba(34,197,94,0.5);color:#22c55e;background:rgba(34,197,94,0.07);">EV Charger Install</span>
+                <span class="pill pill-white">Low-Voltage &amp; Data</span>
+                <span class="pill pill-white">Smart Home / IoT</span>
+                <span class="pill pill-white">Code Compliance</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- CHARLES BACK -->
+      <div class="card-wrap">
+        <div class="card-label">Back</div>
+        <div class="card card-back" style="background: linear-gradient(145deg, #1a2a0a 0%, #0e1c06 50%, #080f03 100%);">
+          <div class="back-top-bar" style="background: linear-gradient(90deg, #f59e0b 0%, #22c55e 60%, transparent 100%);"></div>
+          <div class="back-right-bar" style="background: linear-gradient(180deg, #22c55e 0%, #f59e0b 100%);"></div>
+          <div class="back-content">
+
+            <div class="back-left">
+              <div>
+                <div class="back-person-name">Charles Garcia</div>
+                <div class="back-person-title" style="color: #f59e0b;">Electrical Services</div>
+
+                <div class="contact-block">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">(951) 555-0187</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">charles@techelectricalservices.com</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">Temecula, CA · IE &amp; SD Region</div>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                      </svg>
+                    </div>
+                    <div class="contact-text">techelectricalservices.com</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="certs-block" style="border-top-color: rgba(245,158,11,0.15);">
+                <div class="certs-label">Credentials &amp; Licensing</div>
+                <div class="certs-row">
+                  <span class="cert-badge">CA Licensed Electrician</span>
+                  <span class="cert-badge" style="color:#22c55e;border-color:rgba(34,197,94,0.35);background:rgba(34,197,94,0.06);">OSHA 10</span>
+                  <span class="cert-badge" style="color:#22c55e;border-color:rgba(34,197,94,0.35);background:rgba(34,197,94,0.06);">NEC Compliant</span>
+                  <span class="cert-badge">Insured &amp; Bonded</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="back-right">
+              <div class="qr-placeholder" style="border-color: rgba(245,158,11,0.25);">
+                <div class="qr-inner-dots" id="qr-charles"></div>
+              </div>
+              <div class="qr-label">Scan for<br>free estimate</div>
+              <div class="website-url" style="color: #f59e0b;">techelectricalservices.com</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Generate decorative QR dot patterns for both cards
+    function generateQRDots(containerId, color1, color2) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      // Pseudo-random pattern seeded by id
+      const seed = containerId === 'qr-irvin' ? 42 : 91;
+      let s = seed;
+      function rand() {
+        s = (s * 1664525 + 1013904223) & 0xffffffff;
+        return (s >>> 0) / 0xffffffff;
+      }
+      // QR has finder patterns in corners — simulate
+      const size = 8;
+      const grid = [];
+      // Finder squares top-left, top-right, bottom-left
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          // Corner boxes
+          const inTL = r < 3 && c < 3;
+          const inTR = r < 3 && c >= 5;
+          const inBL = r >= 5 && c < 3;
+          const filled = inTL || inTR || inBL || rand() > 0.45;
+          grid.push(filled ? 1 : 0);
+        }
+      }
+      container.innerHTML = grid.map((v, i) => {
+        const r = Math.floor(i / size);
+        const c = i % size;
+        const isCornerFill = (r < 3 && c < 3) || (r < 3 && c >= 5) || (r >= 5 && c < 3);
+        const col = isCornerFill ? color1 : (v ? color2 : 'transparent');
+        return `<div style="background:${col};border-radius:0.5px;"></div>`;
+      }).join('');
+    }
+    generateQRDots('qr-irvin',   '#00d4ff', 'rgba(0,212,255,0.6)');
+    generateQRDots('qr-charles', '#f59e0b', 'rgba(245,158,11,0.6)');
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TES MSP Dashboard — Tech & Electrical Services LLC</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --accent: #00d4ff;
+            --green: #3fb950;
+            --yellow: #d29922;
+            --red: #f85149;
+            --orange: #e3b341;
+            --purple: #bc8cff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* NAV */
+        nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; gap: 0; height: 52px; flex-shrink: 0; }
+        .nav-brand { font-weight: 700; color: var(--accent); font-size: 1.1rem; margin-right: 24px; white-space: nowrap; }
+        .nav-brand span { color: var(--muted); font-weight: 400; }
+        .nav-tabs { display: flex; gap: 0; height: 100%; }
+        .nav-tab { padding: 0 18px; height: 100%; display: flex; align-items: center; cursor: pointer; color: var(--muted); font-size: 0.9rem; border-bottom: 2px solid transparent; transition: all 0.15s; user-select: none; white-space: nowrap; }
+        .nav-tab:hover { color: var(--text); }
+        .nav-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+        .nav-tab .badge { background: var(--red); color: #fff; font-size: 0.7rem; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+        .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .clock { color: var(--muted); font-size: 0.85rem; font-family: monospace; }
+
+        /* MAIN */
+        main { flex: 1; overflow: hidden; position: relative; }
+        .view { display: none; height: 100%; overflow-y: auto; padding: 24px; }
+        .view.active { display: block; }
+
+        /* DASHBOARD */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+        .stat-label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-sub { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.red { color: var(--red); }
+        .stat-value.yellow { color: var(--yellow); }
+        .stat-value.accent { color: var(--accent); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+        .panel-title { font-size: 0.9rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+        /* TABLES */
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--surface2); }
+
+        /* BADGES */
+        .badge-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .badge-open { background: rgba(248,81,73,0.15); color: var(--red); }
+        .badge-progress { background: rgba(0,212,255,0.15); color: var(--accent); }
+        .badge-resolved { background: rgba(63,185,80,0.15); color: var(--green); }
+        .badge-closed { background: rgba(139,148,158,0.2); color: var(--muted); }
+        .badge-critical { background: rgba(248,81,73,0.2); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+        .badge-high { background: rgba(227,179,65,0.15); color: var(--orange); }
+        .badge-medium { background: rgba(0,212,255,0.1); color: var(--accent); }
+        .badge-low { background: rgba(139,148,158,0.1); color: var(--muted); }
+        .badge-draft { background: rgba(139,148,158,0.15); color: var(--muted); }
+        .badge-sent { background: rgba(188,140,255,0.15); color: var(--purple); }
+        .badge-paid { background: rgba(63,185,80,0.15); color: var(--green); }
+        .badge-overdue { background: rgba(248,81,73,0.15); color: var(--red); }
+        .badge-up { background: rgba(63,185,80,0.1); color: var(--green); }
+        .badge-down { background: rgba(248,81,73,0.1); color: var(--red); }
+        .badge-warn { background: rgba(227,179,65,0.1); color: var(--yellow); }
+
+        /* MONITORING */
+        .monitor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+        .monitor-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; position: relative; }
+        .monitor-card.status-up { border-left: 3px solid var(--green); }
+        .monitor-card.status-down { border-left: 3px solid var(--red); }
+        .monitor-card.status-warn { border-left: 3px solid var(--yellow); }
+        .monitor-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .monitor-name { font-weight: 600; font-size: 0.95rem; }
+        .monitor-client { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+        .monitor-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .metric { background: var(--surface2); border-radius: 6px; padding: 8px; text-align: center; }
+        .metric-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+        .metric-value { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
+        .metric-value.ok { color: var(--green); }
+        .metric-value.warn { color: var(--yellow); }
+        .metric-value.crit { color: var(--red); }
+        .uptime-bar { height: 4px; background: var(--surface2); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+        .uptime-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+        .uptime-fill.green { background: var(--green); }
+        .uptime-fill.yellow { background: var(--yellow); }
+        .uptime-fill.red { background: var(--red); }
+        .uptime-pct { font-size: 0.75rem; color: var(--muted); margin-top: 4px; text-align: right; }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: all 0.15s; }
+        .btn-primary { background: var(--accent); color: #0d1117; }
+        .btn-primary:hover { background: #33dcff; }
+        .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+        .btn-danger { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+        .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+
+        /* FORMS */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; }
+        input, select, textarea { width: 100%; padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; font-family: inherit; transition: border 0.15s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+        .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.3rem; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+        /* INVOICE */
+        .invoice-preview { background: #fff; color: #111; padding: 40px; border-radius: 8px; max-width: 700px; margin: 0 auto; }
+        .invoice-preview h1 { font-size: 2rem; color: #00d4ff; margin-bottom: 4px; }
+        .invoice-preview .inv-from { color: #555; font-size: 0.9rem; margin-bottom: 24px; }
+        .invoice-preview .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .invoice-preview .inv-label { font-size: 0.75rem; text-transform: uppercase; color: #999; }
+        .invoice-preview .inv-value { font-weight: 600; margin-top: 2px; }
+        .invoice-preview table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .invoice-preview th { background: #f5f5f5; padding: 10px; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        .invoice-preview td { padding: 10px; border-bottom: 1px solid #eee; }
+        .invoice-preview .inv-total { text-align: right; font-size: 1.3rem; font-weight: 700; color: #00d4ff; }
+        .invoice-preview .inv-footer { margin-top: 30px; font-size: 0.8rem; color: #999; border-top: 1px solid #eee; padding-top: 16px; }
+
+        /* MISC */
+        .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .toolbar h2 { font-size: 1.1rem; font-weight: 600; flex: 1; }
+        .search-box { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; width: 220px; }
+        .filter-select { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; }
+
+        .empty { text-align: center; color: var(--muted); padding: 40px; }
+        .empty svg { opacity: 0.3; margin-bottom: 12px; }
+
+        .alert-bar { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 0.875rem; }
+        .alert-bar.warn { background: rgba(210,153,34,0.1); border-color: rgba(210,153,34,0.3); }
+
+        .timeline { list-style: none; }
+        .timeline li { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .timeline li:last-child { border-bottom: none; }
+        .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 4px; flex-shrink: 0; }
+        .timeline-time { color: var(--muted); min-width: 60px; }
+
+        .sparkline { display: flex; align-items: flex-end; gap: 3px; height: 36px; margin-top: 8px; }
+        .spark-bar { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; opacity: 0.7; min-height: 3px; }
+        .spark-bar.red { background: var(--red); }
+        .spark-bar.green { background: var(--green); }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-brand">⚡ TES <span>MSP Dashboard</span></div>
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="showView('dashboard')">Dashboard</div>
+        <div class="nav-tab" onclick="showView('tickets')" id="tab-tickets">Tickets <span class="badge" id="open-badge">0</span></div>
+        <div class="nav-tab" onclick="showView('monitoring')">Monitoring</div>
+        <div class="nav-tab" onclick="showView('invoicing')">Invoicing</div>
+        <div class="nav-tab" onclick="showView('clients')">Clients</div>
+    </div>
+    <div class="nav-right">
+        <div class="status-dot" id="sys-status-dot"></div>
+        <span class="clock" id="clock"></span>
+    </div>
+</nav>
+
+<main>
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+    <div id="alerts-container"></div>
+    <div class="stats-row" id="dashboard-stats"></div>
+    <div class="two-col">
+        <div class="panel">
+            <div class="panel-title">📋 Recent Tickets</div>
+            <table id="dash-ticket-table"><thead><tr><th>ID</th><th>Client</th><th>Issue</th><th>Status</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div class="panel">
+            <div class="panel-title">🔴 Alerts & Incidents</div>
+            <ul class="timeline" id="dash-alerts-timeline"></ul>
+        </div>
+    </div>
+    <div class="two-col">
+        <div class="panel">
+            <div class="panel-title">💰 Revenue This Month</div>
+            <div id="revenue-chart" class="sparkline" style="height:60px;"></div>
+            <div id="revenue-summary" style="margin-top:12px;font-size:0.9rem;"></div>
+        </div>
+        <div class="panel">
+            <div class="panel-title">🖥️ System Overview</div>
+            <div id="monitor-summary"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TICKETS -->
+<div class="view" id="view-tickets">
+    <div class="toolbar">
+        <h2>🎫 Support Tickets</h2>
+        <input class="search-box" placeholder="Search tickets..." oninput="filterTickets()" id="ticket-search">
+        <select class="filter-select" onchange="filterTickets()" id="ticket-status-filter">
+            <option value="">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+        </select>
+        <select class="filter-select" onchange="filterTickets()" id="ticket-priority-filter">
+            <option value="">All Priorities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+        <button class="btn btn-primary" onclick="openTicketModal()">+ New Ticket</button>
+    </div>
+    <div class="panel" style="padding:0;overflow:hidden;">
+        <table id="ticket-table">
+            <thead><tr><th>ID</th><th>Client</th><th>Issue</th><th>Priority</th><th>Status</th><th>Assigned</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MONITORING -->
+<div class="view" id="view-monitoring">
+    <div class="toolbar">
+        <h2>🖥️ Infrastructure Monitoring</h2>
+        <select class="filter-select" onchange="filterMonitors()" id="monitor-client-filter">
+            <option value="">All Clients</option>
+        </select>
+        <select class="filter-select" onchange="filterMonitors()" id="monitor-status-filter">
+            <option value="">All Statuses</option>
+            <option value="up">Online</option>
+            <option value="warn">Warning</option>
+            <option value="down">Offline</option>
+        </select>
+        <button class="btn btn-primary" onclick="openMonitorModal()">+ Add Device</button>
+        <button class="btn btn-secondary" onclick="refreshMonitors()">↻ Refresh</button>
+    </div>
+    <div class="monitor-grid" id="monitor-grid"></div>
+</div>
+
+<!-- INVOICING -->
+<div class="view" id="view-invoicing">
+    <div class="toolbar">
+        <h2>💰 Invoicing</h2>
+        <input class="search-box" placeholder="Search invoices..." oninput="filterInvoices()" id="invoice-search">
+        <select class="filter-select" onchange="filterInvoices()" id="invoice-status-filter">
+            <option value="">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="paid">Paid</option>
+            <option value="overdue">Overdue</option>
+        </select>
+        <button class="btn btn-primary" onclick="openInvoiceModal()">+ New Invoice</button>
+    </div>
+    <div class="stats-row" id="invoice-stats"></div>
+    <div class="panel" style="padding:0;overflow:hidden;">
+        <table id="invoice-table">
+            <thead><tr><th>Invoice #</th><th>Client</th><th>Amount</th><th>Status</th><th>Due Date</th><th>Items</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- CLIENTS -->
+<div class="view" id="view-clients">
+    <div class="toolbar">
+        <h2>👥 Clients</h2>
+        <input class="search-box" placeholder="Search clients..." oninput="filterClients()" id="client-search">
+        <button class="btn btn-primary" onclick="openClientModal()">+ Add Client</button>
+    </div>
+    <div class="panel" style="padding:0;overflow:hidden;">
+        <table id="client-table">
+            <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Plan</th><th>Users</th><th>MRR</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="ticket-modal">
+    <div class="modal">
+        <div class="modal-title">
+            <span id="ticket-modal-title">New Ticket</span>
+            <button class="modal-close" onclick="closeModal('ticket-modal')">✕</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Client *</label>
+                <select id="tf-client"></select>
+            </div>
+            <div class="form-group">
+                <label>Priority</label>
+                <select id="tf-priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Issue Summary *</label>
+            <input id="tf-issue" placeholder="Brief description of the issue">
+        </div>
+        <div class="form-group">
+            <label>Details</label>
+            <textarea id="tf-details" placeholder="Steps to reproduce, error messages, etc."></textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Assigned To</label>
+                <input id="tf-assigned" placeholder="Irvin Avitia">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="tf-status">
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('ticket-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveTicket()">Save Ticket</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="monitor-modal">
+    <div class="modal">
+        <div class="modal-title">
+            <span>Add Device / Service</span>
+            <button class="modal-close" onclick="closeModal('monitor-modal')">✕</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Device Name *</label>
+                <input id="mf-name" placeholder="e.g. Main Server, Firewall">
+            </div>
+            <div class="form-group">
+                <label>Client *</label>
+                <select id="mf-client"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Type</label>
+                <select id="mf-type">
+                    <option value="server">Server</option>
+                    <option value="workstation">Workstation</option>
+                    <option value="network">Network Device</option>
+                    <option value="firewall">Firewall</option>
+                    <option value="website">Website</option>
+                    <option value="service">Service</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>IP / URL</label>
+                <input id="mf-ip" placeholder="192.168.1.1 or https://example.com">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('monitor-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveMonitor()">Add Device</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="invoice-modal">
+    <div class="modal" style="max-width:640px;">
+        <div class="modal-title">
+            <span id="invoice-modal-title">New Invoice</span>
+            <button class="modal-close" onclick="closeModal('invoice-modal')">✕</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Client *</label>
+                <select id="if-client"></select>
+            </div>
+            <div class="form-group">
+                <label>Due Date</label>
+                <input type="date" id="if-due">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Line Items</label>
+            <div id="invoice-lines"></div>
+            <button class="btn btn-secondary btn-sm" onclick="addInvoiceLine()" style="margin-top:8px;">+ Add Line</button>
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="if-notes" placeholder="Payment terms, thank you message, etc." style="min-height:60px;"></textarea>
+        </div>
+        <div style="text-align:right; font-size:1.2rem; font-weight:700; color:var(--accent); margin-top:8px;">
+            Total: <span id="invoice-total-display">$0.00</span>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('invoice-modal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="saveInvoice('draft')">Save Draft</button>
+            <button class="btn btn-primary" onclick="saveInvoice('sent')">Save & Send</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="client-modal">
+    <div class="modal">
+        <div class="modal-title">
+            <span>Add Client</span>
+            <button class="modal-close" onclick="closeModal('client-modal')">✕</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Company Name *</label>
+                <input id="cf-company" placeholder="Barney's Tire Shop">
+            </div>
+            <div class="form-group">
+                <label>Contact Name *</label>
+                <input id="cf-contact" placeholder="John Smith">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Email</label>
+                <input id="cf-email" type="email" placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input id="cf-phone" placeholder="(951) 555-0100">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>MSP Plan</label>
+                <select id="cf-plan">
+                    <option value="Basic">Basic ($125/user)</option>
+                    <option value="Standard">Standard ($150/user)</option>
+                    <option value="Premium">Premium ($175/user)</option>
+                    <option value="None">No MSP Plan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>User Count</label>
+                <input id="cf-users" type="number" value="5" min="1">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input id="cf-address" placeholder="123 Main St, Temecula, CA">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('client-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveClient()">Add Client</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="invoice-preview-modal">
+    <div class="modal" style="max-width:760px;background:transparent;border:none;">
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px;">
+            <button class="btn btn-secondary" onclick="printInvoice()">🖨️ Print</button>
+            <button class="btn btn-secondary" onclick="closeModal('invoice-preview-modal')">✕ Close</button>
+        </div>
+        <div id="invoice-preview-content"></div>
+    </div>
+</div>
+
+<script>
+// ==============================
+// DATA STORE (localStorage)
+// ==============================
+const DB = {
+    get: (key, def) => { try { return JSON.parse(localStorage.getItem('tes_' + key)) || def; } catch { return def; } },
+    set: (key, val) => localStorage.setItem('tes_' + key, JSON.stringify(val))
+};
+
+function getClients() { return DB.get('clients', []); }
+function setClients(d) { DB.set('clients', d); }
+function getTickets() { return DB.get('tickets', []); }
+function setTickets(d) { DB.set('tickets', d); }
+function getMonitors() { return DB.get('monitors', []); }
+function setMonitors(d) { DB.set('monitors', d); }
+function getInvoices() { return DB.get('invoices', []); }
+function setInvoices(d) { DB.set('invoices', d); }
+
+// Init with demo data if empty
+function initDemo() {
+    if (getClients().length === 0) {
+        const clients = [
+            { id: 'c1', company: "Barney's Tire Shop", contact: 'Barney Rubble', email: 'barney@tireshop.com', phone: '(951) 555-0101', plan: 'Standard', users: 8, address: '1234 Main St, Temecula, CA', status: 'active', since: '2026-01-01' },
+            { id: 'c2', company: 'Desert Dental Group', contact: 'Dr. Sarah Lee', email: 'slee@desertdental.com', phone: '(951) 555-0202', plan: 'Premium', users: 15, address: '555 Vine St, Murrieta, CA', status: 'active', since: '2026-02-15' },
+            { id: 'c3', company: 'Valley Realty', contact: 'Mike Garza', email: 'mike@valleyrealty.com', phone: '(951) 555-0303', plan: 'Basic', users: 5, address: '789 Oak Ave, Temecula, CA', status: 'active', since: '2026-03-01' },
+        ];
+        setClients(clients);
+    }
+
+    if (getTickets().length === 0) {
+        const tickets = [
+            { id: 'TKT-001', clientId: 'c1', issue: 'Server not responding after power outage', details: 'Main file server went down during power outage, UPS did not kick in.', priority: 'critical', status: 'in-progress', assigned: 'Irvin Avitia', created: '2026-03-19T06:00:00', resolved: null },
+            { id: 'TKT-002', clientId: 'c2', issue: 'Printer offline on 2nd floor', details: 'HP LaserJet 400 showing offline, cannot print from any workstation.', priority: 'medium', status: 'open', assigned: 'Irvin Avitia', created: '2026-03-19T07:30:00', resolved: null },
+            { id: 'TKT-003', clientId: 'c3', issue: 'Outlook not syncing emails', details: 'User reports emails stuck in outbox since yesterday.', priority: 'low', status: 'open', assigned: '', created: '2026-03-18T14:00:00', resolved: null },
+            { id: 'TKT-004', clientId: 'c1', issue: 'Workstation slow startup', details: 'Reception PC takes 8+ minutes to boot.', priority: 'low', status: 'resolved', assigned: 'Irvin Avitia', created: '2026-03-17T09:00:00', resolved: '2026-03-18T10:00:00' },
+            { id: 'TKT-005', clientId: 'c2', issue: 'New staff onboarding - 3 accounts', details: 'Need M365 accounts, workstation setup, and software install for 3 new hires.', priority: 'medium', status: 'open', assigned: 'Irvin Avitia', created: '2026-03-19T08:00:00', resolved: null },
+        ];
+        setTickets(tickets);
+    }
+
+    if (getMonitors().length === 0) {
+        const monitors = [
+            { id: 'm1', name: 'Main File Server', clientId: 'c1', type: 'server', ip: '192.168.1.10', status: 'down', cpu: 0, ram: 0, disk: 72, uptime: 94.2, lastCheck: new Date().toISOString(), latency: null },
+            { id: 'm2', name: 'Barney Firewall', clientId: 'c1', type: 'firewall', ip: '192.168.1.1', status: 'up', cpu: 18, ram: 42, disk: 15, uptime: 99.9, lastCheck: new Date().toISOString(), latency: 2 },
+            { id: 'm3', name: 'Dental Records Server', clientId: 'c2', type: 'server', ip: '10.0.0.5', status: 'up', cpu: 34, ram: 65, disk: 81, uptime: 99.99, lastCheck: new Date().toISOString(), latency: 4 },
+            { id: 'm4', name: 'RDS Server (Dental)', clientId: 'c2', type: 'server', ip: '10.0.0.6', status: 'warn', cpu: 88, ram: 91, disk: 45, uptime: 99.5, lastCheck: new Date().toISOString(), latency: 12 },
+            { id: 'm5', name: 'Realty Office Firewall', clientId: 'c3', type: 'firewall', ip: '172.16.1.1', status: 'up', cpu: 5, ram: 22, disk: 12, uptime: 100, lastCheck: new Date().toISOString(), latency: 1 },
+            { id: 'm6', name: 'Valley Realty Website', clientId: 'c3', type: 'website', ip: 'https://valleyrealty.com', status: 'up', cpu: null, ram: null, disk: null, uptime: 99.8, lastCheck: new Date().toISOString(), latency: 220 },
+        ];
+        setMonitors(monitors);
+    }
+
+    if (getInvoices().length === 0) {
+        const today = new Date();
+        const invoices = [
+            { id: 'INV-001', clientId: 'c1', status: 'paid', due: '2026-03-01', created: '2026-02-25', notes: 'February MSP - Standard Plan', items: [{ desc: 'MSP Standard Plan - 8 users', qty: 1, rate: 1200, amount: 1200 }], total: 1200 },
+            { id: 'INV-002', clientId: 'c2', status: 'paid', due: '2026-03-01', created: '2026-02-25', notes: 'February MSP - Premium Plan', items: [{ desc: 'MSP Premium Plan - 15 users', qty: 1, rate: 2625, amount: 2625 }], total: 2625 },
+            { id: 'INV-003', clientId: 'c3', status: 'sent', due: '2026-03-25', created: '2026-03-01', notes: 'March MSP - Basic Plan', items: [{ desc: 'MSP Basic Plan - 5 users', qty: 1, rate: 625, amount: 625 }], total: 625 },
+            { id: 'INV-004', clientId: 'c1', status: 'sent', due: '2026-04-01', created: '2026-03-19', notes: 'March MSP + Server room setup', items: [{ desc: 'MSP Standard Plan - 8 users', qty: 1, rate: 1200, amount: 1200 }, { desc: 'Server Room Build - Labor', qty: 8, rate: 150, amount: 1200 }, { desc: 'Network Equipment', qty: 1, rate: 850, amount: 850 }], total: 3250 },
+            { id: 'INV-005', clientId: 'c2', status: 'overdue', due: '2026-03-10', created: '2026-03-01', notes: 'Emergency after-hours support', items: [{ desc: 'After-Hours Emergency Support (4hrs)', qty: 4, rate: 200, amount: 800 }], total: 800 },
+        ];
+        setInvoices(invoices);
+    }
+}
+
+// ==============================
+// ROUTING
+// ==============================
+function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => {
+        if (t.textContent.toLowerCase().includes(name.substring(0, 5))) t.classList.add('active');
+    });
+    if (name === 'dashboard') renderDashboard();
+    if (name === 'tickets') renderTickets();
+    if (name === 'monitoring') renderMonitors();
+    if (name === 'invoicing') renderInvoices();
+    if (name === 'clients') renderClients();
+}
+
+// ==============================
+// HELPERS
+// ==============================
+function clientName(id) {
+    const c = getClients().find(c => c.id === id);
+    return c ? c.company : 'Unknown';
+}
+
+function mrrRate(plan) {
+    return { Basic: 125, Standard: 150, Premium: 175, None: 0 }[plan] || 0;
+}
+
+function fmt$(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+function timeAgo(iso) {
+    const diff = (Date.now() - new Date(iso)) / 1000;
+    if (diff < 60) return Math.round(diff) + 's ago';
+    if (diff < 3600) return Math.round(diff/60) + 'm ago';
+    if (diff < 86400) return Math.round(diff/3600) + 'h ago';
+    return Math.round(diff/86400) + 'd ago';
+}
+
+function badgeFor(type, val) {
+    const map = {
+        status: { open:'badge-open', 'in-progress':'badge-progress', resolved:'badge-resolved', closed:'badge-closed' },
+        priority: { critical:'badge-critical', high:'badge-high', medium:'badge-medium', low:'badge-low' },
+        invoice: { draft:'badge-draft', sent:'badge-sent', paid:'badge-paid', overdue:'badge-overdue' },
+        monitor: { up:'badge-up', down:'badge-down', warn:'badge-warn' }
+    };
+    const cls = (map[type] && map[type][val]) || 'badge-low';
+    return `<span class="badge-pill ${cls}">${val}</span>`;
+}
+
+let editingTicketId = null;
+let editingInvoiceId = null;
+
+// ==============================
+// DASHBOARD
+// ==============================
+function renderDashboard() {
+    const tickets = getTickets();
+    const monitors = getMonitors();
+    const invoices = getInvoices();
+    const clients = getClients();
+
+    const openTix = tickets.filter(t => t.status === 'open' || t.status === 'in-progress');
+    const criticalTix = tickets.filter(t => t.priority === 'critical' && t.status !== 'resolved' && t.status !== 'closed');
+    const downMonitors = monitors.filter(m => m.status === 'down');
+    const warnMonitors = monitors.filter(m => m.status === 'warn');
+    const mrr = clients.reduce((s, c) => s + (mrrRate(c.plan) * c.users), 0);
+    const overdueInv = invoices.filter(i => i.status === 'overdue');
+    const unpaid = invoices.filter(i => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.total, 0);
+
+    document.getElementById('dashboard-stats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">Open Tickets</div>
+            <div class="stat-value ${openTix.length > 0 ? 'red' : 'green'}">${openTix.length}</div>
+            <div class="stat-sub">${criticalTix.length} critical</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Devices Down</div>
+            <div class="stat-value ${downMonitors.length > 0 ? 'red' : 'green'}">${downMonitors.length}</div>
+            <div class="stat-sub">${warnMonitors.length} warning</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Monthly Recurring</div>
+            <div class="stat-value accent">${fmt$(mrr)}</div>
+            <div class="stat-sub">${clients.length} clients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unpaid Invoices</div>
+            <div class="stat-value ${overdueInv.length > 0 ? 'yellow' : ''}">${fmt$(unpaid)}</div>
+            <div class="stat-sub">${overdueInv.length} overdue</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Active Clients</div>
+            <div class="stat-value accent">${clients.filter(c=>c.status==='active').length}</div>
+            <div class="stat-sub">of ${clients.length} total</div>
+        </div>
+    `;
+
+    // Alerts
+    const alertContainer = document.getElementById('alerts-container');
+    let alertHTML = '';
+    if (downMonitors.length > 0) alertHTML += `<div class="alert-bar">🔴 <strong>${downMonitors.length} device${downMonitors.length>1?'s':''} offline:</strong> ${downMonitors.map(m=>m.name).join(', ')}</div>`;
+    if (overdueInv.length > 0) alertHTML += `<div class="alert-bar warn">⚠️ <strong>${overdueInv.length} overdue invoice${overdueInv.length>1?'s':''}</strong> — ${fmt$(overdueInv.reduce((s,i)=>s+i.total,0))} outstanding</div>`;
+    alertContainer.innerHTML = alertHTML;
+
+    // Recent tickets
+    const recentTix = [...tickets].sort((a,b) => new Date(b.created) - new Date(a.created)).slice(0, 5);
+    document.querySelector('#dash-ticket-table tbody').innerHTML = recentTix.map(t => `
+        <tr>
+            <td style="font-family:monospace;font-size:0.8rem;color:var(--muted)">${t.id}</td>
+            <td>${clientName(t.clientId)}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.issue}</td>
+            <td>${badgeFor('status', t.status)}</td>
+        </tr>
+    `).join('');
+
+    // Timeline
+    const events = [];
+    downMonitors.forEach(m => events.push({ time: 'Now', text: `⬇️ ${m.name} is offline`, type: 'red' }));
+    warnMonitors.forEach(m => events.push({ time: 'Now', text: `⚠️ ${m.name} high resource usage`, type: 'warn' }));
+    criticalTix.forEach(t => events.push({ time: timeAgo(t.created), text: `🎫 Critical: ${t.issue}`, type: 'red' }));
+    if (events.length === 0) events.push({ time: 'Now', text: '✅ All systems nominal', type: 'ok' });
+
+    document.getElementById('dash-alerts-timeline').innerHTML = events.map(e => `
+        <li><div class="timeline-dot" style="background:${e.type==='red'?'var(--red)':e.type==='warn'?'var(--yellow)':'var(--green)'}"></div>
+        <span class="timeline-time">${e.time}</span>
+        <span>${e.text}</span></li>
+    `).join('');
+
+    // Revenue chart
+    const months = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+    const revenue = [2800, 3400, 3200, 3825, 3825, mrr];
+    const maxRev = Math.max(...revenue);
+    document.getElementById('revenue-chart').innerHTML = months.map((m,i) => {
+        const h = Math.round((revenue[i]/maxRev) * 100);
+        const cls = i === months.length-1 ? 'green' : '';
+        return `<div class="spark-bar ${cls}" style="height:${h}%" title="${m}: ${fmt$(revenue[i])}"></div>`;
+    }).join('');
+    document.getElementById('revenue-summary').innerHTML = `
+        <span style="color:var(--green);font-weight:700;font-size:1.3rem">${fmt$(mrr)}</span>
+        <span style="color:var(--muted);margin-left:8px">MRR from ${clients.filter(c=>c.plan!='None').length} MSP clients</span>
+    `;
+
+    // Monitor summary
+    const total = monitors.length;
+    const up = monitors.filter(m => m.status === 'up').length;
+    const down2 = monitors.filter(m => m.status === 'down').length;
+    const warn = monitors.filter(m => m.status === 'warn').length;
+    document.getElementById('monitor-summary').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div class="metric"><div class="metric-label">Online</div><div class="metric-value ok">${up}</div></div>
+            <div class="metric"><div class="metric-label">Warning</div><div class="metric-value warn">${warn}</div></div>
+            <div class="metric"><div class="metric-label">Offline</div><div class="metric-value crit">${down2}</div></div>
+        </div>
+        <div style="font-size:0.85rem;color:var(--muted)">Overall uptime: ${total > 0 ? Math.round((up/total)*100) : 100}% | ${total} devices monitored</div>
+    `;
+
+    updateBadge();
+}
+
+function updateBadge() {
+    const open = getTickets().filter(t => t.status === 'open' || t.status === 'in-progress').length;
+    const badge = document.getElementById('open-badge');
+    badge.textContent = open;
+    badge.style.display = open > 0 ? '' : 'none';
+}
+
+// ==============================
+// TICKETS
+// ==============================
+function renderTickets(tickets) {
+    tickets = tickets || getTickets();
+    const tbody = document.querySelector('#ticket-table tbody');
+    if (tickets.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">No tickets found</td></tr>';
+        return;
+    }
+    tbody.innerHTML = tickets.map(t => `
+        <tr>
+            <td style="font-family:monospace;font-size:0.82rem;color:var(--muted)">${t.id}</td>
+            <td>${clientName(t.clientId)}</td>
+            <td style="max-width:250px;">
+                <div style="font-weight:500">${t.issue}</div>
+                ${t.details ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">${t.details}</div>` : ''}
+            </td>
+            <td>${badgeFor('priority', t.priority)}</td>
+            <td>${badgeFor('status', t.status)}</td>
+            <td style="color:var(--muted);font-size:0.85rem">${t.assigned || '—'}</td>
+            <td style="color:var(--muted);font-size:0.82rem">${timeAgo(t.created)}</td>
+            <td>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary btn-sm" onclick="editTicket('${t.id}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteTicket('${t.id}')">✕</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterTickets() {
+    const q = document.getElementById('ticket-search').value.toLowerCase();
+    const s = document.getElementById('ticket-status-filter').value;
+    const p = document.getElementById('ticket-priority-filter').value;
+    let tickets = getTickets().filter(t => {
+        const match = t.issue.toLowerCase().includes(q) || clientName(t.clientId).toLowerCase().includes(q);
+        const statusOk = !s || t.status === s;
+        const prioOk = !p || t.priority === p;
+        return match && statusOk && prioOk;
+    });
+    renderTickets(tickets);
+}
+
+function openTicketModal(id) {
+    editingTicketId = id || null;
+    const t = id ? getTickets().find(x => x.id === id) : null;
+    document.getElementById('ticket-modal-title').textContent = id ? 'Edit Ticket' : 'New Ticket';
+
+    const sel = document.getElementById('tf-client');
+    sel.innerHTML = getClients().map(c => `<option value="${c.id}" ${t && t.clientId === c.id ? 'selected' : ''}>${c.company}</option>`).join('');
+
+    document.getElementById('tf-issue').value = t ? t.issue : '';
+    document.getElementById('tf-details').value = t ? t.details || '' : '';
+    document.getElementById('tf-priority').value = t ? t.priority : 'medium';
+    document.getElementById('tf-status').value = t ? t.status : 'open';
+    document.getElementById('tf-assigned').value = t ? t.assigned || '' : 'Irvin Avitia';
+    document.getElementById('ticket-modal').classList.add('open');
+}
+
+function editTicket(id) { openTicketModal(id); }
+
+function saveTicket() {
+    const issue = document.getElementById('tf-issue').value.trim();
+    if (!issue) { alert('Issue summary is required'); return; }
+    const tickets = getTickets();
+    const data = {
+        id: editingTicketId || `TKT-${String(tickets.length + 1).padStart(3,'0')}`,
+        clientId: document.getElementById('tf-client').value,
+        issue,
+        details: document.getElementById('tf-details').value.trim(),
+        priority: document.getElementById('tf-priority').value,
+        status: document.getElementById('tf-status').value,
+        assigned: document.getElementById('tf-assigned').value.trim(),
+        created: editingTicketId ? (tickets.find(t=>t.id===editingTicketId)||{}).created : new Date().toISOString(),
+        resolved: document.getElementById('tf-status').value === 'resolved' ? new Date().toISOString() : null,
+    };
+    if (editingTicketId) {
+        const idx = tickets.findIndex(t => t.id === editingTicketId);
+        tickets[idx] = { ...tickets[idx], ...data };
+    } else {
+        tickets.push(data);
+    }
+    setTickets(tickets);
+    closeModal('ticket-modal');
+    renderTickets();
+    updateBadge();
+}
+
+function deleteTicket(id) {
+    if (!confirm('Delete this ticket?')) return;
+    setTickets(getTickets().filter(t => t.id !== id));
+    renderTickets();
+    updateBadge();
+}
+
+// ==============================
+// MONITORING
+// ==============================
+function renderMonitors(monitors) {
+    monitors = monitors || getMonitors();
+    const clientFilter = document.getElementById('monitor-client-filter');
+    const cids = [...new Set(monitors.map(m => m.clientId))];
+    if (clientFilter.options.length <= 1) {
+        cids.forEach(id => {
+            const opt = document.createElement('option');
+            opt.value = id; opt.textContent = clientName(id);
+            clientFilter.appendChild(opt);
+        });
+    }
+
+    const grid = document.getElementById('monitor-grid');
+    if (monitors.length === 0) { grid.innerHTML = '<div class="empty">No devices monitored</div>'; return; }
+
+    grid.innerHTML = monitors.map(m => {
+        const icons = { server:'🖥️', workstation:'💻', network:'🌐', firewall:'🔥', website:'🌍', service:'⚙️' };
+        const cpuClass = m.cpu >= 90 ? 'crit' : m.cpu >= 75 ? 'warn' : 'ok';
+        const ramClass = m.ram >= 90 ? 'crit' : m.ram >= 75 ? 'warn' : 'ok';
+        const diskClass = m.disk >= 90 ? 'crit' : m.disk >= 80 ? 'warn' : 'ok';
+        const uptimeColor = m.uptime >= 99 ? 'green' : m.uptime >= 95 ? 'yellow' : 'red';
+
+        return `
+            <div class="monitor-card status-${m.status}">
+                <div class="monitor-header">
+                    <div>
+                        <div class="monitor-name">${icons[m.type]||'📡'} ${m.name}</div>
+                        <div class="monitor-client">${clientName(m.clientId)} · ${m.ip}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                        ${badgeFor('monitor', m.status)}
+                        <button class="btn btn-danger btn-sm" onclick="deleteMonitor('${m.id}')" style="padding:2px 8px;font-size:0.7rem;">✕</button>
+                    </div>
+                </div>
+                ${m.cpu !== null ? `
+                <div class="monitor-metrics">
+                    <div class="metric"><div class="metric-label">CPU</div><div class="metric-value ${cpuClass}">${m.status==='down'?'—':m.cpu+'%'}</div></div>
+                    <div class="metric"><div class="metric-label">RAM</div><div class="metric-value ${ramClass}">${m.status==='down'?'—':m.ram+'%'}</div></div>
+                    <div class="metric"><div class="metric-label">Disk</div><div class="metric-value ${diskClass}">${m.disk+'%'}</div></div>
+                </div>` : `<div class="monitor-metrics"><div class="metric" style="grid-column:1/-1"><div class="metric-label">Latency</div><div class="metric-value ${m.latency>500?'crit':m.latency>200?'warn':'ok'}">${m.status==='down'?'—':m.latency+'ms'}</div></div></div>`}
+                <div class="uptime-bar"><div class="uptime-fill ${uptimeColor}" style="width:${m.uptime}%"></div></div>
+                <div class="uptime-pct">30-day uptime: ${m.uptime}%</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterMonitors() {
+    const clientFilter = document.getElementById('monitor-client-filter').value;
+    const statusFilter = document.getElementById('monitor-status-filter').value;
+    let monitors = getMonitors().filter(m => {
+        return (!clientFilter || m.clientId === clientFilter) && (!statusFilter || m.status === statusFilter);
+    });
+    renderMonitors(monitors);
+}
+
+function refreshMonitors() {
+    // Simulate metric updates
+    const monitors = getMonitors();
+    monitors.forEach(m => {
+        if (m.status !== 'down') {
+            if (m.cpu !== null) {
+                m.cpu = Math.max(1, Math.min(99, m.cpu + Math.round((Math.random()-0.5)*10)));
+                m.ram = Math.max(10, Math.min(99, m.ram + Math.round((Math.random()-0.5)*5)));
+            }
+            if (m.latency !== null) m.latency = Math.max(1, m.latency + Math.round((Math.random()-0.5)*30));
+        }
+        m.lastCheck = new Date().toISOString();
+    });
+    setMonitors(monitors);
+    renderMonitors();
+}
+
+function openMonitorModal() {
+    const sel = document.getElementById('mf-client');
+    sel.innerHTML = getClients().map(c => `<option value="${c.id}">${c.company}</option>`).join('');
+    document.getElementById('mf-name').value = '';
+    document.getElementById('mf-ip').value = '';
+    document.getElementById('monitor-modal').classList.add('open');
+}
+
+function saveMonitor() {
+    const name = document.getElementById('mf-name').value.trim();
+    if (!name) { alert('Device name is required'); return; }
+    const monitors = getMonitors();
+    monitors.push({
+        id: 'm' + Date.now(),
+        name,
+        clientId: document.getElementById('mf-client').value,
+        type: document.getElementById('mf-type').value,
+        ip: document.getElementById('mf-ip').value.trim(),
+        status: 'up',
+        cpu: document.getElementById('mf-type').value === 'website' ? null : Math.floor(Math.random()*40)+5,
+        ram: document.getElementById('mf-type').value === 'website' ? null : Math.floor(Math.random()*50)+20,
+        disk: Math.floor(Math.random()*60)+10,
+        uptime: 100,
+        lastCheck: new Date().toISOString(),
+        latency: document.getElementById('mf-type').value === 'website' ? Math.floor(Math.random()*300)+50 : Math.floor(Math.random()*10)+1
+    });
+    setMonitors(monitors);
+    closeModal('monitor-modal');
+    renderMonitors();
+}
+
+function deleteMonitor(id) {
+    if (!confirm('Remove this device from monitoring?')) return;
+    setMonitors(getMonitors().filter(m => m.id !== id));
+    renderMonitors();
+}
+
+// ==============================
+// INVOICING
+// ==============================
+function renderInvoices(invoices) {
+    invoices = invoices || getInvoices();
+
+    const paid = invoices.filter(i => i.status === 'paid').reduce((s,i) => s+i.total, 0);
+    const outstanding = invoices.filter(i => i.status === 'sent').reduce((s,i) => s+i.total, 0);
+    const overdue = invoices.filter(i => i.status === 'overdue').reduce((s,i) => s+i.total, 0);
+    const draft = invoices.filter(i => i.status === 'draft').length;
+
+    document.getElementById('invoice-stats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">${fmt$(paid)}</div></div>
+        <div class="stat-card"><div class="stat-label">Outstanding</div><div class="stat-value accent">${fmt$(outstanding)}</div></div>
+        <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value ${overdue>0?'red':''}">${fmt$(overdue)}</div></div>
+        <div class="stat-card"><div class="stat-label">Drafts</div><div class="stat-value">${draft}</div></div>
+    `;
+
+    const tbody = document.querySelector('#invoice-table tbody');
+    if (invoices.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty">No invoices</td></tr>'; return; }
+    tbody.innerHTML = invoices.map(inv => `
+        <tr>
+            <td style="font-family:monospace;font-size:0.85rem;color:var(--muted)">${inv.id}</td>
+            <td>${clientName(inv.clientId)}</td>
+            <td style="font-weight:700">${fmt$(inv.total)}</td>
+            <td>${badgeFor('invoice', inv.status)}</td>
+            <td style="color:var(--muted);font-size:0.85rem">${inv.due}</td>
+            <td style="color:var(--muted);font-size:0.82rem">${inv.items.length} item${inv.items.length>1?'s':''}</td>
+            <td>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary btn-sm" onclick="previewInvoice('${inv.id}')">👁</button>
+                    ${inv.status === 'draft' || inv.status === 'sent' ? `<button class="btn btn-secondary btn-sm" onclick="editInvoice('${inv.id}')">Edit</button>` : ''}
+                    ${inv.status !== 'paid' ? `<button class="btn btn-secondary btn-sm" onclick="markPaid('${inv.id}')">✓ Paid</button>` : ''}
+                    <button class="btn btn-danger btn-sm" onclick="deleteInvoice('${inv.id}')">✕</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterInvoices() {
+    const q = document.getElementById('invoice-search').value.toLowerCase();
+    const s = document.getElementById('invoice-status-filter').value;
+    const invoices = getInvoices().filter(i => {
+        const match = i.id.toLowerCase().includes(q) || clientName(i.clientId).toLowerCase().includes(q);
+        return match && (!s || i.status === s);
+    });
+    renderInvoices(invoices);
+}
+
+let invoiceLines = [];
+
+function openInvoiceModal(id) {
+    editingInvoiceId = id || null;
+    const inv = id ? getInvoices().find(i => i.id === id) : null;
+    document.getElementById('invoice-modal-title').textContent = id ? 'Edit Invoice' : 'New Invoice';
+
+    const sel = document.getElementById('if-client');
+    sel.innerHTML = getClients().map(c => `<option value="${c.id}" ${inv && inv.clientId === c.id ? 'selected' : ''}>${c.company}</option>`).join('');
+
+    const due = new Date();
+    due.setDate(due.getDate() + 30);
+    document.getElementById('if-due').value = inv ? inv.due : due.toISOString().split('T')[0];
+    document.getElementById('if-notes').value = inv ? inv.notes || '' : '';
+
+    invoiceLines = inv ? JSON.parse(JSON.stringify(inv.items)) : [{ desc: '', qty: 1, rate: 0, amount: 0 }];
+    renderInvoiceLines();
+    document.getElementById('invoice-modal').classList.add('open');
+}
+
+function editInvoice(id) { openInvoiceModal(id); }
+
+function renderInvoiceLines() {
+    document.getElementById('invoice-lines').innerHTML = invoiceLines.map((line, i) => `
+        <div style="display:grid;grid-template-columns:1fr 70px 90px 90px 32px;gap:8px;margin-bottom:8px;align-items:center;">
+            <input value="${line.desc}" placeholder="Description" oninput="updateLine(${i},'desc',this.value)">
+            <input type="number" value="${line.qty}" min="0.5" step="0.5" oninput="updateLine(${i},'qty',+this.value)" style="text-align:center">
+            <input type="number" value="${line.rate}" min="0" oninput="updateLine(${i},'rate',+this.value)" style="text-align:right" placeholder="Rate">
+            <div style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-align:right;font-size:0.875rem;color:var(--accent)">${fmt$(line.amount)}</div>
+            <button class="btn btn-danger btn-sm" onclick="removeLine(${i})" style="padding:9px 8px;">✕</button>
+        </div>
+    `).join('');
+    const total = invoiceLines.reduce((s,l) => s+l.amount, 0);
+    document.getElementById('invoice-total-display').textContent = fmt$(total);
+}
+
+function updateLine(i, field, val) {
+    invoiceLines[i][field] = val;
+    invoiceLines[i].amount = invoiceLines[i].qty * invoiceLines[i].rate;
+    renderInvoiceLines();
+}
+
+function addInvoiceLine() {
+    invoiceLines.push({ desc: '', qty: 1, rate: 0, amount: 0 });
+    renderInvoiceLines();
+}
+
+function removeLine(i) {
+    invoiceLines.splice(i, 1);
+    if (invoiceLines.length === 0) invoiceLines.push({ desc: '', qty: 1, rate: 0, amount: 0 });
+    renderInvoiceLines();
+}
+
+function saveInvoice(status) {
+    const invoices = getInvoices();
+    const nextNum = editingInvoiceId ? editingInvoiceId : `INV-${String(invoices.length+1).padStart(3,'0')}`;
+    const total = invoiceLines.reduce((s,l) => s+l.amount, 0);
+    const data = {
+        id: nextNum,
+        clientId: document.getElementById('if-client').value,
+        status,
+        due: document.getElementById('if-due').value,
+        created: editingInvoiceId ? (invoices.find(i=>i.id===editingInvoiceId)||{}).created : new Date().toISOString().split('T')[0],
+        notes: document.getElementById('if-notes').value.trim(),
+        items: [...invoiceLines],
+        total
+    };
+    if (editingInvoiceId) {
+        const idx = invoices.findIndex(i => i.id === editingInvoiceId);
+        invoices[idx] = { ...invoices[idx], ...data };
+    } else {
+        invoices.push(data);
+    }
+    setInvoices(invoices);
+    closeModal('invoice-modal');
+    renderInvoices();
+}
+
+function markPaid(id) {
+    const invoices = getInvoices();
+    const inv = invoices.find(i => i.id === id);
+    if (inv) { inv.status = 'paid'; setInvoices(invoices); renderInvoices(); }
+}
+
+function deleteInvoice(id) {
+    if (!confirm('Delete this invoice?')) return;
+    setInvoices(getInvoices().filter(i => i.id !== id));
+    renderInvoices();
+}
+
+function previewInvoice(id) {
+    const inv = getInvoices().find(i => i.id === id);
+    if (!inv) return;
+    const client = getClients().find(c => c.id === inv.clientId) || {};
+    document.getElementById('invoice-preview-content').innerHTML = `
+        <div class="invoice-preview">
+            <h1>⚡ Tech & Electrical Services LLC</h1>
+            <div class="inv-from">1234 Innovation Blvd · Temecula, CA 92591 · irvin@techelectrical.com · (951) 555-0100</div>
+            <div class="inv-grid">
+                <div>
+                    <div class="inv-label">Billed To</div>
+                    <div class="inv-value">${client.company || ''}</div>
+                    <div>${client.contact || ''}</div>
+                    <div>${client.address || ''}</div>
+                    <div>${client.email || ''}</div>
+                </div>
+                <div>
+                    <div class="inv-label">Invoice #</div><div class="inv-value">${inv.id}</div>
+                    <div class="inv-label" style="margin-top:8px;">Invoice Date</div><div>${inv.created}</div>
+                    <div class="inv-label" style="margin-top:8px;">Due Date</div><div style="font-weight:600">${inv.due}</div>
+                    <div class="inv-label" style="margin-top:8px;">Status</div>
+                    <div style="font-weight:700;color:${inv.status==='paid'?'#22c55e':inv.status==='overdue'?'#ef4444':'#3b82f6'}">${inv.status.toUpperCase()}</div>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
+                <tbody>${inv.items.map(item => `
+                    <tr><td>${item.desc}</td><td style="text-align:center">${item.qty}</td><td style="text-align:right">${fmt$(item.rate)}</td><td style="text-align:right">${fmt$(item.amount)}</td></tr>
+                `).join('')}</tbody>
+            </table>
+            <div class="inv-total">Total Due: ${fmt$(inv.total)}</div>
+            ${inv.notes ? `<div style="margin-top:16px;padding:12px;background:#f9f9f9;border-radius:6px;font-size:0.875rem;color:#555">${inv.notes}</div>` : ''}
+            <div class="inv-footer">
+                Payment due by ${inv.due}. Late payments subject to 1.5% monthly interest. Thank you for your business!<br>
+                Payment methods: Check payable to "Tech & Electrical Services LLC" · Venmo/Zelle: @irvin-TES · ACH available upon request
+            </div>
+        </div>
+    `;
+    document.getElementById('invoice-preview-modal').classList.add('open');
+}
+
+function printInvoice() { window.print(); }
+
+// ==============================
+// CLIENTS
+// ==============================
+function renderClients(clients) {
+    clients = clients || getClients();
+    const tbody = document.querySelector('#client-table tbody');
+    if (clients.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No clients yet</td></tr>'; return; }
+    const rates = { Basic: 125, Standard: 150, Premium: 175, None: 0 };
+    tbody.innerHTML = clients.map(c => {
+        const mrr = (rates[c.plan] || 0) * c.users;
+        return `
+        <tr>
+            <td><div style="font-weight:600">${c.company}</div><div style="font-size:0.78rem;color:var(--muted)">${c.address||''}</div></td>
+            <td>${c.contact}</td>
+            <td style="color:var(--muted)">${c.email || '—'}</td>
+            <td>${badgeFor('monitor', c.plan === 'None' ? 'warn' : 'up')} <span style="font-size:0.82rem;color:var(--muted)">${c.plan}</span></td>
+            <td>${c.users}</td>
+            <td style="font-weight:600;color:var(--green)">${mrr > 0 ? fmt$(mrr)+'/mo' : '—'}</td>
+            <td>${badgeFor('monitor', c.status === 'active' ? 'up' : 'down')}</td>
+            <td>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary btn-sm" onclick="viewClientDetails('${c.id}')">View</button>
+                    <button class="btn btn-primary btn-sm" onclick="openInvoiceForClient('${c.id}')">+ Invoice</button>
+                </div>
+            </td>
+        </tr>
+    `}).join('');
+}
+
+function filterClients() {
+    const q = document.getElementById('client-search').value.toLowerCase();
+    const clients = getClients().filter(c => c.company.toLowerCase().includes(q) || c.contact.toLowerCase().includes(q));
+    renderClients(clients);
+}
+
+function openClientModal() {
+    document.getElementById('cf-company').value = '';
+    document.getElementById('cf-contact').value = '';
+    document.getElementById('cf-email').value = '';
+    document.getElementById('cf-phone').value = '';
+    document.getElementById('cf-plan').value = 'Standard';
+    document.getElementById('cf-users').value = 5;
+    document.getElementById('cf-address').value = '';
+    document.getElementById('client-modal').classList.add('open');
+}
+
+function saveClient() {
+    const company = document.getElementById('cf-company').value.trim();
+    if (!company) { alert('Company name required'); return; }
+    const clients = getClients();
+    clients.push({
+        id: 'c' + Date.now(),
+        company,
+        contact: document.getElementById('cf-contact').value.trim(),
+        email: document.getElementById('cf-email').value.trim(),
+        phone: document.getElementById('cf-phone').value.trim(),
+        plan: document.getElementById('cf-plan').value,
+        users: parseInt(document.getElementById('cf-users').value) || 5,
+        address: document.getElementById('cf-address').value.trim(),
+        status: 'active',
+        since: new Date().toISOString().split('T')[0]
+    });
+    setClients(clients);
+    closeModal('client-modal');
+    renderClients();
+}
+
+function viewClientDetails(id) {
+    const client = getClients().find(c => c.id === id);
+    if (!client) return;
+    const tickets = getTickets().filter(t => t.clientId === id);
+    const invoices = getInvoices().filter(i => i.clientId === id);
+    const monitors = getMonitors().filter(m => m.clientId === id);
+    const mrr = (mrrRate(client.plan)) * client.users;
+    alert(`${client.company}\n\nContact: ${client.contact}\nEmail: ${client.email}\nPlan: ${client.plan} (${client.users} users)\nMRR: ${fmt$(mrr)}\n\nTickets: ${tickets.length} total, ${tickets.filter(t=>t.status==='open'||t.status==='in-progress').length} open\nMonitored Devices: ${monitors.length}\nInvoices: ${invoices.length} total`);
+}
+
+function openInvoiceForClient(clientId) {
+    showView('invoicing');
+    setTimeout(() => openInvoiceModal(), 100);
+    setTimeout(() => { document.getElementById('if-client').value = clientId; }, 150);
+}
+
+// ==============================
+// MODAL HELPERS
+// ==============================
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.remove('open');
+    });
+});
+
+// ==============================
+// CLOCK
+// ==============================
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Auto-refresh monitor stats every 30s
+setInterval(() => {
+    if (document.getElementById('view-monitoring').classList.contains('active')) refreshMonitors();
+    if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+}, 30000);
+
+// ==============================
+// INIT
+// ==============================
+initDemo();
+updateClock();
+setInterval(updateClock, 10000);
+renderDashboard();
+</script>
+</body>
+</html>

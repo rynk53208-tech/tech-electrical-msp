@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helpdesk Widget — Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+      border: 1px solid #bbf7d0;
+    }
+    h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+    p { color: #475569; line-height: 1.6; font-size: 15px; margin-bottom: 24px; }
+    .config-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .config-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+    pre {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #1e293b;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .key { color: #7c3aed; }
+    .val { color: #0369a1; }
+    .str { color: #0f766e; }
+    .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-secondary { background: #f1f5f9; color: #334155; }
+    .btn-outline { background: transparent; color: #2563eb; border: 1.5px solid #2563eb; }
+    .tip {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .tip code {
+      background: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="badge">✅ Live Demo</div>
+  <h1>Helpdesk Widget</h1>
+  <p>Floating chat widget for client websites. Click the button in the bottom-right corner to try it out.</p>
+
+  <div class="config-box">
+    <h3>Active Configuration</h3>
+    <pre>
+<span class="key">businessName:</span>  <span class="str">"Tech Electrical MSP"</span>
+<span class="key">accentColor:</span>   <span class="str">"#2563eb"</span>
+<span class="key">position:</span>      <span class="str">"bottom-right"</span>
+<span class="key">collectEmail:</span>  <span class="val">false</span>
+<span class="key">webhookUrl:</span>    <span class="val">null</span>  <span style="color:#94a3b8">// auto-replies</span>
+<span class="key">onlineHours:</span>   <span class="str">8am–6pm PT</span></pre>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="HelpdeskWidget.open()">Open Chat</button>
+    <button class="btn btn-secondary" onclick="HelpdeskWidget.close()">Close Chat</button>
+    <button class="btn btn-outline" onclick="HelpdeskWidget.sendAgentMessage('New offer: 20% off IT audits this month! 🎉')">Simulate Push</button>
+  </div>
+
+  <p class="tip">Add to any site: <code>&lt;script src="widget.js"&gt;&lt;/script&gt;</code></p>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     Widget Config — customize per client
+     ────────────────────────────────────────────── -->
+<script>
+  window.HelpdeskConfig = {
+    businessName: "Tech Electrical MSP",
+    greeting: "Hey! 👋 Welcome to Tech Electrical. How can we help you today?",
+    accentColor: "#2563eb",
+    position: "bottom-right",
+    webhookUrl: null,          // Set to your backend endpoint
+    emailFallback: "support@techelectrical.com",
+    offlineMessage: "We're away right now. Leave a message and we'll reply within a few hours.",
+    onlineHours: { start: 8, end: 18, timezone: "America/Los_Angeles" },
+    showBranding: true,
+    brandingText: "Tech Electrical MSP",
+    brandingUrl: "https://techelectrical.com",
+    collectEmail: false,
+    autoOpenDelay: 0,
+  };
+</script>
+<script src="widget.js" defer></script>
+
+</body>
+</html>

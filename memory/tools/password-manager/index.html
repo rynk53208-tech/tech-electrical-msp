@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Manager — Tech &amp; Electrical Services LLC</title>
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #21262d;
+      --border:    #30363d;
+      --accent:    #f78166;
+      --accent2:   #58a6ff;
+      --green:     #3fb950;
+      --yellow:    #d29922;
+      --red:       #f85149;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --radius:    8px;
+      --shadow:    0 4px 24px rgba(0,0,0,.45);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ───────────────────────────────────────────────────── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar .logo {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--accent2);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar .logo svg { flex-shrink: 0; }
+    .topbar .spacer { flex: 1; }
+    .topbar .vault-lock {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Layout ────────────────────────────────────────────────────── */
+    .layout {
+      display: flex;
+      height: calc(100vh - 56px);
+    }
+
+    /* ── Sidebar ───────────────────────────────────────────────────── */
+    .sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-section { padding: 0 12px 8px; }
+    .sidebar-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      padding: 8px 8px 4px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--muted);
+      transition: background .15s, color .15s;
+      font-size: 13px;
+      user-select: none;
+    }
+    .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+    .sidebar-item.active { background: rgba(88,166,255,.12); color: var(--accent2); }
+    .sidebar-item .badge {
+      margin-left: auto;
+      background: var(--surface2);
+      color: var(--muted);
+      border-radius: 99px;
+      font-size: 10px;
+      padding: 1px 7px;
+    }
+    .sidebar-item.active .badge { background: rgba(88,166,255,.18); color: var(--accent2); }
+
+    /* ── Main ──────────────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Toolbar ───────────────────────────────────────────────────── */
+    .toolbar {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .search-wrap {
+      flex: 1;
+      position: relative;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 7px 12px 7px 34px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .search-wrap input:focus { border-color: var(--accent2); }
+    .search-wrap input::placeholder { color: var(--muted); }
+
+    /* ── Buttons ───────────────────────────────────────────────────── */
+    .btn {
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: filter .15s, transform .1s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent2); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.15); }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { filter: brightness(1.15); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-icon {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 5px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      transition: color .15s, background .15s;
+    }
+    .btn-icon:hover { color: var(--text); background: var(--surface2); }
+
+    /* ── Credential List ───────────────────────────────────────────── */
+    .cred-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cred-list::-webkit-scrollbar { width: 6px; }
+    .cred-list::-webkit-scrollbar-track { background: transparent; }
+    .cred-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+    .cred-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .cred-card:hover { border-color: var(--accent2); background: var(--surface2); }
+    .cred-card.selected { border-color: var(--accent2); background: rgba(88,166,255,.07); }
+
+    .cred-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .icon-Server     { background: rgba(88,166,255,.15); }
+    .icon-Router     { background: rgba(63,185,80,.15); }
+    .icon-Firewall   { background: rgba(247,129,102,.15); }
+    .icon-Application{ background: rgba(210,153,34,.15); }
+    .icon-Database   { background: rgba(139,148,158,.15); }
+    .icon-Other      { background: rgba(139,148,158,.1); }
+
+    .cred-info { flex: 1; min-width: 0; }
+    .cred-name {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cred-meta {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .cred-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .cred-card:hover .cred-actions { opacity: 1; }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 99px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .tag-Server      { background: rgba(88,166,255,.15);  color: #58a6ff; }
+    .tag-Router      { background: rgba(63,185,80,.15);   color: #3fb950; }
+    .tag-Firewall    { background: rgba(247,129,102,.15); color: #f78166; }
+    .tag-Application { background: rgba(210,153,34,.15);  color: #d29922; }
+    .tag-Database    { background: rgba(139,148,158,.15); color: #8b949e; }
+    .tag-Other       { background: rgba(139,148,158,.1);  color: #8b949e; }
+
+    /* ── Strength Bar ──────────────────────────────────────────────── */
+    .strength-bar {
+      height: 4px;
+      border-radius: 99px;
+      background: var(--surface2);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .3s, background .3s;
+    }
+    .strength-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    /* ── Empty State ───────────────────────────────────────────────── */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      text-align: center;
+      padding: 40px;
+    }
+    .empty-state svg { opacity: .3; }
+    .empty-state h3 { font-size: 16px; color: var(--text); }
+    .empty-state p { font-size: 13px; max-width: 280px; line-height: 1.5; }
+
+    /* ── Modal Overlay ─────────────────────────────────────────────── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-header h2 { font-size: 16px; flex: 1; }
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-body::-webkit-scrollbar { width: 5px; }
+    .modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* ── Form Fields ───────────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .field input,
+    .field textarea,
+    .field select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+      font-family: inherit;
+      width: 100%;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { border-color: var(--accent2); }
+    .field select option { background: var(--surface2); }
+    .field textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+    .pw-wrap {
+      position: relative;
+    }
+    .pw-wrap input { padding-right: 80px; font-family: 'Cascadia Code', 'Consolas', monospace; }
+    .pw-wrap .pw-actions {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 2px;
+    }
+
+    /* ── Generator Panel ───────────────────────────────────────────── */
+    .gen-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gen-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gen-row label { font-size: 12px; color: var(--muted); flex-shrink: 0; width: 80px; }
+    .gen-row input[type=range] {
+      flex: 1;
+      accent-color: var(--accent2);
+      cursor: pointer;
+    }
+    .gen-row .range-val {
+      width: 28px;
+      text-align: right;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .toggle-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-chip input[type=checkbox] { accent-color: var(--accent2); cursor: pointer; }
+    .toggle-chip:hover { color: var(--text); }
+
+    /* ── Toast ─────────────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      font-size: 13px;
+      z-index: 9999;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform .25s, opacity .25s;
+      pointer-events: none;
+      max-width: 280px;
+    }
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ── Export Modal ──────────────────────────────────────────────── */
+    .export-key-field {
+      font-family: monospace;
+      letter-spacing: .05em;
+    }
+
+    /* ── Detail Panel ──────────────────────────────────────────────── */
+    .detail-panel {
+      width: 320px;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .detail-panel.hidden { display: none; }
+    .detail-panel::-webkit-scrollbar { width: 5px; }
+    .detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    .detail-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-header h3 { flex: 1; font-size: 15px; }
+    .detail-body { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+    .detail-field { display: flex; flex-direction: column; gap: 4px; }
+    .detail-field .df-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .detail-field .df-value {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-all;
+    }
+    .df-value a { color: var(--accent2); text-decoration: none; }
+    .df-value a:hover { text-decoration: underline; }
+    .df-masked { font-family: monospace; letter-spacing: .08em; }
+
+    /* ── Scrollbar global ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .detail-panel { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Top Bar ─────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="logo">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    Tech &amp; Electrical — Vault
+  </div>
+  <div class="spacer"></div>
+  <div class="vault-lock">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Client-side only · LocalStorage
+  </div>
+</div>
+
+<!-- ── Layout ──────────────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Views</div>
+      <div class="sidebar-item active" data-filter="all" onclick="setFilter('all',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        All Credentials
+        <span class="badge" id="badge-all">0</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Categories</div>
+      <div class="sidebar-item" data-filter="Server" onclick="setFilter('Server',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        Server
+        <span class="badge" id="badge-Server">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="Router" onclick="setFilter('Router',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/><path d="M12 2v2"/><path d="M12 20v2"/></svg>
+        Router
+        <span class="badge" id="badge-Router">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="Firewall" onclick="setFilter('Firewall',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Firewall
+        <span class="badge" id="badge-Firewall">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="Application" onclick="setFilter('Application',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+        Application
+        <span class="badge" id="badge-Application">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="Database" onclick="setFilter('Database',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Database
+        <span class="badge" id="badge-Database">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="Other" onclick="setFilter('Other',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Other
+        <span class="badge" id="badge-Other">0</span>
+      </div>
+    </div>
+    <div style="flex:1"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <div class="sidebar-item" onclick="openGeneratorModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 1 0 5 5"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Generator
+      </div>
+      <div class="sidebar-item" onclick="openExportModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </div>
+      <div class="sidebar-item" onclick="triggerImport()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Import
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search credentials…" oninput="renderList()" />
+      </div>
+      <button class="btn btn-primary" onclick="openAddModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Credential
+      </button>
+    </div>
+
+    <!-- Credential List -->
+    <div class="cred-list" id="credList">
+      <!-- populated by JS -->
+    </div>
+  </main>
+
+  <!-- Detail Panel -->
+  <aside class="detail-panel hidden" id="detailPanel">
+    <div class="detail-header">
+      <div class="cred-icon" id="dp-icon">🖥️</div>
+      <h3 id="dp-name">—</h3>
+      <button class="btn-icon" onclick="closeDetail()" title="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="detail-body" id="dp-body"></div>
+  </aside>
+
+</div>
+
+<!-- ── Add/Edit Modal ──────────────────────────────────────────────── -->
+<div class="overlay" id="credModal">
+  <div class="modal">
+    <div class="modal-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <h2 id="modalTitle">Add Credential</h2>
+      <button class="btn-icon" onclick="closeModal('credModal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Client / Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Acme Corp Router" />
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="f-category">
+          <option>Server</option>
+          <option>Router</option>
+          <option>Firewall</option>
+          <option>Application</option>
+          <option>Database</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>URL / IP</label>
+        <input type="text" id="f-url" placeholder="https://192.168.1.1 or https://app.example.com" />
+      </div>
+      <div class="field">
+        <label>Username / Email</label>
+        <input type="text" id="f-username" placeholder="admin" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="f-password" placeholder="••••••••" autocomplete="new-password" oninput="updateStrengthInline()" />
+          <div class="pw-actions">
+            <button class="btn-icon" type="button" title="Show/Hide" onclick="togglePwVis('f-password',this)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="btn-icon" type="button" title="Generate" onclick="generateAndFill()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
+        <div class="strength-label" id="strengthLabel">—</div>
+      </div>
+
+      <!-- Inline Generator -->
+      <div class="gen-panel">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;">Quick Generator</div>
+        <div class="gen-row">
+          <label>Length</label>
+          <input type="range" id="gen-length" min="8" max="64" value="20" oninput="document.getElementById('gen-len-val').textContent=this.value" />
+          <span class="range-val" id="gen-len-val">20</span>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-chip"><input type="checkbox" id="gen-upper" checked /> Uppercase</label>
+          <label class="toggle-chip"><input type="checkbox" id="gen-lower" checked /> Lowercase</label>
+          <label class="toggle-chip"><input type="checkbox" id="gen-numbers" checked /> Numbers</label>
+          <label class="toggle-chip"><input type="checkbox" id="gen-symbols" checked /> Symbols</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="f-notes" placeholder="Any additional info, MFA setup, access restrictions…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('credModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCredential()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Standalone Generator Modal ──────────────────────────────────── -->
+<div class="overlay" id="generatorModal">
+  <div class="modal">
+    <div class="modal-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 1 0 5 5"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      <h2>Password Generator</h2>
+      <button class="btn-icon" onclick="closeModal('generatorModal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Generated Password</label>
+        <div class="pw-wrap">
+          <input type="text" id="gen-output" readonly style="font-family:monospace;letter-spacing:.05em;" />
+          <div class="pw-actions">
+            <button class="btn-icon" title="Copy" onclick="copyText('gen-output')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="genStrengthFill" style="width:0%"></div></div>
+        <div class="strength-label" id="genStrengthLabel">—</div>
+      </div>
+      <div class="gen-panel">
+        <div class="gen-row">
+          <label>Length</label>
+          <input type="range" id="sgen-length" min="8" max="64" value="20" oninput="document.getElementById('sgen-len-val').textContent=this.value;standaloneGenerate()" />
+          <span class="range-val" id="sgen-len-val">20</span>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-chip"><input type="checkbox" id="sgen-upper" checked onchange="standaloneGenerate()" /> Uppercase</label>
+          <label class="toggle-chip"><input type="checkbox" id="sgen-lower" checked onchange="standaloneGenerate()" /> Lowercase</label>
+          <label class="toggle-chip"><input type="checkbox" id="sgen-numbers" checked onchange="standaloneGenerate()" /> Numbers</label>
+          <label class="toggle-chip"><input type="checkbox" id="sgen-symbols" checked onchange="standaloneGenerate()" /> Symbols</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('generatorModal')">Close</button>
+      <button class="btn btn-primary" onclick="standaloneGenerate()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Regenerate
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Export Modal ────────────────────────────────────────────────── -->
+<div class="overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <h2>Export Vault</h2>
+      <button class="btn-icon" onclick="closeModal('exportModal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">
+        Your vault will be exported as an AES-256-GCM encrypted JSON file.
+        Enter a passphrase to protect the export — <strong style="color:var(--yellow)">do not lose it</strong>, it cannot be recovered.
+      </p>
+      <div class="field">
+        <label>Export Passphrase</label>
+        <input type="password" id="export-key" class="export-key-field" placeholder="Min 12 characters recommended" />
+      </div>
+      <div class="field">
+        <label>Confirm Passphrase</label>
+        <input type="password" id="export-key2" class="export-key-field" placeholder="Repeat passphrase" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('exportModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="doExport()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Encrypt &amp; Download
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete Confirm Modal ────────────────────────────────────────── -->
+<div class="overlay" id="deleteModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      <h2>Delete Credential</h2>
+      <button class="btn-icon" onclick="closeModal('deleteModal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;line-height:1.6;">Are you sure you want to delete <strong id="delete-name">this credential</strong>? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('deleteModal')">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Hidden Import Input ─────────────────────────────────────────── -->
+<input type="file" id="importInput" accept=".json" style="display:none" onchange="handleImportFile(event)" />
+
+<!-- ── Toast ───────────────────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<!-- ── JavaScript ─────────────────────────────────────────────────── -->
+<script>
+/* ================================================================
+   State
+================================================================ */
+const STORAGE_KEY = 'tes_vault_v1';
+let vault = [];          // array of credential objects
+let currentFilter = 'all';
+let selectedId = null;
+let editingId = null;
+let deleteTargetId = null;
+
+const CATEGORY_ICONS = {
+  Server:      '🖥️',
+  Router:      '🔁',
+  Firewall:    '🛡️',
+  Application: '💻',
+  Database:    '🗄️',
+  Other:       '🔑',
+};
+
+/* ================================================================
+   LocalStorage Persistence
+================================================================ */
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(vault));
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    vault = raw ? JSON.parse(raw) : [];
+  } catch {
+    vault = [];
+  }
+}
+
+/* ================================================================
+   Password Strength
+================================================================ */
+function calcStrength(pw) {
+  if (!pw) return { score: 0, label: '—', color: '#30363d', pct: 0 };
+  let score = 0;
+  if (pw.length >= 8)  score += 1;
+  if (pw.length >= 12) score += 1;
+  if (pw.length >= 16) score += 1;
+  if (/[a-z]/.test(pw)) score += 1;
+  if (/[A-Z]/.test(pw)) score += 1;
+  if (/[0-9]/.test(pw)) score += 1;
+  if (/[^a-zA-Z0-9]/.test(pw)) score += 2;
+
+  // Penalize common patterns
+  if (/(.)\1{2,}/.test(pw)) score -= 1;
+  if (/^(password|123456|qwerty|abc|letmein)/i.test(pw)) score = 0;
+
+  score = Math.max(0, Math.min(7, score));
+
+  const levels = [
+    { label: 'Very Weak',  color: '#f85149', pct: 10 },
+    { label: 'Weak',       color: '#f85149', pct: 22 },
+    { label: 'Poor',       color: '#d29922', pct: 38 },
+    { label: 'Fair',       color: '#d29922', pct: 52 },
+    { label: 'Moderate',   color: '#58a6ff', pct: 65 },
+    { label: 'Good',       color: '#3fb950', pct: 78 },
+    { label: 'Strong',     color: '#3fb950', pct: 90 },
+    { label: 'Very Strong',color: '#3fb950', pct: 100 },
+  ];
+  return levels[score];
+}
+
+function updateStrengthInline() {
+  const pw = document.getElementById('f-password').value;
+  const s = calcStrength(pw);
+  const fill = document.getElementById('strengthFill');
+  const lbl  = document.getElementById('strengthLabel');
+  fill.style.width = s.pct + '%';
+  fill.style.background = s.color;
+  lbl.textContent = s.label;
+  lbl.style.color = s.color;
+}
+
+/* ================================================================
+   Password Generator
+================================================================ */
+function generatePassword(length, upper, lower, numbers, symbols) {
+  const sets = [];
+  if (upper)   sets.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  if (lower)   sets.push('abcdefghijklmnopqrstuvwxyz');
+  if (numbers) sets.push('0123456789');
+  if (symbols) sets.push('!@#$%^&*()-_=+[]{}|;:,.<>?');
+  if (!sets.length) sets.push('abcdefghijklmnopqrstuvwxyz');
+
+  const charset = sets.join('');
+  const arr = new Uint8Array(length);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => charset[b % charset.length]).join('');
+}
+
+function generateAndFill() {
+  const len  = +document.getElementById('gen-length').value;
+  const up   = document.getElementById('gen-upper').checked;
+  const lo   = document.getElementById('gen-lower').checked;
+  const num  = document.getElementById('gen-numbers').checked;
+  const sym  = document.getElementById('gen-symbols').checked;
+  const pw   = generatePassword(len, up, lo, num, sym);
+  const inp  = document.getElementById('f-password');
+  inp.value  = pw;
+  inp.type   = 'text';
+  updateStrengthInline();
+}
+
+function standaloneGenerate() {
+  const len  = +document.getElementById('sgen-length').value;
+  const up   = document.getElementById('sgen-upper').checked;
+  const lo   = document.getElementById('sgen-lower').checked;
+  const num  = document.getElementById('sgen-numbers').checked;
+  const sym  = document.getElementById('sgen-symbols').checked;
+  const pw   = generatePassword(len, up, lo, num, sym);
+  document.getElementById('gen-output').value = pw;
+  const s = calcStrength(pw);
+  document.getElementById('genStrengthFill').style.width = s.pct + '%';
+  document.getElementById('genStrengthFill').style.background = s.color;
+  document.getElementById('genStrengthLabel').textContent = s.label;
+  document.getElementById('genStrengthLabel').style.color = s.color;
+}
+
+/* ================================================================
+   Clipboard
+================================================================ */
+function copyText(inputId) {
+  const el = document.getElementById(inputId);
+  navigator.clipboard.writeText(el.value).then(() => toast('Copied to clipboard ✓'));
+}
+
+function copyValue(text) {
+  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard ✓'));
+}
+
+/* ================================================================
+   Toast
+================================================================ */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+/* ================================================================
+   Filter & Render
+================================================================ */
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  selectedId = null;
+  closeDetail();
+  renderList();
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  return vault.filter(c => {
+    const matchCat = currentFilter === 'all' || c.category === currentFilter;
+    const matchQ   = !q ||
+      c.name.toLowerCase().includes(q) ||
+      (c.username || '').toLowerCase().includes(q) ||
+      (c.url || '').toLowerCase().includes(q) ||
+      (c.notes || '').toLowerCase().includes(q) ||
+      (c.category || '').toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+}
+
+function renderList() {
+  updateBadges();
+  const list = getFiltered();
+  const container = document.getElementById('credList');
+
+  if (!list.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <h3>No credentials found</h3>
+        <p>Add your first credential or adjust the search filter.</p>
+        <button class="btn btn-primary" onclick="openAddModal()">Add Credential</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(c => {
+    const s = calcStrength(c.password || '');
+    const icon = CATEGORY_ICONS[c.category] || '🔑';
+    return `
+    <div class="cred-card ${selectedId === c.id ? 'selected' : ''}" onclick="selectCred('${c.id}')">
+      <div class="cred-icon icon-${c.category}">${icon}</div>
+      <div class="cred-info">
+        <div class="cred-name">${esc(c.name)}</div>
+        <div class="cred-meta">${esc(c.username || '')}${c.url ? ' · ' + esc(c.url) : ''}</div>
+        <div class="strength-bar" style="margin-top:5px;width:100px">
+          <div class="strength-fill" style="width:${s.pct}%;background:${s.color}"></div>
+        </div>
+      </div>
+      <span class="tag tag-${c.category}">${esc(c.category)}</span>
+      <div class="cred-actions">
+        <button class="btn-icon" title="Copy password" onclick="event.stopPropagation();copyValue('${esc(c.password || '')}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+        <button class="btn-icon" title="Edit" onclick="event.stopPropagation();openEditModal('${c.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="btn-icon" title="Delete" onclick="event.stopPropagation();openDeleteModal('${c.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateBadges() {
+  const cats = ['Server','Router','Firewall','Application','Database','Other'];
+  document.getElementById('badge-all').textContent = vault.length;
+  cats.forEach(c => {
+    const el = document.getElementById('badge-' + c);
+    if (el) el.textContent = vault.filter(x => x.category === c).length;
+  });
+}
+
+/* ================================================================
+   Detail Panel
+================================================================ */
+function selectCred(id) {
+  selectedId = id;
+  renderList();
+  showDetail(id);
+}
+
+function showDetail(id) {
+  const c = vault.find(x => x.id === id);
+  if (!c) return;
+  const panel = document.getElementById('detailPanel');
+  panel.classList.remove('hidden');
+
+  document.getElementById('dp-icon').textContent = CATEGORY_ICONS[c.category] || '🔑';
+  document.getElementById('dp-icon').className = `cred-icon icon-${c.category}`;
+  document.getElementById('dp-name').textContent = c.name;
+
+  const s = calcStrength(c.password || '');
+
+  document.getElementById('dp-body').innerHTML = `
+    <div class="detail-field">
+      <div class="df-label">Category</div>
+      <div class="df-value"><span class="tag tag-${c.category}">${esc(c.category)}</span></div>
+    </div>
+    ${c.url ? `
+    <div class="detail-field">
+      <div class="df-label">URL / IP</div>
+      <div class="df-value"><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.url)}</a>
+        <button class="btn-icon btn-sm" title="Copy URL" onclick="copyValue('${esc(c.url)}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>` : ''}
+    ${c.username ? `
+    <div class="detail-field">
+      <div class="df-label">Username</div>
+      <div class="df-value">${esc(c.username)}
+        <button class="btn-icon btn-sm" title="Copy username" onclick="copyValue('${esc(c.username)}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>` : ''}
+    <div class="detail-field">
+      <div class="df-label">Password</div>
+      <div class="df-value">
+        <span class="df-masked" id="dp-pw-val">••••••••••••</span>
+        <button class="btn-icon btn-sm" title="Show/Hide" onclick="toggleDpPw('${esc(c.password || '')}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="btn-icon btn-sm" title="Copy password" onclick="copyValue('${esc(c.password || '')}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <div class="strength-bar"><div class="strength-fill" style="width:${s.pct}%;background:${s.color}"></div></div>
+      <div class="strength-label" style="color:${s.color}">${s.label}</div>
+    </div>
+    ${c.notes ? `
+    <div class="detail-field">
+      <div class="df-label">Notes</div>
+      <div class="df-value" style="white-space:pre-wrap;font-size:12px;color:var(--muted)">${esc(c.notes)}</div>
+    </div>` : ''}
+    <div class="detail-field">
+      <div class="df-label">Created</div>
+      <div class="df-value" style="color:var(--muted);font-size:12px">${new Date(c.created).toLocaleString()}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditModal('${c.id}')">Edit</button>
+      <button class="btn btn-danger btn-sm" style="flex:1" onclick="openDeleteModal('${c.id}')">Delete</button>
+    </div>
+  `;
+}
+
+let dpPwVisible = false;
+function toggleDpPw(pw) {
+  dpPwVisible = !dpPwVisible;
+  const el = document.getElementById('dp-pw-val');
+  if (el) el.textContent = dpPwVisible ? pw : '••••••••••••';
+}
+
+function closeDetail() {
+  selectedId = null;
+  dpPwVisible = false;
+  document.getElementById('detailPanel').classList.add('hidden');
+  renderList();
+}
+
+/* ================================================================
+   Add / Edit Modal
+================================================================ */
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add Credential';
+  clearForm();
+  openModal('credModal');
+}
+
+function openEditModal(id) {
+  editingId = id;
+  const c = vault.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modalTitle').textContent = 'Edit Credential';
+  document.getElementById('f-name').value     = c.name     || '';
+  document.getElementById('f-category').value = c.category || 'Server';
+  document.getElementById('f-url').value      = c.url      || '';
+  document.getElementById('f-username').value = c.username || '';
+  document.getElementById('f-password').value = c.password || '';
+  document.getElementById('f-password').type  = 'text';
+  document.getElementById('f-notes').value    = c.notes    || '';
+  updateStrengthInline();
+  openModal('credModal');
+}
+
+function clearForm() {
+  ['f-name','f-url','f-username','f-password','f-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-password').type = 'password';
+  document.getElementById('f-category').value = 'Server';
+  document.getElementById('strengthFill').style.width = '0%';
+  document.getElementById('strengthLabel').textContent = '—';
+}
+
+function saveCredential() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { toast('Name is required'); return; }
+
+  const cred = {
+    id:       editingId || crypto.randomUUID(),
+    name,
+    category: document.getElementById('f-category').value,
+    url:      document.getElementById('f-url').value.trim(),
+    username: document.getElementById('f-username').value.trim(),
+    password: document.getElementById('f-password').value,
+    notes:    document.getElementById('f-notes').value.trim(),
+    created:  editingId ? (vault.find(x=>x.id===editingId)?.created || Date.now()) : Date.now(),
+    updated:  Date.now(),
+  };
+
+  if (editingId) {
+    const idx = vault.findIndex(x => x.id === editingId);
+    if (idx > -1) vault[idx] = cred;
+  } else {
+    vault.push(cred);
+  }
+
+  save();
+  renderList();
+  closeModal('credModal');
+  toast(editingId ? 'Credential updated ✓' : 'Credential added ✓');
+
+  if (selectedId === cred.id) showDetail(cred.id);
+}
+
+/* ================================================================
+   Delete
+================================================================ */
+function openDeleteModal(id) {
+  deleteTargetId = id;
+  const c = vault.find(x => x.id === id);
+  document.getElementById('delete-name').textContent = c ? `"${c.name}"` : 'this credential';
+  openModal('deleteModal');
+}
+
+function confirmDelete() {
+  vault = vault.filter(x => x.id !== deleteTargetId);
+  if (selectedId === deleteTargetId) closeDetail();
+  deleteTargetId = null;
+  save();
+  renderList();
+  closeModal('deleteModal');
+  toast('Credential deleted');
+}
+
+/* ================================================================
+   Modal helpers
+================================================================ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close on overlay click
+document.querySelectorAll('.overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+/* ================================================================
+   Password visibility toggle (form)
+================================================================ */
+function togglePwVis(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+/* ================================================================
+   Generator Modal
+================================================================ */
+function openGeneratorModal() {
+  standaloneGenerate();
+  openModal('generatorModal');
+}
+
+/* ================================================================
+   Export (AES-256-GCM)
+================================================================ */
+function openExportModal() {
+  document.getElementById('export-key').value  = '';
+  document.getElementById('export-key2').value = '';
+  openModal('exportModal');
+}
+
+async function doExport() {
+  const key1 = document.getElementById('export-key').value;
+  const key2 = document.getElementById('export-key2').value;
+  if (!key1) { toast('Enter a passphrase'); return; }
+  if (key1 !== key2) { toast('Passphrases do not match'); return; }
+  if (key1.length < 8) { toast('Passphrase too short (min 8 chars)'); return; }
+
+  try {
+    const payload = JSON.stringify({ version: 1, vault, exported: Date.now() });
+    const enc     = new TextEncoder();
+    const salt    = crypto.getRandomValues(new Uint8Array(16));
+    const iv      = crypto.getRandomValues(new Uint8Array(12));
+
+    const keyMat  = await crypto.subtle.importKey('raw', enc.encode(key1), 'PBKDF2', false, ['deriveKey']);
+    const aesKey  = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' },
+      keyMat,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt']
+    );
+    const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, enc.encode(payload));
+
+    const out = {
+      alg:        'AES-256-GCM',
+      kdf:        'PBKDF2-SHA256-310000',
+      salt:       bufToB64(salt),
+      iv:         bufToB64(iv),
+      ciphertext: bufToB64(ciphertext),
+    };
+
+    download(JSON.stringify(out, null, 2), `tes-vault-${dateStamp()}.enc.json`, 'application/json');
+    closeModal('exportModal');
+    toast('Vault exported & encrypted ✓');
+  } catch (e) {
+    toast('Export failed: ' + e.message);
+  }
+}
+
+/* ================================================================
+   Import
+================================================================ */
+function triggerImport() {
+  document.getElementById('importInput').click();
+}
+
+function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const passphrase = prompt('Enter the passphrase used when exporting:');
+    if (!passphrase) return;
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      const enc    = new TextEncoder();
+      const salt   = b64ToBuf(parsed.salt);
+      const iv     = b64ToBuf(parsed.iv);
+      const ct     = b64ToBuf(parsed.ciphertext);
+
+      const keyMat = await crypto.subtle.importKey('raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+      const aesKey = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' },
+        keyMat,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      );
+      const plain   = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, aesKey, ct);
+      const decoded = JSON.parse(new TextDecoder().decode(plain));
+
+      if (!decoded.vault || !Array.isArray(decoded.vault)) throw new Error('Invalid vault format');
+      const imported = decoded.vault;
+      // Merge: skip duplicates by id
+      let added = 0;
+      imported.forEach(c => {
+        if (!vault.find(x => x.id === c.id)) { vault.push(c); added++; }
+      });
+      save();
+      renderList();
+      toast(`Imported ${added} credential(s) ✓`);
+    } catch (err) {
+      toast('Import failed: ' + (err.message.includes('OperationError') ? 'Wrong passphrase' : err.message));
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+/* ================================================================
+   Utility
+================================================================ */
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function bufToB64(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
+function b64ToBuf(b64) {
+  const binary = atob(b64);
+  const bytes  = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+
+function dateStamp() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function download(content, filename, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = filename;
+  a.click();
+}
+
+/* ================================================================
+   Keyboard shortcuts
+================================================================ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+    e.preventDefault();
+    openAddModal();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+    e.preventDefault();
+    openGeneratorModal();
+  }
+});
+
+/* ================================================================
+   Boot
+================================================================ */
+load();
+renderList();
+</script>
+</body>
+</html>

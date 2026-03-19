@@ -1,0 +1,126 @@
+SUBJECT LINE BANK - Email Outreach Campaign
+================================================
+Use A/B testing to identify top performers. Rotate variations to avoid fatigue.
+Format: [WAVE] [VARIATION] - [LINE]
+
+INITIAL OUTREACH (Credibility + Curiosity)
+==========================================
+[WAVE-1] [AGGRESSIVE]
+- Your security has a bigger hole than you think
+- Northrop-grade security assessment for {{COMPANY}}
+- 7 critical vulnerabilities found (in companies like yours)
+- Is your security posture actually enterprise-grade?
+- We found gaps your current tools are missing
+
+[WAVE-1] [CONSULTATIVE]
+- Quick question about {{COMPANY}}'s security
+- {{COMPANY}} mentioned you manage security—curious about this
+- A security reality check for {{COMPANY}}
+- Your compliance audit passed—but is your security solid?
+- This is why most MSPs fail their security audits
+
+[WAVE-1] [CURIOSITY]
+- Irvin Avitia / Northrop Grumman (re: {{COMPANY}})
+- What we found in 60 minutes
+- The security gap most {{INDUSTRY}} companies miss
+- One thing we always find during assessments
+- Do you have a moment for a quick security check?
+
+[WAVE-1] [DIRECT]
+- 60-minute free security assessment for {{COMPANY}}
+- Defense-grade security for {{COMPANY}} (literally)
+- Let's find your security blind spots
+- One call, real findings
+
+
+FOLLOW-UP #1 - Case Study (Social Proof)
+=========================================
+[WAVE-2] [SOCIAL-PROOF]
+- This company had the same risk you might have
+- They thought their security was solid too
+- How a similar company exposed a critical vulnerability
+- {{COMPANY}}: Your security checklist might be incomplete
+- We found 7 critical issues in 60 minutes (case study inside)
+
+[WAVE-2] [RELEVANCE]
+- {{INDUSTRY}} companies are facing this right now
+- Real case: What we found with a similar {{INDUSTRY}} firm
+- Here's what we uncovered at a {{COMPANY_SIZE}}-person company
+- Your industry, a similar company, critical findings
+
+
+FOLLOW-UP #2 - Pain Points (Relevance)
+=======================================
+[WAVE-3] [PAIN-DRIVEN]
+- Are any of these keeping you up at night?
+- The security challenge every MSP faces
+- Why your tools aren't enough
+- {{COMPANY}}: Does this sound familiar?
+- The #1 reason security implementations fail
+
+[WAVE-3] [FEAR-BASED]
+- What happens when your security fails
+- You're 1 ransomware attack away from...
+- Most companies don't realize until it's too late
+- Your compliance audit passed, but...
+- The security gaps ransomware exploits
+
+[WAVE-3] [CONTRAST]
+- Security theater vs. real security: Which do you have?
+- DIY security vs. expert security: The cost difference
+- Your tools vs. an actual security expert
+- 3-minute wake-up call about your security posture
+
+
+FOLLOW-UP #3 - Urgency (Call to Action)
+========================================
+[WAVE-4] [SCARCITY]
+- Last assessment slot this month
+- March deadline: 3 slots left (assessment)
+- 2 spots open—booking fast
+- {{FIRST_NAME}}: Last chance this month
+- Only taking 2 more assessments in March
+
+[WAVE-4] [DIRECT-CTA]
+- Let's make this real: Your free assessment
+- Ready to see your actual security posture?
+- Schedule: Free 60-minute security assessment
+- Next step: Your security clarity call
+- Stop wondering: Schedule your assessment
+
+[WAVE-4] [BENEFIT-DRIVEN]
+- How to find hidden vulnerabilities (before attackers do)
+- The roadmap most security leaders follow
+- Here's what real enterprise security looks like
+- Your customized security roadmap (free)
+- Enterprise security without the enterprise price tag
+
+[WAVE-4] [CURIOSITY-FINAL]
+- One thing I always ask new clients
+- The assessment that changes everything
+- {{COMPANY}}: This might be important
+- What we tell every MSP about their security
+- Your next move (security-wise)
+
+
+BONUS VARIATIONS (Evergreen Rotation)
+=====================================
+- {{FIRST_NAME}}, quick question...
+- Irvin @ Northrop (re: {{COMPANY}} security)
+- {{COMPANY}} + cyber risk = ?
+- What's your security risk score?
+- The 60-minute conversation that changes everything
+- Is {{COMPANY}} audit-ready?
+- Your MSP security gap (probably larger than you think)
+- {{COMPANY}}: Let's talk security
+- Why I'm reaching out about {{COMPANY}}'s security
+- The assessment most IT leaders skip (but shouldn't)
+
+GUIDELINES FOR USE
+===================
+- Length: Keep under 50 characters for best mobile display (test in iPhone)
+- Personalization: Always include {{FIRST_NAME}}, {{COMPANY}}, or {{INDUSTRY}} when possible
+- Avoid: Excessive caps, too many punctuation marks, misleading subject lines
+- Rotation: Use 2-3 variations per wave before rotating
+- Timing: Space follow-ups 3-5 days apart
+- Tracking: Note which subjects generate opens/replies in your CRM

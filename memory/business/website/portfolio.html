@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="page-portfolio">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tech & Electrical Services LLC Portfolio — Real projects, real results. See our work in cybersecurity, MSP, hardware repair, and electrical services in Temecula, CA." />
+  <title>Portfolio &amp; Case Studies | Tech &amp; Electrical Services LLC</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Tech &amp; <span>Electrical</span></div>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="services.html" class="nav-services">Services</a>
+      <a href="about.html" class="nav-about">About</a>
+      <a href="portfolio.html" class="nav-portfolio active">Portfolio</a>
+      <a href="contact.html" class="nav-contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <span class="nav-phone">📞 <a href="tel:+1-951-555-0100">(951) 555-0100</a></span>
+      <a href="contact.html" class="btn btn-primary btn-sm">Get a Quote</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ──────────────────────────────────────────── -->
+<section style="padding: 8rem 0 4rem; background: var(--bg-section); position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,212,255,0.07) 0%, transparent 70%);"></div>
+  <div class="container text-center" style="position: relative; z-index: 1;">
+    <div class="section-tag">Portfolio &amp; Case Studies</div>
+    <h1>Real Projects.<br><span class="gradient-text">Real Results.</span></h1>
+    <p style="max-width: 600px; margin: 1.25rem auto; font-size: 1.1rem;">A selection of client engagements across cybersecurity, managed IT, hardware, and electrical projects.</p>
+  </div>
+</section>
+
+<!-- ── FILTER TABS ────────────────────────────────────────── -->
+<div style="background: var(--bg-section); padding: 1.5rem 0; border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+      <button class="btn btn-primary btn-sm filter-btn" data-filter="all" onclick="filterCards('all', this)">All Projects</button>
+      <button class="btn btn-secondary btn-sm filter-btn" data-filter="cyber" onclick="filterCards('cyber', this)">🔒 Cybersecurity</button>
+      <button class="btn btn-secondary btn-sm filter-btn" data-filter="msp" onclick="filterCards('msp', this)">🖥️ MSP</button>
+      <button class="btn btn-secondary btn-sm filter-btn" data-filter="repair" onclick="filterCards('repair', this)">⚙️ Repair &amp; Builds</button>
+      <button class="btn btn-secondary btn-sm filter-btn" data-filter="electrical" onclick="filterCards('electrical', this)">⚡ Electrical</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CASE STUDIES ───────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="grid-3" id="portfolioGrid">
+
+      <!-- 1: Barney's Tire Shop -->
+      <div class="portfolio-card fade-up" data-category="msp">
+        <div class="portfolio-image msp" style="background: linear-gradient(135deg, #0d1117, #1a2234);">
+          <span style="filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));">🖥️</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">MSP — Server Infrastructure</div>
+          <h3>Barney's Tire Shop</h3>
+          <p>Complete server room build and MSP contract setup. Designed the network architecture, installed the server, configured monitoring, and transitioned to a managed IT contract.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag">Server Build</span>
+            <span class="tag">Network Design</span>
+            <span class="tag purple">MSP Onboarding</span>
+          </div>
+          <div class="portfolio-result">✅ Zero downtime since onboarding · $1,000/mo MSP contract</div>
+        </div>
+      </div>
+
+      <!-- 2: Dental Office HIPAA -->
+      <div class="portfolio-card fade-up delay-1" data-category="cyber">
+        <div class="portfolio-image cyber">
+          <span style="filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));">🔒</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Cybersecurity — HIPAA Compliance</div>
+          <h3>Local Dental Practice</h3>
+          <p>Full security audit for a 3-doctor dental practice handling patient PHI. Found 12 critical vulnerabilities missed by previous IT provider. Deployed SIEM, EDR, and encryption.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag">HIPAA Compliance</span>
+            <span class="tag">SIEM Deployment</span>
+            <span class="tag">Pen Testing</span>
+          </div>
+          <div class="portfolio-result">✅ HIPAA compliant · 12 critical vulns remediated · Ongoing MSSP</div>
+        </div>
+      </div>
+
+      <!-- 3: Micro Soldering Laptop -->
+      <div class="portfolio-card fade-up delay-2" data-category="repair">
+        <div class="portfolio-image repair" style="background: linear-gradient(135deg, #1a0d2e, #2d1b69);">
+          <span style="filter: drop-shadow(0 0 20px rgba(124,58,237,0.5));">🔧</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Hardware — Micro Soldering</div>
+          <h3>MacBook Pro Power Rail Repair</h3>
+          <p>MacBook Pro with liquid damage — power delivery completely failed. Two Apple-authorized shops quoted $1,200+ or recommended replacement. We diagnosed a shorted MOSFET, reflowed and replaced the component. Total fix: $180.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag green">Micro Soldering</span>
+            <span class="tag green">Power Rail Diagnosis</span>
+            <span class="tag green">Component-Level</span>
+          </div>
+          <div class="portfolio-result">✅ Saved client $1,000+ vs. replacement · 48hr turnaround</div>
+        </div>
+      </div>
+
+      <!-- 4: Office EV Charger + Low Voltage -->
+      <div class="portfolio-card fade-up" data-category="electrical">
+        <div class="portfolio-image elec" style="background: linear-gradient(135deg, #1a1200, #3d2e00);">
+          <span style="filter: drop-shadow(0 0 20px rgba(245,158,11,0.5));">⚡</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Electrical + IT — Office Build-Out</div>
+          <h3>Commercial Office Build-Out</h3>
+          <p>Complete technology infrastructure for a new 3,000 sq ft commercial office. Electrical panel upgrade, 32 Cat6 drops, server rack installation, WiFi access point placement, and 2 Level 2 EV chargers in the parking lot.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag amber">Panel Upgrade</span>
+            <span class="tag amber">Low-Voltage</span>
+            <span class="tag amber">EV Chargers</span>
+            <span class="tag">Network Design</span>
+          </div>
+          <div class="portfolio-result">✅ Turnkey delivery — one contractor, no coordination friction</div>
+        </div>
+      </div>
+
+      <!-- 5: Custom Gaming / Workstation Build -->
+      <div class="portfolio-card fade-up delay-1" data-category="repair">
+        <div class="portfolio-image repair" style="background: linear-gradient(135deg, #0d1b0d, #1a3a1a);">
+          <span style="filter: drop-shadow(0 0 20px rgba(16,185,129,0.5));">🖥️</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Hardware — Custom Build</div>
+          <h3>Dual-Workstation Video Production Rig</h3>
+          <p>Built two custom video editing workstations for a local production company. Custom water cooling, 128GB RAM, PCIe Gen 4 NVMe arrays, Blackmagic PCIe capture cards. 30% under budget vs. pre-built alternatives.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag green">Custom Build</span>
+            <span class="tag green">Water Cooling</span>
+            <span class="tag green">NAS Integration</span>
+          </div>
+          <div class="portfolio-result">✅ 30% cost savings · 2x performance vs. pre-built options</div>
+        </div>
+      </div>
+
+      <!-- 6: Network Security Overhaul -->
+      <div class="portfolio-card fade-up delay-2" data-category="cyber">
+        <div class="portfolio-image cyber">
+          <span style="filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));">🛡️</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Cybersecurity — Network Hardening</div>
+          <h3>Law Firm Network Security Overhaul</h3>
+          <p>A local law firm had been running on a flat network with no segmentation, no MFA, and default router credentials. Deployed zero-trust segmentation, MFA across all services, new firewall, and a basic SOC monitoring stack.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag">Zero-Trust</span>
+            <span class="tag">MFA Rollout</span>
+            <span class="tag">Firewall Config</span>
+            <span class="tag purple">Network Segmentation</span>
+          </div>
+          <div class="portfolio-result">✅ Full remediation in 2 weeks · Now on monthly MSSP retainer</div>
+        </div>
+      </div>
+
+      <!-- 7: Data Recovery -->
+      <div class="portfolio-card fade-up" data-category="repair">
+        <div class="portfolio-image repair" style="background: linear-gradient(135deg, #1a0d2e, #2d1b69);">
+          <span style="filter: drop-shadow(0 0 20px rgba(124,58,237,0.5));">💾</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Hardware — Data Recovery</div>
+          <h3>Failed RAID Array — Accounting Firm</h3>
+          <p>An accounting firm's RAID-5 array failed during tax season — two drives failed simultaneously. Professional data recovery services quoted $3,500–$8,000. We recovered 98% of data for $650.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag green">RAID Recovery</span>
+            <span class="tag green">Data Recovery</span>
+            <span class="tag">Emergency Response</span>
+          </div>
+          <div class="portfolio-result">✅ 98% data recovered · $7,350 saved vs. alternatives · Same week</div>
+        </div>
+      </div>
+
+      <!-- 8: EV Charger Residential -->
+      <div class="portfolio-card fade-up delay-1" data-category="electrical">
+        <div class="portfolio-image elec">
+          <span style="filter: drop-shadow(0 0 20px rgba(245,158,11,0.5));">🚗</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">Electrical — EV Charging</div>
+          <h3>Residential EV Charger + Panel Upgrade</h3>
+          <p>Homeowner wanted a Level 2 EV charger but had a 100A panel at capacity. Upgraded to 200A service, ran a dedicated 50A circuit, and installed a Level 2 NEMA 14-50 outlet. Permitted and inspected.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag amber">Panel Upgrade</span>
+            <span class="tag amber">EV Charger</span>
+            <span class="tag amber">Permitted</span>
+          </div>
+          <div class="portfolio-result">✅ Full install in 1 day · Passed inspection first time</div>
+        </div>
+      </div>
+
+      <!-- 9: MSP Toolset for Client -->
+      <div class="portfolio-card fade-up delay-2" data-category="msp">
+        <div class="portfolio-image msp">
+          <span style="filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));">📊</span>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-category">MSP — Custom Business Software</div>
+          <h3>Client Ticket &amp; Monitoring Portal</h3>
+          <p>Built a custom web portal for our MSP clients — real-time device monitoring, ticket submission, invoice history, and service plan management. Self-hosted for security, no third-party SaaS dependencies.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
+            <span class="tag">Custom Dev</span>
+            <span class="tag">Web Portal</span>
+            <span class="tag purple">Self-Hosted</span>
+            <span class="tag">API Integration</span>
+          </div>
+          <div class="portfolio-result">✅ Deployed for all MSP clients · Saved $500/mo in SaaS fees</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ────────────────────────────────────────── -->
+<section class="section" style="background: var(--bg-section);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">Client Feedback</div>
+      <h2>What Clients Say After the Work</h2>
+    </div>
+    <div class="grid-3">
+      <div class="testimonial-card fade-up delay-1">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Barney's runs on their MSP plan now. Server's been up solid. When something breaks they're on it before I even notice. Worth every dollar."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">BT</div>
+          <div><div class="author-name">Barney T.</div><div class="author-title">Owner, Barney's Tire Shop</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up delay-2">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Our tax season would have been a disaster without them. Two drives died at once and they recovered almost everything. I can't overstate how grateful we are."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">AC</div>
+          <div><div class="author-name">Amanda C.</div><div class="author-title">Principal, Accounting Firm</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up delay-3">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Two shops told me my MacBook was dead. Irvin found a $4 component that was the problem. Got it back in two days. That level of skill is rare."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">JL</div>
+          <div><div class="author-name">Jessica L.</div><div class="author-title">Graphic Designer, Temecula</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-tag">How It Works</div>
+      <h2>Our Engagement Process</h2>
+    </div>
+    <div style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+      <div class="step fade-up delay-1">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Free Assessment Call (30 min)</h4>
+          <p>We talk through your current setup, pain points, and goals. No pitch — just listening and diagnosing.</p>
+        </div>
+      </div>
+      <div class="step fade-up delay-2">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Proposal &amp; Pricing</h4>
+          <p>We send a clear, itemized quote. No hidden fees. You'll know exactly what you're getting and what it costs.</p>
+        </div>
+      </div>
+      <div class="step fade-up delay-3">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Project Execution</h4>
+          <p>We do the work. You get progress updates. We don't disappear and reappear with a bill — you're in the loop.</p>
+        </div>
+      </div>
+      <div class="step fade-up delay-4">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Handoff &amp; Ongoing Support</h4>
+          <p>You get full documentation of everything we did. For MSP clients, monitoring and support start immediately.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────── -->
+<section class="cta-section section-sm">
+  <div class="container">
+    <div class="cta-inner fade-up">
+      <div class="section-tag">Start Your Project</div>
+      <h2>Your Business Could Be<br>Our Next Success Story</h2>
+      <p>Whether you need a security audit, an MSP plan, a repair, or an electrical job — let's talk about it.</p>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary btn-lg">Start a Conversation</a>
+        <a href="services.html" class="btn btn-secondary btn-lg">View Services &amp; Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo logo" style="margin-bottom: 1rem; display: inline-flex;">
+          <div class="logo-icon" style="width:36px;height:36px;font-size:1rem;border-radius:8px;">⚡</div>
+          <div style="margin-left: 0.6rem; font-weight: 800; font-size: 0.95rem;">Tech &amp; <span style="color: var(--primary);">Electrical</span></div>
+        </a>
+        <p>Full-spectrum IT and electrical solutions for businesses in Temecula and the Inland Empire.</p>
+        <div class="footer-badges">
+          <span class="footer-badge">Security+</span>
+          <span class="footer-badge">MS CompSci</span>
+          <span class="footer-badge">Licensed Electrical</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html#cyber">Cybersecurity</a></li>
+          <li><a href="services.html#msp">MSP / MSSP</a></li>
+          <li><a href="services.html#repair">Computer Repair</a></li>
+          <li><a href="services.html#electrical">Electrical</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+1-951-555-0100">(951) 555-0100</a></li>
+          <li><a href="mailto:info@techelectricalsvc.com">info@techelectricalsvc.com</a></li>
+          <li><a href="#">Temecula, CA 92590</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Tech &amp; Electrical Services LLC. All rights reserved. Temecula, CA.</p>
+      <p style="color: var(--text-muted);">Licensed · Insured · Certified</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+
+  function filterCards(filter, btn) {
+    // Update button styles
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.className = 'btn btn-secondary btn-sm filter-btn';
+    });
+    btn.className = 'btn btn-primary btn-sm filter-btn';
+
+    // Filter cards
+    document.querySelectorAll('.portfolio-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.style.display = 'block';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 50);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; observer.observe(el);
+  });
+</script>
+</body>
+</html>

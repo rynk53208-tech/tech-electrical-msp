@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Tech & Electrical Services Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+        }
+        /* ── Nav ── */
+        .topbar {
+            background: #fff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #e1e4e8;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .brand {
+            display: flex; align-items: center; gap: 0.75rem;
+            font-weight: 700; font-size: 1.1rem; color: #1a1a2e; text-decoration: none;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.1rem;
+        }
+        nav a {
+            color: #666; text-decoration: none; font-size: 0.9rem; margin-left: 1.5rem;
+            padding: 0.25rem 0; border-bottom: 2px solid transparent;
+        }
+        nav a:hover { color: #667eea; }
+        nav a.active { color: #667eea; border-bottom-color: #667eea; }
+        .user-pill {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: #f0f0f5; border-radius: 20px; padding: 0.35rem 0.85rem;
+            font-size: 0.8rem; color: #555;
+        }
+        /* ── Page ── */
+        .main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        .page-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;
+        }
+        .page-header h1 { font-size: 1.5rem; }
+        .period-selector { display: flex; gap: 0.5rem; }
+        .period-btn {
+            padding: 0.45rem 1rem; border-radius: 8px; border: 1px solid #d0d7de;
+            background: #fff; font-size: 0.82rem; cursor: pointer; color: #666;
+        }
+        .period-btn.active { background: #667eea; color: #fff; border-color: #667eea; }
+        /* ── KPI Cards ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: #fff; border-radius: 14px; padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+            position: relative; overflow: hidden;
+        }
+        .kpi-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .kpi-card.green::before { background: linear-gradient(90deg,#22c55e,#16a34a); }
+        .kpi-card.blue::before { background: linear-gradient(90deg,#3b82f6,#1d4ed8); }
+        .kpi-card.amber::before { background: linear-gradient(90deg,#f59e0b,#d97706); }
+        .kpi-card.purple::before { background: linear-gradient(90deg,#8b5cf6,#7c3aed); }
+        .kpi-card.red::before { background: linear-gradient(90deg,#ef4444,#dc2626); }
+        .kpi-label { font-size: 0.78rem; color: #888; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .kpi-value { font-size: 2.1rem; font-weight: 800; color: #1a1a2e; }
+        .kpi-change { font-size: 0.78rem; margin-top: 0.4rem; }
+        .kpi-change.up { color: #22c55e; }
+        .kpi-change.down { color: #ef4444; }
+        .kpi-change.neutral { color: #888; }
+        /* ── Charts Row ── */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 768px) { .charts-row { grid-template-columns: 1fr; } }
+        .card {
+            background: #fff; border-radius: 14px; padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+        }
+        .card-title {
+            font-size: 0.95rem; font-weight: 600; color: #1a1a2e; margin-bottom: 1.25rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-title span { font-size: 0.75rem; color: #888; font-weight: 400; }
+        /* ── Bar Chart ── */
+        .bar-chart { display: flex; align-items: flex-end; gap: 0.6rem; height: 160px; }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+        .bar-wrap { flex: 1; display: flex; align-items: flex-end; width: 100%; }
+        .bar {
+            width: 100%; border-radius: 6px 6px 0 0;
+            transition: height 0.6s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .bar-open { background: linear-gradient(180deg,#3b82f6,#1d4ed8); }
+        .bar-resolved { background: linear-gradient(180deg,#22c55e,#16a34a); }
+        .bar-label { font-size: 0.65rem; color: #888; text-align: center; white-space: nowrap; }
+        .bar-val { font-size: 0.72rem; color: #555; font-weight: 600; }
+        .bar-legend { display: flex; gap: 1rem; margin-bottom: 0.75rem; }
+        .bar-legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: #555; }
+        .bar-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+        /* ── Donut Chart ── */
+        .donut-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto; }
+        svg.donut { width: 140px; height: 140px; transform: rotate(-90deg); }
+        .donut-center {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .donut-center .big { font-size: 1.6rem; font-weight: 800; color: #1a1a2e; }
+        .donut-center .small { font-size: 0.7rem; color: #888; }
+        .donut-legend { margin-top: 1rem; }
+        .donut-legend-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.4rem 0; border-bottom: 1px solid #f0f0f0; font-size: 0.8rem;
+        }
+        .donut-legend-item:last-child { border-bottom: none; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 0.5rem; }
+        /* ── Full-width row ── */
+        .full-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+        @media (max-width: 768px) { .full-row { grid-template-columns: 1fr; } }
+        /* ── Response Time ── */
+        .rt-bars { display: flex; flex-direction: column; gap: 0.8rem; }
+        .rt-row { display: flex; align-items: center; gap: 0.75rem; }
+        .rt-label { width: 80px; font-size: 0.78rem; color: #666; }
+        .rt-bar-wrap { flex: 1; background: #f0f0f5; border-radius: 20px; height: 10px; }
+        .rt-bar { height: 10px; border-radius: 20px; }
+        .rt-high { background: linear-gradient(90deg,#ef4444,#dc2626); }
+        .rt-medium { background: linear-gradient(90deg,#f59e0b,#d97706); }
+        .rt-low { background: linear-gradient(90deg,#22c55e,#16a34a); }
+        .rt-val { font-size: 0.78rem; color: #555; font-weight: 600; width: 40px; text-align: right; }
+        /* ── Recent Table ── */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.85rem 1rem; text-align: left; font-size: 0.85rem; }
+        th { color: #888; font-weight: 500; border-bottom: 1px solid #e1e4e8; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { border-bottom: 1px solid #f5f5f5; color: #333; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+        }
+        .pill-resolved { background: #d1fae5; color: #059669; }
+        .pill-progress { background: #fef3c7; color: #d97706; }
+        .pill-open { background: #dbeafe; color: #1d4ed8; }
+        /* ── Export Row ── */
+        .export-row { display: flex; gap: 0.75rem; justify-content: flex-end; margin-bottom: 1.25rem; }
+        .export-btn {
+            padding: 0.55rem 1.1rem; border-radius: 8px; border: 1px solid #d0d7de;
+            background: #fff; cursor: pointer; font-size: 0.82rem; color: #555;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .export-btn:hover { background: #f5f7fa; border-color: #aaa; }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        Tech &amp; Electrical
+    </a>
+    <nav>
+        <a href="client-dashboard.html">Dashboard</a>
+        <a href="tickets.html">Tickets</a>
+        <a href="reporting.html" class="active">Reports</a>
+    </nav>
+    <div class="user-pill">👤 Client View</div>
+</header>
+
+<main class="main">
+    <div class="page-header">
+        <h1>📊 Service Reports</h1>
+        <div class="period-selector">
+            <button class="period-btn" onclick="setPeriod('week',this)">7 days</button>
+            <button class="period-btn active" onclick="setPeriod('month',this)">30 days</button>
+            <button class="period-btn" onclick="setPeriod('quarter',this)">90 days</button>
+            <button class="period-btn" onclick="setPeriod('year',this)">12 months</button>
+        </div>
+    </div>
+
+    <!-- Export -->
+    <div class="export-row">
+        <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="export-btn" onclick="window.print()">🖨 Print</button>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <!-- Charts Row: Tickets over time + Breakdown -->
+    <div class="charts-row">
+        <div class="card">
+            <div class="card-title">
+                Ticket Volume <span id="barChartSubtitle">by week (last 30 days)</span>
+            </div>
+            <div class="bar-legend">
+                <div class="bar-legend-item">
+                    <div class="bar-legend-dot" style="background:#3b82f6"></div> Opened
+                </div>
+                <div class="bar-legend-item">
+                    <div class="bar-legend-dot" style="background:#22c55e"></div> Resolved
+                </div>
+            </div>
+            <div class="bar-chart" id="barChart"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Ticket Breakdown <span>by type</span></div>
+            <div class="donut-wrap">
+                <svg class="donut" viewBox="0 0 42 42" id="donutSvg"></svg>
+                <div class="donut-center">
+                    <div class="big" id="donutTotal">0</div>
+                    <div class="small">total</div>
+                </div>
+            </div>
+            <div class="donut-legend" id="donutLegend"></div>
+        </div>
+    </div>
+
+    <!-- Full row: Response times + Invoice summary -->
+    <div class="full-row">
+        <div class="card">
+            <div class="card-title">Avg Response Time <span>by priority</span></div>
+            <div class="rt-bars" id="rtBars"></div>
+            <div style="margin-top:1.25rem; font-size:0.78rem; color:#888; border-top:1px solid #f0f0f0; padding-top:1rem;">
+                SLA targets: High &lt;2h • Medium &lt;8h • Low &lt;24h
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Invoice Summary <span id="invoicePeriodLabel"></span></div>
+            <div id="invoiceSummary"></div>
+        </div>
+    </div>
+
+    <!-- Recent Resolved Tickets -->
+    <div class="card">
+        <div class="card-title">Recently Resolved Tickets <span>last 10</span></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket #</th>
+                    <th>Issue</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Resolved In</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="resolvedTable"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+// ── Period Data ────────────────────────────────────────
+const data = {
+    month: {
+        kpis: [
+            { label:'Tickets Opened', value:18, change:'+3 vs prev', dir:'down' },
+            { label:'Tickets Resolved', value:14, change:'78% resolution', dir:'up', color:'green' },
+            { label:'Avg Response', value:'3.2h', change:'-0.8h vs prev', dir:'up', color:'green' },
+            { label:'Avg Resolution', value:'1.4d', change:'-0.3d vs prev', dir:'up', color:'green' },
+            { label:'Satisfaction', value:'4.8★', change:'from 4.6 last mo', dir:'up', color:'purple' },
+        ],
+        bars: [
+            { label:'Wk 1', open:5, resolved:3 },
+            { label:'Wk 2', open:4, resolved:4 },
+            { label:'Wk 3', open:6, resolved:5 },
+            { label:'Wk 4', open:3, resolved:2 },
+        ],
+        barSubtitle: 'by week (last 30 days)',
+        invoiceLabel: 'this month',
+        invoices: { billed:3250, collected:2000, outstanding:1250, overdue:275 },
+    },
+    week: {
+        kpis: [
+            { label:'Tickets Opened', value:6, change:'+1 vs prev week', dir:'down' },
+            { label:'Tickets Resolved', value:4, change:'67% resolution', dir:'up', color:'green' },
+            { label:'Avg Response', value:'2.8h', change:'-0.4h vs prev', dir:'up', color:'green' },
+            { label:'Avg Resolution', value:'1.1d', change:'on track', dir:'neutral', color:'blue' },
+            { label:'Satisfaction', value:'5.0★', change:'from 3 reviews', dir:'up', color:'purple' },
+        ],
+        bars: [
+            { label:'Mon', open:1, resolved:0 },
+            { label:'Tue', open:2, resolved:1 },
+            { label:'Wed', open:1, resolved:2 },
+            { label:'Thu', open:2, resolved:1 },
+            { label:'Fri', open:0, resolved:0 },
+        ],
+        barSubtitle: 'by day (last 7 days)',
+        invoiceLabel: 'this week',
+        invoices: { billed:850, collected:450, outstanding:400, overdue:0 },
+    },
+    quarter: {
+        kpis: [
+            { label:'Tickets Opened', value:54, change:'+8 vs prev Q', dir:'down' },
+            { label:'Tickets Resolved', value:48, change:'89% resolution', dir:'up', color:'green' },
+            { label:'Avg Response', value:'3.5h', change:'-1.2h vs prev', dir:'up', color:'green' },
+            { label:'Avg Resolution', value:'1.6d', change:'-0.5d vs prev', dir:'up', color:'green' },
+            { label:'Satisfaction', value:'4.7★', change:'from 22 reviews', dir:'up', color:'purple' },
+        ],
+        bars: [
+            { label:'Jan', open:18, resolved:15 },
+            { label:'Feb', open:16, resolved:16 },
+            { label:'Mar', open:20, resolved:17 },
+        ],
+        barSubtitle: 'by month (last 90 days)',
+        invoiceLabel: 'this quarter',
+        invoices: { billed:9800, collected:8200, outstanding:1600, overdue:550 },
+    },
+    year: {
+        kpis: [
+            { label:'Tickets Opened', value:203, change:'+31 vs prev yr', dir:'down' },
+            { label:'Tickets Resolved', value:188, change:'93% resolution', dir:'up', color:'green' },
+            { label:'Avg Response', value:'4.1h', change:'-2.3h vs prev', dir:'up', color:'green' },
+            { label:'Avg Resolution', value:'2.0d', change:'-0.8d vs prev', dir:'up', color:'green' },
+            { label:'Satisfaction', value:'4.6★', change:'from 89 reviews', dir:'up', color:'purple' },
+        ],
+        bars: [
+            { label:'Q1', open:54, resolved:48 },
+            { label:'Q2', open:48, resolved:45 },
+            { label:'Q3', open:52, resolved:50 },
+            { label:'Q4', open:49, resolved:45 },
+        ],
+        barSubtitle: 'by quarter (last 12 months)',
+        invoiceLabel: 'this year',
+        invoices: { billed:38400, collected:34100, outstanding:4300, overdue:1200 },
+    }
+};
+
+const breakdown = [
+    { type:'Network', count:7, color:'#3b82f6' },
+    { type:'Security', count:4, color:'#8b5cf6' },
+    { type:'Hardware', count:3, color:'#f59e0b' },
+    { type:'Electrical', count:2, color:'#ef4444' },
+    { type:'Software', count:2, color:'#22c55e' },
+];
+
+const responseTimes = [
+    { label:'High', pct:70, val:'1.4h', cls:'rt-high' },
+    { label:'Medium', pct:48, val:'3.8h', cls:'rt-medium' },
+    { label:'Low', pct:22, val:'5.3h', cls:'rt-low' },
+];
+
+const resolvedTickets = [
+    { id:'TKT-0140', title:'SSL certificate renewal', type:'Software', priority:'Low', time:'4h', status:'Resolved' },
+    { id:'TKT-0139', title:'Security scan update', type:'Security', priority:'Medium', time:'1.5d', status:'Resolved' },
+    { id:'TKT-0138', title:'Server migration to new rack', type:'Network', priority:'High', time:'2d', status:'Closed' },
+    { id:'TKT-0137', title:'Backup policy review', type:'Software', priority:'Medium', time:'3h', status:'Resolved' },
+    { id:'TKT-0136', title:'Electrical panel labeling', type:'Electrical', priority:'Low', time:'1d', status:'Resolved' },
+    { id:'TKT-0135', title:'Malware scan & remediation', type:'Security', priority:'High', time:'5h', status:'Resolved' },
+    { id:'TKT-0134', title:'WiFi dead zone assessment', type:'Network', priority:'Medium', time:'2d', status:'Resolved' },
+    { id:'TKT-0133', title:'Workstation RAM upgrade x3', type:'Hardware', priority:'Low', time:'6h', status:'Closed' },
+];
+
+let currentPeriod = 'month';
+
+// ── KPI Render ─────────────────────────────────────────
+const kpiColors = { green:'green', blue:'blue', amber:'amber', purple:'purple', red:'red' };
+function renderKPIs(d) {
+    const colors = ['blue','green','green','green','purple'];
+    document.getElementById('kpiGrid').innerHTML = d.kpis.map((k,i) => `
+        <div class="kpi-card ${colors[i]}">
+            <div class="kpi-label">${k.label}</div>
+            <div class="kpi-value">${k.value}</div>
+            <div class="kpi-change ${k.dir==='up'?'up':k.dir==='down'?'down':'neutral'}">
+                ${k.dir==='up'?'↑':k.dir==='down'?'↓':'—'} ${k.change}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ── Bar Chart ──────────────────────────────────────────
+function renderBars(d) {
+    const max = Math.max(...d.bars.map(b => Math.max(b.open, b.resolved)), 1);
+    document.getElementById('barChartSubtitle').textContent = d.barSubtitle;
+    document.getElementById('barChart').innerHTML = d.bars.map(b => `
+        <div class="bar-col">
+            <div class="bar-val">${b.open}</div>
+            <div class="bar-wrap">
+                <div class="bar bar-open" style="height:${Math.max((b.open/max)*120,4)}px"></div>
+            </div>
+            <div class="bar-wrap" style="margin-top:2px">
+                <div class="bar bar-resolved" style="height:${Math.max((b.resolved/max)*120,4)}px"></div>
+            </div>
+            <div class="bar-label">${b.label}</div>
+        </div>
+    `).join('');
+}
+
+// ── Donut Chart ────────────────────────────────────────
+function renderDonut() {
+    const total = breakdown.reduce((s,b) => s+b.count, 0);
+    document.getElementById('donutTotal').textContent = total;
+    const r = 15.9155; const circ = 2 * Math.PI * r;
+    let offset = 0;
+    const slices = breakdown.map(b => {
+        const pct = b.count / total;
+        const dash = pct * circ;
+        const slice = { ...b, dash, offset };
+        offset += dash;
+        return slice;
+    });
+    document.getElementById('donutSvg').innerHTML = slices.map(s => `
+        <circle cx="21" cy="21" r="${r}" fill="none" stroke="${s.color}" stroke-width="5"
+            stroke-dasharray="${s.dash} ${circ - s.dash}"
+            stroke-dashoffset="${-s.offset}" />
+    `).join('');
+    document.getElementById('donutLegend').innerHTML = breakdown.map(b => `
+        <div class="donut-legend-item">
+            <span><span class="dot" style="background:${b.color}"></span>${b.type}</span>
+            <span style="font-weight:600">${b.count}</span>
+        </div>
+    `).join('');
+}
+
+// ── Response Times ─────────────────────────────────────
+function renderRT() {
+    document.getElementById('rtBars').innerHTML = responseTimes.map(r => `
+        <div class="rt-row">
+            <div class="rt-label">${r.label}</div>
+            <div class="rt-bar-wrap">
+                <div class="rt-bar ${r.cls}" style="width:${r.pct}%"></div>
+            </div>
+            <div class="rt-val">${r.val}</div>
+        </div>
+    `).join('');
+}
+
+// ── Invoice Summary ────────────────────────────────────
+function renderInvoices(d) {
+    const inv = d.invoices;
+    document.getElementById('invoicePeriodLabel').textContent = d.invoiceLabel;
+    document.getElementById('invoiceSummary').innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+            <div style="background:#f0fdf4; border-radius:10px; padding:1rem;">
+                <div style="font-size:0.75rem;color:#059669;font-weight:600;margin-bottom:0.35rem;">TOTAL BILLED</div>
+                <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e;">$${inv.billed.toLocaleString()}</div>
+            </div>
+            <div style="background:#eff6ff; border-radius:10px; padding:1rem;">
+                <div style="font-size:0.75rem;color:#1d4ed8;font-weight:600;margin-bottom:0.35rem;">COLLECTED</div>
+                <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e;">$${inv.collected.toLocaleString()}</div>
+            </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:0.75rem; background:#f9fafb; border-radius:8px; font-size:0.85rem;">
+            <span style="color:#555;">Outstanding</span>
+            <span style="font-weight:600;color:#f59e0b;">$${inv.outstanding.toLocaleString()}</span>
+        </div>
+        ${inv.overdue > 0 ? `
+        <div style="display:flex; justify-content:space-between; padding:0.75rem; background:#fff5f5; border-radius:8px; font-size:0.85rem; margin-top:0.5rem;">
+            <span style="color:#ef4444;">⚠ Overdue</span>
+            <span style="font-weight:600;color:#ef4444;">$${inv.overdue.toLocaleString()}</span>
+        </div>` : `
+        <div style="display:flex; justify-content:space-between; padding:0.75rem; background:#f0fdf4; border-radius:8px; font-size:0.85rem; margin-top:0.5rem;">
+            <span style="color:#059669;">✓ No overdue invoices</span>
+            <span style="font-weight:600;color:#059669;">$0</span>
+        </div>`}
+    `;
+}
+
+// ── Resolved Table ─────────────────────────────────────
+function renderResolved() {
+    const pillMap = { Resolved:'pill-resolved', Closed:'pill-resolved', 'In Progress':'pill-progress', Open:'pill-open' };
+    document.getElementById('resolvedTable').innerHTML = resolvedTickets.map(t => `
+        <tr>
+            <td style="font-family:monospace;color:#667eea">${t.id}</td>
+            <td>${t.title}</td>
+            <td style="color:#666">${t.type}</td>
+            <td><span style="font-weight:600;color:${t.priority==='High'?'#ef4444':t.priority==='Medium'?'#f59e0b':'#22c55e'}">${t.priority}</span></td>
+            <td>${t.time}</td>
+            <td><span class="status-pill ${pillMap[t.status]||'pill-open'}">${t.status}</span></td>
+        </tr>
+    `).join('');
+}
+
+// ── Period Toggle ──────────────────────────────────────
+function setPeriod(period, btn) {
+    currentPeriod = period;
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const d = data[period];
+    renderKPIs(d);
+    renderBars(d);
+    renderInvoices(d);
+}
+
+// ── Export CSV ─────────────────────────────────────────
+function exportCSV() {
+    const rows = [['Ticket','Issue','Type','Priority','Resolution Time','Status']];
+    resolvedTickets.forEach(t => rows.push([t.id, t.title, t.type, t.priority, t.time, t.status]));
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type:'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `ticket-report-${currentPeriod}.csv`;
+    a.click();
+}
+
+// ── Init ───────────────────────────────────────────────
+renderKPIs(data.month);
+renderBars(data.month);
+renderDonut();
+renderRT();
+renderInvoices(data.month);
+renderResolved();
+</script>
+</body>
+</html>

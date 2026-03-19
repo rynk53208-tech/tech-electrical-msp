@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech & Electrical Services - Quick Reference Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.3;
+            color: #1a1a1a;
+            background: white;
+            padding: 0;
+        }
+        
+        .page {
+            width: 8.5in;
+            height: 11in;
+            margin: 0 auto;
+            padding: 0.4in;
+            background: white;
+            box-shadow: 0 0 0 1px #ddd;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2in;
+        }
+        
+        .header {
+            border-bottom: 3px solid #1a1a1a;
+            padding-bottom: 0.15in;
+            margin-bottom: 0.15in;
+        }
+        
+        .header h1 {
+            font-size: 1.4em;
+            margin: 0;
+            color: #1a1a1a;
+        }
+        
+        .header p {
+            font-size: 0.75em;
+            color: #555;
+            margin: 0.05in 0 0;
+        }
+        
+        .contact-info {
+            font-size: 0.8em;
+            background: #f5f5f5;
+            padding: 0.1in 0.15in;
+            border-radius: 3px;
+            margin-bottom: 0.1in;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.1in;
+        }
+        
+        .contact-info div {
+            font-size: 0.75em;
+        }
+        
+        .section {
+            margin-bottom: 0.2in;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 0.85em;
+            font-weight: bold;
+            background: #e8e8e8;
+            padding: 0.05in 0.1in;
+            margin-bottom: 0.08in;
+            border-left: 3px solid #1a1a1a;
+        }
+        
+        .section-content {
+            font-size: 0.75em;
+            line-height: 1.25;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.1in;
+            font-size: 0.75em;
+        }
+        
+        table th {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 0.05in 0.08in;
+            text-align: left;
+            font-weight: bold;
+            font-size: 0.75em;
+        }
+        
+        table td {
+            border: 1px solid #e0e0e0;
+            padding: 0.05in 0.08in;
+        }
+        
+        table tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.15in;
+        }
+        
+        .column {
+            min-width: 0;
+        }
+        
+        .quick-checklist {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 0.1in 0.12in;
+            border-radius: 3px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.06in;
+            font-size: 0.7em;
+        }
+        
+        .checkbox {
+            width: 0.12in;
+            height: 0.12in;
+            border: 1px solid #999;
+            margin-right: 0.08in;
+            margin-top: 0.02in;
+            flex-shrink: 0;
+        }
+        
+        .service-areas {
+            font-size: 0.75em;
+            background: #f9f9f9;
+            padding: 0.1in 0.12in;
+            border-radius: 3px;
+            columns: 2;
+            column-gap: 0.15in;
+        }
+        
+        .service-areas li {
+            margin-bottom: 0.03in;
+            break-inside: avoid;
+        }
+        
+        ul {
+            margin-left: 0.15in;
+        }
+        
+        li {
+            margin-bottom: 0.03in;
+        }
+        
+        .rate-note {
+            font-size: 0.7em;
+            color: #666;
+            font-style: italic;
+            margin-top: 0.05in;
+        }
+        
+        .footer {
+            border-top: 1px solid #ddd;
+            padding-top: 0.08in;
+            margin-top: 0.1in;
+            font-size: 0.65em;
+            color: #888;
+            text-align: center;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                padding: 0.3in;
+                box-shadow: none;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <div class="header">
+            <h1>Tech & Electrical Services</h1>
+            <p>Irvin Avitia | Temecula, CA | Southern California MSP</p>
+        </div>
+        
+        <!-- Contact Info -->
+        <div class="contact-info">
+            <div><strong>Phone:</strong> _______________</div>
+            <div><strong>Email:</strong> _______________</div>
+            <div><strong>License:</strong> California Licensed</div>
+            <div><strong>Hours:</strong> M-F 8am-6pm PST</div>
+        </div>
+        
+        <!-- Pricing Summary -->
+        <div class="section">
+            <div class="section-title">📊 QUICK PRICING</div>
+            <div class="section-content">
+                <table>
+                    <tr>
+                        <th>Service Category</th>
+                        <th>Rate</th>
+                    </tr>
+                    <tr>
+                        <td>Standard Labor</td>
+                        <td>$125/hr</td>
+                    </tr>
+                    <tr>
+                        <td>Installation Labor</td>
+                        <td>$95/hr</td>
+                    </tr>
+                    <tr>
+                        <td>After-Hours/Emergency</td>
+                        <td>1.5x Rate</td>
+                    </tr>
+                    <tr>
+                        <td>Diagnostic Fee</td>
+                        <td>$75 (waived w/ repair)</td>
+                    </tr>
+                    <tr>
+                        <td>MSP (Standard, up to 50 endpoints)</td>
+                        <td>$500–$2,000/mo</td>
+                    </tr>
+                    <tr>
+                        <td>Micro Soldering / Board Repair</td>
+                        <td>$75–$150/hr</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Common Repairs -->
+        <div class="two-column">
+            <div class="section column">
+                <div class="section-title">💻 COMMON IT REPAIRS</div>
+                <div class="section-content">
+                    <table>
+                        <tr>
+                            <th>Service</th>
+                            <th>Price</th>
+                        </tr>
+                        <tr>
+                            <td>Virus/Malware Removal</td>
+                            <td>$125–$175</td>
+                        </tr>
+                        <tr>
+                            <td>Data Recovery (standard)</td>
+                            <td>$150–$300</td>
+                        </tr>
+                        <tr>
+                            <td>System Optimization</td>
+                            <td>$100–$150</td>
+                        </tr>
+                        <tr>
+                            <td>HDD/SSD Replacement</td>
+                            <td>$125 + parts</td>
+                        </tr>
+                        <tr>
+                            <td>RAM Upgrade</td>
+                            <td>$75 + parts</td>
+                        </tr>
+                        <tr>
+                            <td>Screen Replacement</td>
+                            <td>$125–$250 + parts</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="section column">
+                <div class="section-title">⚡ COMMON ELECTRICAL</div>
+                <div class="section-content">
+                    <table>
+                        <tr>
+                            <th>Service</th>
+                            <th>Price</th>
+                        </tr>
+                        <tr>
+                            <td>Standard 120V Outlet</td>
+                            <td>$100–$110</td>
+                        </tr>
+                        <tr>
+                            <td>GFCI Outlet</td>
+                            <td>$120–$135</td>
+                        </tr>
+                        <tr>
+                            <td>Light Switch Replace</td>
+                            <td>$75–$95</td>
+                        </tr>
+                        <tr>
+                            <td>Ceiling Fan Install</td>
+                            <td>$150–$200</td>
+                        </tr>
+                        <tr>
+                            <td>Motion Sensor Install</td>
+                            <td>$95–$125</td>
+                        </tr>
+                        <tr>
+                            <td>240V Outlet (NEMA 14-50)</td>
+                            <td>$190–$230</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Checklist & Service Areas -->
+        <div class="two-column">
+            <div class="section column">
+                <div class="section-title">☑️ FIELD TECH CHECKLIST</div>
+                <div class="quick-checklist">
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Confirm customer name & address</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Photo documentation (before/after)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Test all work before leaving</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Get customer sign-off on invoice</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Collect payment / note terms</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Leave warranty info with customer</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Log all parts used & labor hours</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox"></div>
+                        <span>Report back to dispatch</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section column">
+                <div class="section-title">🗺️ SERVICE AREAS</div>
+                <ul class="service-areas">
+                    <li>Temecula, CA</li>
+                    <li>Murrieta</li>
+                    <li>Menifee</li>
+                    <li>Winchester</li>
+                    <li>Wildomar</li>
+                    <li>Sun City</li>
+                    <li>Fallbrook</li>
+                    <li>Hemet</li>
+                    <li>Lake Elsinore</li>
+                    <li>Perris</li>
+                    <li>Riverside (select areas)</li>
+                    <li>San Diego County (North)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Common Fixes Quick Reference -->
+        <div class="section">
+            <div class="section-title">🔧 QUICK FIXES (Field Toolkit)</div>
+            <div class="section-content">
+                <strong>Software Issues:</strong>
+                <ul>
+                    <li><strong>Temp file cleanup:</strong> Clear /tmp, ~/.cache, browser caches</li>
+                    <li><strong>Network reset:</strong> Flush DNS, restart NetworkManager, renew DHCP</li>
+                    <li><strong>Malware scan:</strong> Run ClamAV quick scan on /home & /tmp</li>
+                    <li><strong>Broken packages:</strong> dpkg --configure -a, apt-get install -f</li>
+                    <li><strong>Permission fixes:</strong> Fix home dir perms (chown/chmod), SSH keys (600)</li>
+                </ul>
+            </div>
+            <div class="rate-note">
+                💡 <strong>Pro Tip:</strong> Keep quick-fixes.sh on USB for onsite Linux/Mac diagnostic runs. Always get customer consent before running scripts.
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <strong>Tech & Electrical Services</strong> | Licensed & Insured | Quote provided by field tech on __________ | Customer name: ____________________
+        </div>
+    </div>
+</body>
+</html>

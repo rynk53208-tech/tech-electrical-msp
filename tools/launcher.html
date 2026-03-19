@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech & Electrical - Tool Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tool Card */
+        .tool-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tool-card:hover::before {
+            left: 100%;
+        }
+
+        .tool-card:hover {
+            border-color: var(--primary);
+            background: var(--bg-light);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+        }
+
+        .tool-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .tool-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .tool-card .status {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 15px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .tool-card .status.offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-run {
+            flex: 1;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-run:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            transform: scale(1.02);
+        }
+
+        .btn-run:active {
+            transform: scale(0.98);
+        }
+
+        .btn-info {
+            padding: 10px 14px;
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-info:hover {
+            color: var(--text);
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale(1.02);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: var(--bg-light);
+            color: var(--text);
+            border-color: var(--primary);
+        }
+
+        /* Output Area */
+        .output-area {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #10b981;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .output-area.active {
+            display: block;
+        }
+
+        .output-area.error {
+            color: #ef4444;
+        }
+
+        .output-area.success {
+            color: #10b981;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .container {
+                padding: 20px 10px;
+            }
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        .status-badge.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: var(--text);
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            max-width: 400px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Tech & Electrical - Tool Launcher</h1>
+            <p>Professional MSP Toolkit for Tech & Electrical Services</p>
+        </header>
+
+        <nav>
+            <button class="nav-btn active" onclick="filterTools('all')">All Tools</button>
+            <button class="nav-btn" onclick="filterTools('network')">Network</button>
+            <button class="nav-btn" onclick="filterTools('security')">Security</button>
+            <button class="nav-btn" onclick="filterTools('admin')">Admin</button>
+        </nav>
+
+        <div class="tools-grid" id="toolsGrid">
+            <!-- Tools will be dynamically inserted here -->
+        </div>
+
+        <footer>
+            <p>Tech & Electrical Services LLC © 2024</p>
+            <p>Server Status: <span class="status-badge success"><span class="status-dot"></span>Active</span></p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tool Configuration</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="toolForm" onsubmit="executeTool(event)">
+                <div id="formFields">
+                    <!-- Form fields will be dynamically inserted -->
+                </div>
+
+                <div id="outputArea" class="output-area">
+                    <div id="outputContent"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit" id="submitBtn">Run Tool</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tool Configuration Database
+        const TOOLS = [
+            {
+                id: 'network-mapper',
+                name: 'Network Mapper',
+                icon: '🗺️',
+                category: 'network',
+                status: 'ready',
+                description: 'Scan and map network devices, IPs, and connectivity.',
+                help: 'Maps your network topology and generates a report.',
+                fields: [
+                    { name: 'subnet', label: 'Network Subnet (e.g., 192.168.1.0/24)', type: 'text', required: true, placeholder: '192.168.1.0/24' },
+                    { name: 'timeout', label: 'Scan Timeout (seconds)', type: 'number', required: false, value: 10 }
+                ],
+                script: '/Projects/network-mapper/netmapper.py'
+            },
+            {
+                id: 'ssl-monitor',
+                name: 'SSL Monitor',
+                icon: '🔐',
+                category: 'security',
+                status: 'ready',
+                description: 'Monitor SSL/TLS certificate expiration dates and health.',
+                help: 'Tracks certificate expiry and alerts on issues.',
+                fields: [
+                    { name: 'domain', label: 'Domain to Check', type: 'text', required: true, placeholder: 'example.com' },
+                    { name: 'alert_days', label: 'Alert Days Before Expiry', type: 'number', required: false, value: 30 }
+                ],
+                script: 'monitor_check.py'
+            },
+            {
+                id: 'ticket-tracker',
+                name: 'Ticket Tracker',
+                icon: '🎫',
+                category: 'admin',
+                status: 'ready',
+                description: 'Create and manage support tickets with full tracking.',
+                help: 'Simple ticket system for tracking issues and requests.',
+                fields: [
+                    { name: 'client', label: 'Client Name', type: 'text', required: true, placeholder: 'Acme Corp' },
+                    { name: 'title', label: 'Ticket Title', type: 'text', required: true, placeholder: 'Server Down' },
+                    { name: 'description', label: 'Description', type: 'textarea', required: true, placeholder: 'Describe the issue...' },
+                    { name: 'priority', label: 'Priority', type: 'select', required: true, options: ['Low', 'Medium', 'High', 'Critical'] }
+                ],
+                script: '/Projects/tools/ticket-tracker.py'
+            },
+            {
+                id: 'invoice-generator',
+                name: 'Invoice Generator',
+                icon: '📄',
+                category: 'admin',
+                status: 'ready',
+                description: 'Generate professional invoices for clients.',
+                help: 'Create and manage invoices with automatic numbering.',
+                fields: [
+                    { name: 'client', label: 'Client Name', type: 'text', required: true, placeholder: 'Acme Corp' },
+                    { name: 'amount', label: 'Invoice Amount ($)', type: 'number', required: true, placeholder: '1500.00', step: '0.01' },
+                    { name: 'description', label: 'Services Description', type: 'textarea', required: true, placeholder: 'IT support services...' },
+                    { name: 'due_days', label: 'Due in (days)', type: 'number', required: false, value: 30 }
+                ],
+                script: 'invoice_generator.py'
+            },
+            {
+                id: 'pricing-calculator',
+                name: 'Pricing Calculator',
+                icon: '💰',
+                category: 'admin',
+                status: 'ready',
+                description: 'Calculate service pricing and generate quotes.',
+                help: 'Interactive tool for creating quotes and pricing models.',
+                fields: [
+                    { name: 'service', label: 'Service Type', type: 'select', required: true, options: ['Hourly Support', 'Monthly MSP', 'One-Time Consultation', 'Custom'] },
+                    { name: 'hours_or_units', label: 'Hours / Units', type: 'number', required: true, placeholder: '8' },
+                    { name: 'rate', label: 'Rate ($ per hour/unit)', type: 'number', required: true, placeholder: '150', step: '0.01' }
+                ],
+                script: '/Projects/tools/pricing-calculator.html'
+            },
+            {
+                id: 'client-portal',
+                name: 'Client Portal',
+                icon: '🌐',
+                category: 'admin',
+                status: 'ready',
+                description: 'Access the client portal for service requests.',
+                help: 'Client-facing portal for ticket submission and updates.',
+                fields: [
+                    { name: 'client_id', label: 'Client ID / Name', type: 'text', required: true, placeholder: 'CLIENT-001' }
+                ],
+                script: 'index.html'
+            },
+            {
+                id: 'dns-checker',
+                name: 'DNS Checker',
+                icon: '📍',
+                category: 'network',
+                status: 'ready',
+                description: 'Check DNS records and resolve hostnames.',
+                help: 'Verify DNS configuration and troubleshoot resolution.',
+                fields: [
+                    { name: 'hostname', label: 'Hostname / Domain', type: 'text', required: true, placeholder: 'example.com' },
+                    { name: 'record_type', label: 'Record Type', type: 'select', required: false, options: ['A', 'AAAA', 'MX', 'TXT', 'CNAME', 'NS', 'SOA'] }
+                ],
+                script: 'dns_checker.py'
+            },
+            {
+                id: 'password-policy',
+                name: 'Password Policy Generator',
+                icon: '🔑',
+                category: 'security',
+                status: 'ready',
+                description: 'Generate security policies and strong passwords.',
+                help: 'Create password policies and generate secure passwords.',
+                fields: [
+                    { name: 'policy_type', label: 'Policy Type', type: 'select', required: true, options: ['Corporate', 'Startup', 'Government', 'Custom'] },
+                    { name: 'password_length', label: 'Min Password Length', type: 'number', required: false, value: 12, min: 8, max: 128 },
+                    { name: 'generate_sample', label: 'Generate Sample Passwords?', type: 'select', required: false, options: ['No', 'Yes'] }
+                ],
+                script: 'password_policy_generator.py'
+            },
+            {
+                id: 'onboarding-form',
+                name: 'Client Onboarding',
+                icon: '👋',
+                category: 'admin',
+                status: 'ready',
+                description: 'New client intake and onboarding form.',
+                help: 'Capture client details, services needed, and start onboarding workflow.',
+                fields: [
+                    { name: 'company', label: 'Company Name', type: 'text', required: true, placeholder: 'Acme Corp' },
+                    { name: 'contact_name', label: 'Contact Name', type: 'text', required: true, placeholder: 'John Smith' },
+                    { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'john@acme.com' },
+                    { name: 'phone', label: 'Phone', type: 'text', required: false, placeholder: '(555) 123-4567' },
+                    { name: 'employees', label: 'Number of Employees', type: 'select', required: true, options: ['1-10', '11-25', '26-50', '51-100', '100+'] },
+                    { name: 'services', label: 'Services Needed', type: 'multiselect', required: true, options: ['Managed IT', 'Cybersecurity', 'Cloud Services', 'Backup/DR', 'Network Support', 'Electrical'] },
+                    { name: 'start_date', label: 'Desired Start Date', type: 'date', required: true }
+                ],
+                script: '/tools/onboarding-form.html'
+            },
+            {
+                id: 'email-outreach',
+                name: 'Email Outreach',
+                icon: '📧',
+                category: 'sales',
+                status: 'ready',
+                description: 'Generate outreach email sequences for leads.',
+                help: 'Create 4-wave email sequence with subject lines and follow-ups.',
+                fields: [
+                    { name: ' prospect_name', label: 'Prospect Name', type: 'text', required: true, placeholder: 'John' },
+                    { name: 'company_name', label: 'Company', type: 'text', required: true, placeholder: 'Acme Corp' },
+                    { name: 'industry', label: 'Industry', type: 'select', required: true, options: ['Healthcare', 'Legal', 'Manufacturing', 'Retail', 'Professional Services', 'Other'] },
+                    { name: 'pain_point', label: 'Primary Pain Point', type: 'select', required: false, options: ['Security Concerns', 'Downtime', 'Slow Network', 'Outdated Systems', 'Compliance', 'Not Sure'] }
+                ],
+                script: '/templates/email-outreach/'
+            },
+            {
+                id: 'monthly-report',
+                name: 'Monthly Report',
+                icon: '📊',
+                category: 'admin',
+                status: 'ready',
+                description: 'Generate client monthly service reports.',
+                help: 'Create professional monthly reports showing value delivered.',
+                fields: [
+                    { name: 'client_name', label: 'Client Name', type: 'text', required: true, placeholder: 'Acme Corp' },
+                    { name: 'month', label: 'Report Month', type: 'select', required: true, options: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] },
+                    { name: 'tickets_resolved', label: 'Tickets Resolved', type: 'number', required: true, placeholder: '15' },
+                    { name: 'uptime', label: 'Uptime %', type: 'number', required: true, placeholder: '99.9', step: '0.1' },
+                    { name: 'sla_compliance', label: 'SLA Compliance %', type: 'number', required: true, placeholder: '98', step: '0.1' }
+                ],
+                script: '/templates/monthly-report.html'
+            }
+        ];
+
+        let currentTool = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools(TOOLS);
+        });
+
+        // Render tools grid
+        function renderTools(tools) {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = tools.map(tool => `
+                <div class="tool-card" onclick="openModal('${tool.id}')">
+                    <div class="tool-icon">${tool.icon}</div>
+                    <h3>${tool.name}</h3>
+                    <p>${tool.description}</p>
+                    <div class="status">${tool.status === 'ready' ? '✓ Ready' : '⚠ Offline'}</div>
+                    <div class="tool-actions">
+                        <button type="button" class="btn-run">Run</button>
+                        <button type="button" class="btn-info" onclick="showInfo(event, '${tool.id}')">?</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter tools
+        function filterTools(category) {
+            const filtered = category === 'all' ? TOOLS : TOOLS.filter(t => t.category === category);
+            renderTools(filtered);
+
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Open modal
+        function openModal(toolId) {
+            currentTool = TOOLS.find(t => t.id === toolId);
+            if (!currentTool) return;
+
+            document.getElementById('modalTitle').textContent = currentTool.name;
+            
+            const formFields = document.getElementById('formFields');
+            formFields.innerHTML = currentTool.fields.map(field => {
+                if (field.type === 'select') {
+                    return `
+                        <div class="form-group">
+                            <label for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
+                            <select id="${field.name}" name="${field.name}" ${field.required ? 'required' : ''}>
+                                <option value="">Select...</option>
+                                ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                } else if (field.type === 'textarea') {
+                    return `
+                        <div class="form-group">
+                            <label for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
+                            <textarea id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}></textarea>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="form-group">
+                            <label for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>
+                            <input type="${field.type}" id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" value="${field.value || ''}" ${field.required ? 'required' : ''} ${field.step ? `step="${field.step}"` : ''} ${field.min ? `min="${field.min}"` : ''} ${field.max ? `max="${field.max}"` : ''}>
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            document.getElementById('outputArea').classList.remove('active', 'error', 'success');
+            document.getElementById('outputContent').innerHTML = '';
+            document.getElementById('submitBtn').textContent = 'Run Tool';
+            document.getElementById('submitBtn').disabled = false;
+
+            document.getElementById('toolModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('toolModal').classList.remove('active');
+            currentTool = null;
+        }
+
+        // Show tool info
+        function showInfo(event, toolId) {
+            event.stopPropagation();
+            const tool = TOOLS.find(t => t.id === toolId);
+            if (tool) {
+                showToast(tool.help, 'info');
+            }
+        }
+
+        // Execute tool
+        async function executeTool(event) {
+            event.preventDefault();
+            if (!currentTool) return;
+
+            const formData = new FormData(document.getElementById('toolForm'));
+            const params = new URLSearchParams(formData);
+            
+            const outputArea = document.getElementById('outputArea');
+            const outputContent = document.getElementById('outputContent');
+            const submitBtn = document.getElementById('submitBtn');
+
+            outputArea.classList.add('active');
+            outputContent.innerHTML = '<span class="loading-spinner"></span> Running tool...';
+            submitBtn.disabled = true;
+
+            try {
+                // Simulate API call to backend
+                const response = await fetch(`/api/tools/${currentTool.id}/run`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                }).catch(() => {
+                    // Fallback if backend not available
+                    return null;
+                });
+
+                if (response && response.ok) {
+                    const result = await response.json();
+                    outputContent.innerHTML = `<pre>${result.output || 'Tool executed successfully'}</pre>`;
+                    outputArea.classList.add('success');
+                    showToast('Tool executed successfully!', 'success');
+                } else {
+                    // Show mock output with instructions
+                    outputContent.innerHTML = `
+<pre>Tool: ${currentTool.name}
+Parameters: ${params.toString()}
+
+Backend Integration Required:
+1. Ensure msp_server.py is running on port 8765
+2. Or integrate with kanban-app backend
+
+Instructions for Running ${currentTool.name}:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Script Location: ${currentTool.script}
+
+Manual Execution:
+$ cd /root/.openclaw/workspace
+$ python3 ${currentTool.script} --help
+
+Example with parameters:
+${currentTool.fields.map(f => `$ --${f.name} value`).join('\n')}
+
+Expected Output:
+Tool will process the parameters and return results.
+
+Status: ✓ Ready to connect to backend</pre>
+                    `;
+                    outputArea.classList.add('success');
+                }
+            } catch (error) {
+                outputContent.innerHTML = `<pre style="color: #ef4444;">Error: ${error.message}\n\nTool launcher is ready. Connect to backend server for full functionality.</pre>`;
+                outputArea.classList.add('error');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Run Tool';
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('toolModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('toolModal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

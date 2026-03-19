@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-03-19T16:58:08Z",
+  "summary": {
+    "total": 2,
+    "ok": 2,
+    "warning": 0,
+    "expired": 0,
+    "unreachable": 0
+  },
+  "results": [
+    {
+      "domain": "google.com",
+      "label": "Google",
+      "port": 443,
+      "alertDays": 30,
+      "status": "OK",
+      "expiryDate": "Apr 27 08:36:37 2026 GMT",
+      "daysLeft": 38,
+      "subject": "*.google.com",
+      "issuer": "Google Trust Services"
+    },
+    {
+      "domain": "github.com",
+      "label": "GitHub",
+      "port": 443,
+      "alertDays": 30,
+      "status": "OK",
+      "expiryDate": "Jun  3 23:59:59 2026 GMT",
+      "daysLeft": 76,
+      "subject": "github.com",
+      "issuer": "Sectigo Limited"
+    }
+  ]
+}

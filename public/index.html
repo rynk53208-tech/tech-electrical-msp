@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSP Toolset — Tech & Electrical Services LLC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --bg2:      #1a1d27;
+      --bg3:      #22263a;
+      --border:   #2e3248;
+      --text:     #e4e6f0;
+      --text2:    #8b8fa8;
+      --accent:   #4f6ef7;
+      --accent2:  #6a85ff;
+      --green:    #22c55e;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --orange:   #f97316;
+      --radius:   8px;
+      --sidebar:  240px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .login-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 40px; width: 360px;
+    }
+    .login-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .login-card p { color: var(--text2); font-size: 13px; margin-bottom: 28px; }
+    .login-card input {
+      width: 100%; padding: 10px 14px; background: var(--bg3);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: 14px; margin-bottom: 12px; outline: none;
+    }
+    .login-card input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%; padding: 11px; background: var(--accent);
+      border: none; border-radius: var(--radius); color: white;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .btn-primary:hover { background: var(--accent2); }
+    #login-error { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
+
+    /* ── LAYOUT ── */
+    #app { display: none; }
+    .layout { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar); background: var(--bg2); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 18px 20px; border-bottom: 1px solid var(--border);
+      font-weight: 700; font-size: 15px; color: var(--accent2);
+    }
+    .sidebar-logo span { font-weight: 400; color: var(--text2); font-size: 11px; display: block; }
+    .nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 18px; cursor: pointer; border-radius: 0;
+      font-size: 14px; color: var(--text2); transition: all .15s;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: var(--bg3); color: var(--text); }
+    .nav-item.active { background: var(--bg3); color: var(--accent2); border-left-color: var(--accent); }
+    .nav-icon { width: 18px; text-align: center; }
+    .nav-badge {
+      margin-left: auto; background: var(--red); color: white;
+      border-radius: 10px; padding: 1px 7px; font-size: 11px; font-weight: 600;
+    }
+    .sidebar-user {
+      padding: 14px 18px; border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--text2);
+    }
+    .sidebar-user strong { color: var(--text); display: block; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar {
+      height: 56px; background: var(--bg2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 24px; gap: 16px;
+      flex-shrink: 0;
+    }
+    .topbar h2 { font-size: 17px; font-weight: 600; }
+    .topbar-actions { margin-left: auto; display: flex; gap: 10px; }
+    .btn {
+      padding: 7px 14px; border-radius: var(--radius); font-size: 13px;
+      font-weight: 500; cursor: pointer; border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text); transition: all .15s;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent2); }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-accent { background: var(--accent); border-color: var(--accent); color: white; }
+    .btn-accent:hover { background: var(--accent2); border-color: var(--accent2); color: white; }
+    .btn-danger { border-color: var(--red); color: var(--red); }
+    .btn-danger:hover { background: var(--red); color: white; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+    /* ── SECTIONS ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .card-title { font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+
+    /* ── STAT CARDS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+    .stat-sub { font-size: 12px; color: var(--green); margin-top: 6px; }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 10px 14px; color: var(--text2); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: .5px; }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg3); }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 12px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+    }
+    .badge-green  { background: rgba(34,197,94,.15); color: var(--green); }
+    .badge-yellow { background: rgba(245,158,11,.15); color: var(--yellow); }
+    .badge-red    { background: rgba(239,68,68,.15);  color: var(--red); }
+    .badge-orange { background: rgba(249,115,22,.15); color: var(--orange); }
+    .badge-blue   { background: rgba(79,110,247,.15); color: var(--accent2); }
+    .badge-gray   { background: rgba(139,143,168,.15); color: var(--text2); }
+
+    /* ── GRID ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+    /* ── ALERTS ── */
+    .alert-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+    }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+    .alert-dot.warning { background: var(--yellow); }
+    .alert-msg { font-size: 13px; flex: 1; }
+    .alert-time { font-size: 11px; color: var(--text2); }
+    .alert-ack-btn { font-size: 11px; color: var(--accent2); cursor: pointer; padding: 2px 6px; border: 1px solid var(--accent); border-radius: 4px; }
+
+    /* ── FORMS ── */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 9px 12px; background: var(--bg3);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: 14px; font-family: inherit; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      display: none;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px; width: 580px; max-width: 95vw;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-header h3 { font-size: 17px; font-weight: 600; }
+    .modal-close { background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 48px; color: var(--text2); }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+    /* ── LOADING ── */
+    .loading { text-align: center; padding: 40px; color: var(--text2); }
+    .spinner { display: inline-block; width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .sidebar { width: 56px; }
+      .nav-item span, .sidebar-logo span, .sidebar-user { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>⚡ MSP Toolset</h1>
+    <p>Tech & Electrical Services LLC — Staff Portal</p>
+    <input type="text" id="username" placeholder="Username" autocomplete="username">
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn-primary" onclick="login()">Sign In</button>
+    <div id="login-error">Invalid credentials. Try again.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        MSP Toolset<span>Tech & Electrical Services</span>
+      </div>
+      <nav class="nav">
+        <div class="nav-item active" onclick="nav('dashboard')">
+          <span class="nav-icon">📊</span><span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="nav('clients')">
+          <span class="nav-icon">🏢</span><span>Clients</span>
+        </div>
+        <div class="nav-item" onclick="nav('tickets')">
+          <span class="nav-icon">🎫</span><span>Tickets</span>
+          <span class="nav-badge" id="badge-tickets" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="nav('devices')">
+          <span class="nav-icon">💻</span><span>Devices</span>
+        </div>
+        <div class="nav-item" onclick="nav('monitoring')">
+          <span class="nav-icon">📡</span><span>Monitoring</span>
+          <span class="nav-badge" id="badge-alerts" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="nav('invoices')">
+          <span class="nav-icon">💰</span><span>Invoices</span>
+        </div>
+        <div class="nav-item" onclick="nav('users')" id="nav-users" style="display:none">
+          <span class="nav-icon">👥</span><span>Users</span>
+        </div>
+      </nav>
+      <div class="sidebar-user">
+        <strong id="user-name">Loading...</strong>
+        <span id="user-role"></span>
+        <a href="#" onclick="logout()" style="color:var(--red);font-size:12px;display:block;margin-top:6px">Sign out</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <h2 id="page-title">Dashboard</h2>
+        <div class="topbar-actions" id="topbar-actions"></div>
+      </div>
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="section-dashboard">
+          <div class="stats-grid" id="dash-stats">
+            <div class="stat-card"><div class="spinner"></div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">🚨 Active Alerts</div>
+              <div id="dash-alerts"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">🎫 Recent Tickets</div>
+              <div id="dash-tickets"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLIENTS -->
+        <div class="section" id="section-clients">
+          <div class="card">
+            <div class="table-wrap">
+              <table id="clients-table">
+                <thead><tr><th>Company</th><th>Contact</th><th>SLA Tier</th><th>MRR</th><th>Devices</th><th>Open Tickets</th><th>Status</th><th></th></tr></thead>
+                <tbody id="clients-body"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TICKETS -->
+        <div class="section" id="section-tickets">
+          <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <select id="filter-ticket-status" onchange="loadTickets()" class="btn">
+              <option value="">All Status</option>
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="waiting_client">Waiting Client</option>
+              <option value="resolved">Resolved</option>
+              <option value="closed">Closed</option>
+            </select>
+            <select id="filter-ticket-priority" onchange="loadTickets()" class="btn">
+              <option value="">All Priority</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <input type="text" id="filter-ticket-search" placeholder="Search tickets..." class="btn" style="width:200px" oninput="debounce(loadTickets, 400)()">
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Title</th><th>Client</th><th>Priority</th><th>Status</th><th>Assigned</th><th>SLA Due</th><th>Created</th></tr></thead>
+                <tbody id="tickets-body"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEVICES -->
+        <div class="section" id="section-devices">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Hostname</th><th>Client</th><th>IP</th><th>Type</th><th>OS</th><th>Status</th><th>Last Seen</th></tr></thead>
+                <tbody id="devices-body"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONITORING -->
+        <div class="section" id="section-monitoring">
+          <div class="stats-grid" id="mon-stats" style="margin-bottom:20px"></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+                <span>🚨 Unacknowledged Alerts</span>
+                <button class="btn btn-sm" onclick="ackAllAlerts()">Ack All</button>
+              </div>
+              <div id="mon-alerts"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">📴 Offline Devices</div>
+              <div id="mon-offline"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+          </div>
+          <div style="margin-top:20px" class="card">
+            <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+              <span>📋 Recent Check Results</span>
+              <button class="btn btn-sm btn-accent" onclick="triggerMonitorRun()">▶ Run Now</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Device</th><th>Client</th><th>Check</th><th>Target</th><th>Status</th><th>Message</th><th>Time</th></tr></thead>
+                <tbody id="mon-results"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- INVOICES -->
+        <div class="section" id="section-invoices">
+          <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <select id="filter-inv-status" onchange="loadInvoices()" class="btn">
+              <option value="">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+              <option value="void">Void</option>
+            </select>
+          </div>
+          <div class="stats-grid" id="inv-stats" style="margin-bottom:20px"></div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Invoice #</th><th>Client</th><th>Status</th><th>Issue Date</th><th>Due Date</th><th>Total</th><th>Actions</th></tr></thead>
+                <tbody id="invoices-body"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="section" id="section-users">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th></tr></thead>
+                <tbody id="users-body"><tr><td colspan="6" class="loading"><div class="spinner"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- CREATE TICKET MODAL -->
+<div class="modal-overlay" id="modal-new-ticket">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Ticket</h3>
+      <button class="modal-close" onclick="closeModal('modal-new-ticket')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Client *</label>
+      <select id="t-client" required></select>
+    </div>
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" id="t-title" placeholder="Brief description of the issue">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="t-priority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="t-category">
+          <option value="general">General</option>
+          <option value="hardware">Hardware</option>
+          <option value="software">Software</option>
+          <option value="network">Network</option>
+          <option value="security">Security</option>
+          <option value="onboarding">Onboarding</option>
+          <option value="billing">Billing</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="t-desc" rows="4" placeholder="Detailed description..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Source</label>
+      <select id="t-source">
+        <option value="manual">Manual</option>
+        <option value="phone">Phone</option>
+        <option value="email">Email</option>
+        <option value="portal">Portal</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-new-ticket')">Cancel</button>
+      <button class="btn btn-accent" onclick="createTicket()">Create Ticket</button>
+    </div>
+  </div>
+</div>
+
+<!-- TICKET DETAIL MODAL -->
+<div class="modal-overlay" id="modal-ticket-detail">
+  <div class="modal" style="width:700px">
+    <div class="modal-header">
+      <h3 id="td-number">Ticket Detail</h3>
+      <button class="modal-close" onclick="closeModal('modal-ticket-detail')">✕</button>
+    </div>
+    <div id="td-body">Loading...</div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-ticket-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW CLIENT MODAL -->
+<div class="modal-overlay" id="modal-new-client">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Client</h3>
+      <button class="modal-close" onclick="closeModal('modal-new-client')">✕</button>
+    </div>
+    <div class="form-group"><label>Company Name *</label><input type="text" id="c-name"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Contact Name</label><input type="text" id="c-contact"></div>
+      <div class="form-group"><label>Contact Email</label><input type="email" id="c-email"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Phone</label><input type="text" id="c-phone"></div>
+      <div class="form-group"><label>Monthly Rate ($)</label><input type="number" id="c-rate"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>SLA Tier</label>
+        <select id="c-sla">
+          <option value="basic">Basic</option>
+          <option value="standard" selected>Standard</option>
+          <option value="premium">Premium</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+      <div class="form-group"><label>City</label><input type="text" id="c-city"></div>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="c-notes" rows="3"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-new-client')">Cancel</button>
+      <button class="btn btn-accent" onclick="createClient()">Add Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW INVOICE MODAL -->
+<div class="modal-overlay" id="modal-new-invoice">
+  <div class="modal" style="width:640px">
+    <div class="modal-header">
+      <h3>New Invoice</h3>
+      <button class="modal-close" onclick="closeModal('modal-new-invoice')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Client *</label><select id="i-client"></select></div>
+      <div class="form-group"><label>Due Date *</label><input type="date" id="i-due"></div>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="i-notes" rows="2"></textarea></div>
+    <div style="margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:8px">Line Items</div>
+      <div id="i-items"></div>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="addInvoiceItem()">+ Add Item</button>
+    </div>
+    <div style="text-align:right;font-size:14px;color:var(--text2)">
+      Total: <strong id="i-total" style="color:var(--green)">$0.00</strong>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-new-invoice')">Cancel</button>
+      <button class="btn btn-accent" onclick="createInvoice()">Create Invoice</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let TOKEN = localStorage.getItem('msp_token') || null;
+let CURRENT_USER = null;
+let clientsCache = [];
+let invoiceItems = [];
+let currentSection = 'dashboard';
+
+const API = '/api';
+
+// ============================================================
+// UTILS
+// ============================================================
+async function apiFetch(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
+  const res = await fetch(API + path, { ...opts, headers });
+  if (res.status === 401) { logout(); return null; }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || res.statusText);
+  }
+  return res.json();
+}
+
+function fmt(val, type = 'text') {
+  if (val === null || val === undefined || val === '') return '<span style="color:var(--text2)">—</span>';
+  if (type === 'date') return new Date(val).toLocaleDateString();
+  if (type === 'datetime') return new Date(val).toLocaleString();
+  if (type === 'money') return '$' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 2 });
+  return val;
+}
+
+function statusBadge(status) {
+  const map = {
+    open: 'blue', in_progress: 'yellow', waiting_client: 'orange',
+    waiting_vendor: 'orange', resolved: 'green', closed: 'gray',
+    online: 'green', offline: 'red', warning: 'yellow', unknown: 'gray',
+    draft: 'gray', sent: 'blue', paid: 'green', overdue: 'red', void: 'gray',
+    cancelled: 'gray'
+  };
+  const col = map[status] || 'gray';
+  return `<span class="badge badge-${col}">${status.replace('_', ' ')}</span>`;
+}
+
+function priorityBadge(p) {
+  const map = { critical: 'red', high: 'orange', medium: 'yellow', low: 'gray' };
+  return `<span class="badge badge-${map[p] || 'gray'}">${p}</span>`;
+}
+
+function slaTierBadge(t) {
+  const map = { basic: 'gray', standard: 'blue', premium: 'yellow', enterprise: 'green' };
+  return `<span class="badge badge-${map[t] || 'gray'}">${t}</span>`;
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '—';
+  const diff = Date.now() - new Date(dateStr);
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
+
+let _debouncers = {};
+function debounce(fn, ms) {
+  return function(...args) {
+    clearTimeout(_debouncers[fn]);
+    _debouncers[fn] = setTimeout(() => fn(...args), ms);
+  };
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+
+  try {
+    const data = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    }).then(r => {
+      if (!r.ok) throw new Error('Invalid credentials');
+      return r.json();
+    });
+    TOKEN = data.token;
+    CURRENT_USER = data.user;
+    localStorage.setItem('msp_token', TOKEN);
+    onLogin();
+  } catch {
+    errEl.style.display = 'block';
+  }
+}
+
+function logout() {
+  TOKEN = null;
+  CURRENT_USER = null;
+  localStorage.removeItem('msp_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function onLogin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-name').textContent = CURRENT_USER.full_name;
+  document.getElementById('user-role').textContent = CURRENT_USER.role;
+  if (CURRENT_USER.role === 'admin') document.getElementById('nav-users').style.display = 'flex';
+  await loadAllClients();
+  loadDashboard();
+  setInterval(refreshBadges, 30000);
+}
+
+// Try auto-login on page load
+window.addEventListener('load', async () => {
+  if (TOKEN) {
+    try {
+      const user = await apiFetch('/auth/me');
+      if (user) { CURRENT_USER = user; onLogin(); return; }
+    } catch {}
+  }
+  // Show login
+  document.getElementById('login-screen').style.display = 'flex';
+});
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function nav(section) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.getElementById(`section-${section}`).classList.add('active');
+  currentSection = section;
+
+  const titles = { dashboard: 'Dashboard', clients: 'Clients', tickets: 'Tickets', devices: 'Devices', monitoring: 'Monitoring', invoices: 'Invoices', users: 'Users' };
+  document.getElementById('page-title').textContent = titles[section] || section;
+
+  const actions = document.getElementById('topbar-actions');
+  actions.innerHTML = '';
+
+  if (section === 'tickets') {
+    actions.innerHTML = `<button class="btn btn-accent" onclick="openModal('modal-new-ticket')">+ New Ticket</button>`;
+    loadTickets();
+  } else if (section === 'clients') {
+    actions.innerHTML = `<button class="btn btn-accent" onclick="openModal('modal-new-client')">+ New Client</button>`;
+    loadClients();
+  } else if (section === 'devices') {
+    loadDevices();
+  } else if (section === 'monitoring') {
+    loadMonitoring();
+  } else if (section === 'invoices') {
+    actions.innerHTML = `
+      <button class="btn" onclick="generateMonthly()">📅 Generate Monthly</button>
+      <button class="btn btn-accent" onclick="openInvoiceModal()">+ New Invoice</button>`;
+    loadInvoices();
+  } else if (section === 'users') {
+    loadUsers();
+  } else if (section === 'dashboard') {
+    loadDashboard();
+  }
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function loadDashboard() {
+  try {
+    const data = await apiFetch('/dashboard');
+    if (!data) return;
+
+    // Stats
+    const offlineCount = (data.devices.health.find(h => h.status === 'offline') || {}).cnt || 0;
+    document.getElementById('dash-stats').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--accent2)">${data.clients.active}</div>
+        <div class="stat-label">Active Clients</div>
+        <div class="stat-sub">MRR: ${fmt(data.clients.mrr, 'money')}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--yellow)">${data.tickets.open}</div>
+        <div class="stat-label">Open Tickets</div>
+        <div class="stat-sub">${data.tickets.critical_open} critical, ${data.tickets.sla_breached} SLA breached</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:${offlineCount > 0 ? 'var(--red)' : 'var(--green)'}">${offlineCount}</div>
+        <div class="stat-label">Offline Devices</div>
+        <div class="stat-sub">${data.alerts.unacknowledged} unacked alerts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--green)">${fmt(data.revenue.this_month, 'money')}</div>
+        <div class="stat-label">Revenue This Month</div>
+        <div class="stat-sub">Outstanding: ${fmt(data.revenue.outstanding, 'money')}</div>
+      </div>
+    `;
+
+    // Alerts
+    const alertsEl = document.getElementById('dash-alerts');
+    if (data.alerts.critical.length === 0) {
+      alertsEl.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>No active alerts</div>';
+    } else {
+      alertsEl.innerHTML = data.alerts.critical.map(a => `
+        <div class="alert-item">
+          <div class="alert-dot"></div>
+          <div>
+            <div class="alert-msg">${a.message}</div>
+            <div class="alert-time">${a.company_name || ''} · ${timeAgo(a.created_at)}</div>
+          </div>
+          <span class="alert-ack-btn" onclick="ackAlert('${a.id}', this)">Ack</span>
+        </div>
+      `).join('');
+    }
+
+    // Recent tickets
+    document.getElementById('dash-tickets').innerHTML = data.recent_tickets.map(t => `
+      <div class="alert-item" onclick="viewTicket('${t.id}')">
+        <div class="alert-dot ${t.priority === 'critical' ? '' : 'warning'}"></div>
+        <div>
+          <div class="alert-msg">${t.ticket_number} — ${t.title}</div>
+          <div class="alert-time">${t.company_name} · ${statusBadge(t.status)} · ${timeAgo(t.created_at)}</div>
+        </div>
+      </div>
+    `).join('') || '<div class="empty">No open tickets</div>';
+
+    // Update badges
+    if (data.tickets.open > 0) {
+      const b = document.getElementById('badge-tickets');
+      b.textContent = data.tickets.open; b.style.display = 'inline';
+    }
+    if (data.alerts.unacknowledged > 0) {
+      const b = document.getElementById('badge-alerts');
+      b.textContent = data.alerts.unacknowledged; b.style.display = 'inline';
+    }
+  } catch (err) {
+    console.error('Dashboard error:', err);
+  }
+}
+
+async function refreshBadges() {
+  try {
+    const data = await apiFetch('/dashboard');
+    if (!data) return;
+    const bt = document.getElementById('badge-tickets');
+    if (data.tickets.open > 0) { bt.textContent = data.tickets.open; bt.style.display = 'inline'; } else { bt.style.display = 'none'; }
+    const ba = document.getElementById('badge-alerts');
+    if (data.alerts.unacknowledged > 0) { ba.textContent = data.alerts.unacknowledged; ba.style.display = 'inline'; } else { ba.style.display = 'none'; }
+  } catch {}
+}
+
+// ============================================================
+// CLIENTS
+// ============================================================
+async function loadAllClients() {
+  try {
+    const data = await apiFetch('/clients?limit=200');
+    if (data) clientsCache = data.data;
+    populateClientDropdowns();
+  } catch {}
+}
+
+function populateClientDropdowns() {
+  const opts = clientsCache.map(c => `<option value="${c.id}">${c.company_name}</option>`).join('');
+  ['t-client', 'i-client'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<option value="">Select client...</option>${opts}`;
+  });
+}
+
+async function loadClients() {
+  try {
+    const data = await apiFetch('/clients?limit=100');
+    if (!data) return;
+    const tbody = document.getElementById('clients-body');
+    if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No clients</td></tr>'; return; }
+    tbody.innerHTML = data.data.map(c => `
+      <tr>
+        <td><strong>${c.company_name}</strong></td>
+        <td>${c.contact_name || '—'}<br><span style="font-size:11px;color:var(--text2)">${c.contact_email || ''}</span></td>
+        <td>${slaTierBadge(c.sla_tier)}</td>
+        <td style="color:var(--green)">${fmt(c.monthly_rate, 'money')}</td>
+        <td>${c.device_count || 0}</td>
+        <td>${c.open_tickets || 0}</td>
+        <td>${c.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-gray">Inactive</span>'}</td>
+        <td><button class="btn btn-sm" onclick="nav('tickets')">Tickets</button></td>
+      </tr>
+    `).join('');
+  } catch (err) { console.error(err); }
+}
+
+async function createClient() {
+  try {
+    await apiFetch('/clients', { method: 'POST', body: JSON.stringify({
+      company_name: document.getElementById('c-name').value,
+      contact_name: document.getElementById('c-contact').value,
+      contact_email: document.getElementById('c-email').value,
+      contact_phone: document.getElementById('c-phone').value,
+      monthly_rate: document.getElementById('c-rate').value,
+      sla_tier: document.getElementById('c-sla').value,
+      city: document.getElementById('c-city').value,
+      notes: document.getElementById('c-notes').value,
+    })});
+    closeModal('modal-new-client');
+    await loadAllClients();
+    loadClients();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ============================================================
+// TICKETS
+// ============================================================
+async function loadTickets() {
+  const status = document.getElementById('filter-ticket-status')?.value || '';
+  const priority = document.getElementById('filter-ticket-priority')?.value || '';
+  const search = document.getElementById('filter-ticket-search')?.value || '';
+
+  let query = '/tickets?limit=50';
+  if (status) query += `&status=${status}`;
+  if (priority) query += `&priority=${priority}`;
+  if (search) query += `&search=${encodeURIComponent(search)}`;
+
+  try {
+    const data = await apiFetch(query);
+    if (!data) return;
+    const tbody = document.getElementById('tickets-body');
+    if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No tickets</td></tr>'; return; }
+
+    tbody.innerHTML = data.data.map(t => {
+      const isBreached = t.due_by && new Date(t.due_by) < new Date() && !['resolved','closed'].includes(t.status);
+      const dueStr = t.due_by ? `<span style="color:${isBreached ? 'var(--red)' : 'var(--text2)'}">${fmt(t.due_by, 'datetime')}</span>` : '—';
+      return `<tr onclick="viewTicket('${t.id}')" style="cursor:pointer">
+        <td><strong>${t.ticket_number}</strong></td>
+        <td>${t.title}</td>
+        <td>${t.company_name}</td>
+        <td>${priorityBadge(t.priority)}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td>${t.assigned_name || '<span style="color:var(--text2)">Unassigned</span>'}</td>
+        <td>${dueStr}</td>
+        <td style="color:var(--text2);font-size:12px">${timeAgo(t.created_at)}</td>
+      </tr>`;
+    }).join('');
+  } catch (err) { console.error(err); }
+}
+
+async function viewTicket(id) {
+  document.getElementById('td-body').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  openModal('modal-ticket-detail');
+
+  try {
+    const t = await apiFetch(`/tickets/${id}`);
+    document.getElementById('td-number').textContent = t.ticket_number;
+    document.getElementById('td-body').innerHTML = `
+      <div style="margin-bottom:16px">
+        <h3 style="margin-bottom:8px">${t.title}</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+          ${priorityBadge(t.priority)} ${statusBadge(t.status)}
+          <span style="color:var(--text2);font-size:13px">📁 ${t.category}</span>
+          <span style="color:var(--text2);font-size:13px">🏢 ${t.company_name}</span>
+        </div>
+        ${t.description ? `<div style="background:var(--bg3);padding:12px;border-radius:6px;font-size:14px;line-height:1.6">${t.description}</div>` : ''}
+        <div style="display:flex;gap:24px;margin-top:12px;font-size:13px;color:var(--text2)">
+          <span>Assigned: <strong style="color:var(--text)">${t.assigned_name || 'Unassigned'}</strong></span>
+          <span>Created: <strong style="color:var(--text)">${fmt(t.created_at, 'datetime')}</strong></span>
+          <span>SLA Due: <strong style="color:var(--text)">${fmt(t.due_by, 'datetime')}</strong></span>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:16px">
+        <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">
+          Work Log (${t.total_time_hours.toFixed(1)}h total)
+        </div>
+        ${t.comments.map(c => `
+          <div style="margin-bottom:12px;padding:10px 14px;background:var(--bg3);border-radius:6px;${c.is_internal ? 'border-left:3px solid var(--yellow)' : ''}">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">
+              <strong style="color:var(--text)">${c.author_name}</strong> ·
+              ${timeAgo(c.created_at)}
+              ${c.time_spent ? ` · ⏱ ${c.time_spent}h` : ''}
+              ${c.is_internal ? ' · 🔒 Internal' : ''}
+            </div>
+            <div style="font-size:14px;line-height:1.6">${c.body}</div>
+          </div>
+        `).join('') || '<div style="color:var(--text2);font-size:13px">No comments yet</div>'}
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Add Comment</div>
+        <textarea id="new-comment" rows="3" style="width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;font-family:inherit;outline:none" placeholder="Work notes..."></textarea>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <input type="number" id="comment-time" placeholder="Hours" style="width:100px;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px" step="0.25" min="0">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2)">
+            <input type="checkbox" id="comment-internal"> Internal
+          </label>
+          <button class="btn btn-accent btn-sm" onclick="addComment('${t.id}')">Add Note</button>
+          <select id="new-status" class="btn btn-sm">
+            <option value="">Change Status...</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="waiting_client">Waiting Client</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <button class="btn btn-sm" onclick="updateTicketStatus('${t.id}')">Update</button>
+        </div>
+      </div>
+    `;
+  } catch (err) { document.getElementById('td-body').innerHTML = `<div class="empty">Error: ${err.message}</div>`; }
+}
+
+async function addComment(ticketId) {
+  const body = document.getElementById('new-comment').value.trim();
+  if (!body) return;
+  const time_spent = parseFloat(document.getElementById('comment-time').value) || 0;
+  const is_internal = document.getElementById('comment-internal').checked;
+  try {
+    await apiFetch(`/tickets/${ticketId}/comments`, { method: 'POST', body: JSON.stringify({ body, time_spent, is_internal }) });
+    viewTicket(ticketId);
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function updateTicketStatus(ticketId) {
+  const status = document.getElementById('new-status').value;
+  if (!status) return;
+  try {
+    await apiFetch(`/tickets/${ticketId}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    viewTicket(ticketId);
+    loadTickets();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function createTicket() {
+  const client_id = document.getElementById('t-client').value;
+  const title = document.getElementById('t-title').value.trim();
+  if (!client_id || !title) { alert('Client and title are required'); return; }
+  try {
+    await apiFetch('/tickets', { method: 'POST', body: JSON.stringify({
+      client_id,
+      title,
+      description: document.getElementById('t-desc').value,
+      priority: document.getElementById('t-priority').value,
+      category: document.getElementById('t-category').value,
+      source: document.getElementById('t-source').value
+    })});
+    closeModal('modal-new-ticket');
+    loadTickets();
+    refreshBadges();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ============================================================
+// DEVICES
+// ============================================================
+async function loadDevices() {
+  try {
+    const data = await apiFetch('/devices?limit=200');
+    if (!data) return;
+    const tbody = document.getElementById('devices-body');
+    if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty">No devices</td></tr>'; return; }
+    tbody.innerHTML = data.data.map(d => `
+      <tr>
+        <td><strong>${d.hostname}</strong></td>
+        <td>${d.company_name}</td>
+        <td style="font-family:monospace;font-size:12px">${d.ip_address || '—'}</td>
+        <td>${d.device_type}</td>
+        <td style="font-size:12px;color:var(--text2)">${d.os || '—'}</td>
+        <td>${statusBadge(d.status)}</td>
+        <td style="font-size:12px;color:var(--text2)">${timeAgo(d.last_seen)}</td>
+      </tr>
+    `).join('');
+  } catch (err) { console.error(err); }
+}
+
+// ============================================================
+// MONITORING
+// ============================================================
+async function loadMonitoring() {
+  try {
+    const [alertsData, resultsData, statusData] = await Promise.all([
+      apiFetch('/monitoring/alerts?limit=30'),
+      apiFetch('/monitoring/results?limit=50'),
+      apiFetch('/devices/overview/status')
+    ]);
+
+    // Status summary
+    const summary = (statusData.status_summary || []);
+    const total = summary.reduce((s, i) => s + i.cnt, 0);
+    document.getElementById('mon-stats').innerHTML = summary.map(s => `
+      <div class="stat-card">
+        <div class="stat-value" style="color:${s.status === 'online' ? 'var(--green)' : s.status === 'offline' ? 'var(--red)' : 'var(--yellow)'}">${s.cnt}</div>
+        <div class="stat-label">${s.status.charAt(0).toUpperCase() + s.status.slice(1)} Devices</div>
+        <div class="stat-sub">${total > 0 ? Math.round(s.cnt / total * 100) : 0}% of fleet</div>
+      </div>
+    `).join('') + `<div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Total Monitored</div></div>`;
+
+    // Alerts
+    const alertsEl = document.getElementById('mon-alerts');
+    if (!alertsData.data.length) {
+      alertsEl.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>All clear</div>';
+    } else {
+      alertsEl.innerHTML = alertsData.data.map(a => `
+        <div class="alert-item">
+          <div class="alert-dot ${a.severity === 'critical' ? '' : 'warning'}"></div>
+          <div style="flex:1">
+            <div class="alert-msg">${a.message}</div>
+            <div class="alert-time">${a.hostname || ''} · ${a.company_name || ''} · ${timeAgo(a.created_at)}</div>
+          </div>
+          <span class="alert-ack-btn" onclick="ackAlert('${a.id}', this)">Ack</span>
+        </div>
+      `).join('');
+    }
+
+    // Offline devices
+    const offlineEl = document.getElementById('mon-offline');
+    if (!statusData.offline_devices.length) {
+      offlineEl.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>All devices online</div>';
+    } else {
+      offlineEl.innerHTML = statusData.offline_devices.map(d => `
+        <div class="alert-item">
+          <div class="alert-dot"></div>
+          <div>
+            <div class="alert-msg">${d.hostname}</div>
+            <div class="alert-time">${d.company_name} · ${d.ip_address || 'no IP'} · last seen ${timeAgo(d.last_seen)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Results table
+    const tbody = document.getElementById('mon-results');
+    tbody.innerHTML = resultsData.data.map(r => `
+      <tr>
+        <td>${r.hostname}</td>
+        <td>${r.company_name}</td>
+        <td><span class="badge badge-${r.check_type === 'ping' ? 'blue' : 'gray'}">${r.check_type}</span></td>
+        <td style="font-family:monospace;font-size:12px">${r.target}</td>
+        <td>${statusBadge(r.status)}</td>
+        <td style="font-size:12px;color:var(--text2)">${r.message || '—'}</td>
+        <td style="font-size:12px;color:var(--text2)">${timeAgo(r.checked_at)}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="7" class="empty">No results yet</td></tr>';
+  } catch (err) { console.error(err); }
+}
+
+async function ackAlert(id, el) {
+  try {
+    await apiFetch(`/monitoring/alerts/${id}/acknowledge`, { method: 'POST', body: JSON.stringify({}) });
+    if (el) el.closest('.alert-item').style.opacity = '0.4';
+    refreshBadges();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function ackAllAlerts() {
+  try {
+    const data = await apiFetch('/monitoring/alerts?limit=200&is_acknowledged=0');
+    if (!data || !data.data.length) return;
+    const ids = data.data.map(a => a.id);
+    await apiFetch('/monitoring/alerts/bulk-acknowledge', { method: 'POST', body: JSON.stringify({ ids }) });
+    loadMonitoring();
+    refreshBadges();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function triggerMonitorRun() {
+  try {
+    await apiFetch('/monitoring/run', { method: 'POST', body: JSON.stringify({}) });
+    setTimeout(loadMonitoring, 3000);
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ============================================================
+// INVOICES
+// ============================================================
+async function loadInvoices() {
+  const status = document.getElementById('filter-inv-status')?.value || '';
+  let query = '/invoices?limit=50';
+  if (status) query += `&status=${status}`;
+
+  try {
+    const [invData, stats] = await Promise.all([apiFetch(query), apiFetch('/invoices/stats/revenue')]);
+    if (!invData) return;
+
+    // Stats
+    if (stats) {
+      document.getElementById('inv-stats').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--accent2)">${fmt(stats.mrr, 'money')}</div>
+          <div class="stat-label">Monthly Recurring Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--green)">${fmt(stats.current_month_revenue, 'money')}</div>
+          <div class="stat-label">Collected This Month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--yellow)">${fmt(stats.outstanding, 'money')}</div>
+          <div class="stat-label">Outstanding</div>
+          <div class="stat-sub">${stats.overdue_count} overdue</div>
+        </div>
+      `;
+    }
+
+    const tbody = document.getElementById('invoices-body');
+    tbody.innerHTML = invData.data.map(i => `
+      <tr>
+        <td><strong>${i.invoice_number}</strong></td>
+        <td>${i.company_name}</td>
+        <td>${statusBadge(i.status)}</td>
+        <td>${fmt(i.issue_date, 'date')}</td>
+        <td style="color:${i.status === 'overdue' ? 'var(--red)' : 'var(--text)'}">${fmt(i.due_date, 'date')}</td>
+        <td style="color:var(--green);font-weight:600">${fmt(i.total, 'money')}</td>
+        <td>
+          ${i.status === 'draft' ? `<button class="btn btn-sm" onclick="sendInvoice('${i.id}')">Send</button>` : ''}
+          ${i.status === 'sent' ? `<button class="btn btn-sm btn-accent" onclick="markPaid('${i.id}')">Mark Paid</button>` : ''}
+          ${i.status === 'overdue' ? `<button class="btn btn-sm btn-danger" onclick="markPaid('${i.id}')">Mark Paid</button>` : ''}
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="7" class="empty">No invoices</td></tr>';
+  } catch (err) { console.error(err); }
+}
+
+async function sendInvoice(id) {
+  try {
+    await apiFetch(`/invoices/${id}/send`, { method: 'POST', body: JSON.stringify({}) });
+    loadInvoices();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function markPaid(id) {
+  const method = prompt('Payment method (check, credit card, ACH, etc.):');
+  try {
+    await apiFetch(`/invoices/${id}/mark-paid`, { method: 'POST', body: JSON.stringify({ payment_method: method }) });
+    loadInvoices();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+async function generateMonthly() {
+  if (!confirm('Generate monthly invoices for all active clients?')) return;
+  try {
+    const res = await apiFetch('/invoices/generate-monthly', { method: 'POST', body: JSON.stringify({}) });
+    alert(`✅ ${res.message}\n\nCreated:\n${res.created.map(i => `${i.client}: ${fmt(i.amount, 'money')}`).join('\n') || 'None'}\n\nSkipped (already invoiced): ${res.skipped}`);
+    loadInvoices();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+function openInvoiceModal() {
+  invoiceItems = [];
+  document.getElementById('i-items').innerHTML = '';
+  addInvoiceItem();
+  openModal('modal-new-invoice');
+}
+
+function addInvoiceItem() {
+  const idx = invoiceItems.length;
+  invoiceItems.push({ description: '', quantity: 1, unit_price: 0, item_type: 'service' });
+  const el = document.createElement('div');
+  el.style = 'display:grid;grid-template-columns:1fr 70px 100px auto;gap:8px;margin-bottom:8px;align-items:center';
+  el.id = `item-row-${idx}`;
+  el.innerHTML = `
+    <input type="text" placeholder="Description" oninput="invoiceItems[${idx}].description=this.value" style="padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+    <input type="number" placeholder="Qty" value="1" oninput="invoiceItems[${idx}].quantity=this.value;calcTotal()" style="padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+    <input type="number" placeholder="Unit Price" oninput="invoiceItems[${idx}].unit_price=this.value;calcTotal()" style="padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+    <button class="btn btn-sm btn-danger" onclick="removeItem(${idx})">✕</button>
+  `;
+  document.getElementById('i-items').appendChild(el);
+}
+
+function removeItem(idx) {
+  invoiceItems.splice(idx, 1);
+  document.getElementById('i-items').innerHTML = '';
+  const backup = [...invoiceItems];
+  invoiceItems = [];
+  backup.forEach(() => addInvoiceItem());
+  calcTotal();
+}
+
+function calcTotal() {
+  const total = invoiceItems.reduce((s, i) => s + (parseFloat(i.quantity) || 0) * (parseFloat(i.unit_price) || 0), 0);
+  document.getElementById('i-total').textContent = fmt(total, 'money');
+}
+
+async function createInvoice() {
+  const client_id = document.getElementById('i-client').value;
+  const due_date = document.getElementById('i-due').value;
+  if (!client_id || !due_date) { alert('Client and due date are required'); return; }
+  const validItems = invoiceItems.filter(i => i.description && i.unit_price > 0);
+  if (!validItems.length) { alert('Add at least one line item'); return; }
+  try {
+    await apiFetch('/invoices', { method: 'POST', body: JSON.stringify({
+      client_id, due_date,
+      notes: document.getElementById('i-notes').value,
+      items: validItems
+    })});
+    closeModal('modal-new-invoice');
+    loadInvoices();
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+// ============================================================
+// USERS
+// ============================================================
+async function loadUsers() {
+  try {
+    const users = await apiFetch('/users');
+    if (!users) return;
+    document.getElementById('users-body').innerHTML = users.map(u => `
+      <tr>
+        <td><strong>${u.full_name}</strong></td>
+        <td>${u.username}</td>
+        <td>${u.email}</td>
+        <td><span class="badge badge-${u.role === 'admin' ? 'red' : u.role === 'technician' ? 'blue' : 'gray'}">${u.role}</span></td>
+        <td>${u.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-gray">Inactive</span>'}</td>
+        <td style="font-size:12px;color:var(--text2)">${fmt(u.created_at, 'date')}</td>
+      </tr>
+    `).join('');
+  } catch (err) { console.error(err); }
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// Enter key for login
+document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+</script>
+</body>
+</html>

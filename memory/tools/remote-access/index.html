@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remote Access Manager — Tech &amp; Electrical Services LLC</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2333;
+      --surface3: #21262d;
+      --border:   #30363d;
+      --accent:   #00d4ff;
+      --accent2:  #7c3aed;
+      --green:    #3fb950;
+      --yellow:   #d29922;
+      --red:      #f85149;
+      --orange:   #db6d28;
+      --blue:     #388bfd;
+      --purple:   #a371f7;
+      --text:     #e6edf3;
+      --muted:    #7d8590;
+      --radius:   8px;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* ── Header ───────────────────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.05rem; font-weight: 700; letter-spacing: .5px;
+    }
+    .logo-icon { font-size: 1.4rem; }
+    .logo-sub { font-size: .7rem; color: var(--muted); font-weight: 400; display: block; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .app { display: flex; flex: 1; overflow: hidden; height: calc(100vh - 56px); }
+    /* ── Sidebar ──────────────────────────────────────────────────── */
+    .sidebar {
+      width: 220px; min-width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .sidebar-section { padding: 16px 12px 8px; }
+    .sidebar-label {
+      font-size: .65rem; font-weight: 700; letter-spacing: 1.2px;
+      color: var(--muted); text-transform: uppercase; padding: 0 4px 8px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: var(--radius);
+      cursor: pointer; font-size: .875rem; color: var(--muted);
+      transition: all .15s; border: none; background: none;
+      width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: var(--surface3); color: var(--text); }
+    .nav-item.active { background: rgba(0,212,255,.1); color: var(--accent); }
+    .nav-item .badge {
+      margin-left: auto; background: var(--surface3);
+      padding: 1px 7px; border-radius: 99px; font-size: .7rem; color: var(--muted);
+    }
+    .nav-item.active .badge { background: rgba(0,212,255,.15); color: var(--accent); }
+    /* Protocol filter pills */
+    .filter-pills { display: flex; flex-direction: column; gap: 2px; }
+    .pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; border-radius: var(--radius);
+      cursor: pointer; font-size: .8rem; color: var(--muted);
+      transition: all .15s; border: none; background: none; width: 100%; text-align: left;
+    }
+    .pill:hover { background: var(--surface3); color: var(--text); }
+    .pill.active { color: var(--text); }
+    .pill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    /* ── Main ─────────────────────────────────────────────────────── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .toolbar {
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: center; background: var(--surface);
+    }
+    .search-wrap {
+      flex: 1; position: relative;
+    }
+    .search-wrap input {
+      width: 100%; padding: 8px 12px 8px 36px;
+      background: var(--surface3); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-size: .875rem;
+      outline: none; transition: border-color .15s;
+    }
+    .search-wrap input:focus { border-color: var(--accent); }
+    .search-wrap .search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none; font-size: 1rem;
+    }
+    .content { flex: 1; overflow-y: auto; padding: 20px; }
+    /* ── Cards Grid ───────────────────────────────────────────────── */
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .conn-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      cursor: pointer; transition: all .15s; position: relative;
+    }
+    .conn-card:hover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .conn-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,212,255,.3); }
+    .card-header {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px;
+    }
+    .card-title { font-size: .95rem; font-weight: 600; }
+    .card-host { font-size: .78rem; color: var(--muted); margin-top: 2px; font-family: monospace; }
+    .proto-badge {
+      font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: .5px; white-space: nowrap;
+    }
+    .proto-rdp    { background: rgba(56,139,253,.18); color: #79c0ff; }
+    .proto-ssh    { background: rgba(63,185,80,.18);  color: #56d364; }
+    .proto-vnc    { background: rgba(163,113,247,.18);color: #d2a8ff; }
+    .proto-teamviewer { background: rgba(219,109,40,.18); color: #ffa657; }
+    .proto-winrm  { background: rgba(210,153,34,.18); color: #e3b341; }
+    .card-meta {
+      display: flex; gap: 16px; margin-top: 10px;
+      font-size: .75rem; color: var(--muted);
+    }
+    .card-meta span { display: flex; align-items: center; gap: 4px; }
+    .card-actions {
+      display: flex; gap: 8px; margin-top: 14px; border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: var(--radius); font-size: .8rem;
+      font-weight: 600; cursor: pointer; border: none; transition: all .15s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #00b8d9; }
+    .btn-ghost {
+      background: var(--surface3); color: var(--text); border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,.07); }
+    .btn-danger { background: rgba(248,81,73,.15); color: var(--red); border: 1px solid rgba(248,81,73,.3); }
+    .btn-danger:hover { background: rgba(248,81,73,.25); }
+    .btn-sm { padding: 5px 10px; font-size: .75rem; }
+    .btn-icon { padding: 7px; border-radius: var(--radius); }
+    /* ── Status dot ───────────────────────────────────────────────── */
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+    }
+    .status-online  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .status-offline { background: var(--red); }
+    .status-unknown { background: var(--muted); }
+    /* ── Detail Panel ─────────────────────────────────────────────── */
+    .detail-panel {
+      width: 380px; min-width: 380px;
+      background: var(--surface); border-left: 1px solid var(--border);
+      overflow-y: auto; display: none; flex-direction: column;
+    }
+    .detail-panel.open { display: flex; }
+    .detail-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .detail-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .detail-field { display: flex; flex-direction: column; gap: 4px; }
+    .detail-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+    .detail-value { font-size: .875rem; background: var(--surface3); padding: 8px 12px; border-radius: var(--radius); font-family: monospace; color: var(--text); word-break: break-all; }
+    .detail-value.mono { font-family: monospace; }
+    .notes-field { resize: vertical; min-height: 80px; font-family: 'Segoe UI', sans-serif; font-size: .85rem; }
+    /* ── Modal ────────────────────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 20px;
+    }
+    .overlay.hidden { display: none; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto; padding: 28px;
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .modal h2 { font-size: 1.1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--surface3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 9px 12px; color: var(--text);
+      font-size: .875rem; outline: none; transition: border-color .15s;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group select option { background: var(--surface3); }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    /* ── History tab ─────────────────────────────────────────────── */
+    .history-list { display: flex; flex-direction: column; gap: 1px; }
+    .history-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: var(--radius);
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: .83rem;
+    }
+    .history-item:hover { border-color: var(--border); background: var(--surface2); }
+    .history-time { color: var(--muted); font-size: .75rem; white-space: nowrap; min-width: 130px; }
+    .history-name { font-weight: 600; flex: 1; }
+    .history-result { font-size: .75rem; padding: 2px 8px; border-radius: 99px; }
+    .result-ok      { background: rgba(63,185,80,.15); color: var(--green); }
+    .result-fail    { background: rgba(248,81,73,.15);  color: var(--red); }
+    .result-closed  { background: rgba(125,133,144,.15); color: var(--muted); }
+    /* ── Empty state ──────────────────────────────────────────────── */
+    .empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 60px 20px; color: var(--muted); text-align: center;
+    }
+    .empty-icon { font-size: 3rem; }
+    /* ── Stats bar ────────────────────────────────────────────────── */
+    .stats-bar {
+      display: flex; gap: 20px; padding: 12px 20px;
+      border-bottom: 1px solid var(--border); background: var(--surface);
+    }
+    .stat { font-size: .78rem; color: var(--muted); }
+    .stat strong { color: var(--text); }
+    /* ── Toasts ───────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 20px; right: 20px; z-index: 999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 16px;
+      font-size: .83rem; display: flex; align-items: center; gap: 8px;
+      animation: slideIn .2s ease; max-width: 300px;
+    }
+    .toast.success { border-color: var(--green); }
+    .toast.error   { border-color: var(--red); }
+    @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+    /* ── Confirm dialog ─────────────────────────────────────────── */
+    .confirm-modal { max-width: 380px; }
+    /* ── Import/Export ─────────────────────────────────────────── */
+    .io-modal { max-width: 460px; }
+    /* ── View toggle ───────────────────────────────────────────── */
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .view-btn {
+      padding: 6px 10px; background: none; border: none; color: var(--muted);
+      cursor: pointer; transition: all .15s; font-size: .95rem;
+    }
+    .view-btn.active { background: var(--surface3); color: var(--text); }
+    /* ── List view ───────────────────────────────────────────────── */
+    .conn-list { display: flex; flex-direction: column; gap: 6px; }
+    .conn-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: var(--radius);
+      background: var(--surface); border: 1px solid var(--border);
+      cursor: pointer; transition: all .15s;
+    }
+    .conn-row:hover { border-color: var(--accent); }
+    .conn-row.selected { border-color: var(--accent); background: rgba(0,212,255,.04); }
+    .conn-row-name { font-size: .875rem; font-weight: 600; flex: 1; }
+    .conn-row-host { font-family: monospace; font-size: .8rem; color: var(--muted); width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conn-row-actions { display: flex; gap: 6px; }
+    /* ── Scrollbar ────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .sidebar { width: 180px; min-width: 180px; }
+      .detail-panel { width: 320px; min-width: 320px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .sidebar { display: none; }
+      .detail-panel { display: none !important; }
+    }
+    /* ── Launch link ─────────────────────────────────────────── */
+    .launch-uri { display: none; }
+    .copy-hint { font-size: .7rem; color: var(--muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <span class="logo-icon">🖥️</span>
+    <div>
+      Remote Access Manager
+      <span class="logo-sub">Tech &amp; Electrical Services LLC</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" onclick="openImportExport()">⬇ Import / ⬆ Export</button>
+    <button class="btn btn-primary btn-sm" onclick="openAddModal()">＋ New Connection</button>
+  </div>
+</header>
+
+<!-- App Layout -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Views</div>
+      <div class="filter-pills">
+        <button class="nav-item active" data-view="all" onclick="setView('all',this)">
+          🗄 All Connections <span class="badge" id="badge-all">0</span>
+        </button>
+        <button class="nav-item" data-view="history" onclick="setView('history',this)">
+          🕐 History <span class="badge" id="badge-history">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Protocol</div>
+      <div class="filter-pills" id="proto-pills">
+        <button class="pill active" data-proto="all" onclick="setProto('all',this)">
+          <span class="pill-dot" style="background:var(--accent)"></span> All
+        </button>
+        <button class="pill" data-proto="RDP" onclick="setProto('RDP',this)">
+          <span class="pill-dot" style="background:#79c0ff"></span> RDP
+        </button>
+        <button class="pill" data-proto="SSH" onclick="setProto('SSH',this)">
+          <span class="pill-dot" style="background:#56d364"></span> SSH
+        </button>
+        <button class="pill" data-proto="VNC" onclick="setProto('VNC',this)">
+          <span class="pill-dot" style="background:#d2a8ff"></span> VNC
+        </button>
+        <button class="pill" data-proto="TeamViewer" onclick="setProto('TeamViewer',this)">
+          <span class="pill-dot" style="background:#ffa657"></span> TeamViewer
+        </button>
+        <button class="pill" data-proto="WinRM" onclick="setProto('WinRM',this)">
+          <span class="pill-dot" style="background:#e3b341"></span> WinRM
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search connections…" oninput="renderAll()" />
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="vbtn-grid" onclick="setCardView('grid')" title="Grid view">⊞</button>
+        <button class="view-btn"        id="vbtn-list" onclick="setCardView('list')" title="List view">☰</button>
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar" id="stats-bar">
+      <span class="stat">Connections: <strong id="stat-total">0</strong></span>
+      <span class="stat">RDP: <strong id="stat-rdp">0</strong></span>
+      <span class="stat">SSH: <strong id="stat-ssh">0</strong></span>
+      <span class="stat">VNC: <strong id="stat-vnc">0</strong></span>
+      <span class="stat">Other: <strong id="stat-other">0</strong></span>
+      <span class="stat">History entries: <strong id="stat-hist">0</strong></span>
+    </div>
+
+    <!-- Content area -->
+    <div class="content" id="content-area">
+      <!-- dynamic -->
+    </div>
+  </div>
+
+  <!-- Detail Panel -->
+  <aside class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <strong id="dp-name">Connection Details</strong>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="closeDetail()" title="Close">✕</button>
+    </div>
+    <div class="detail-body" id="dp-body">
+      <!-- dynamic -->
+    </div>
+  </aside>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="overlay hidden" id="add-modal-overlay" onclick="handleOverlayClick(event,'add-modal-overlay')">
+  <div class="modal" id="add-modal" onclick="event.stopPropagation()">
+    <h2 id="modal-title">New Connection</h2>
+    <input type="hidden" id="edit-id" />
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Display Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Main File Server" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Host / IP *</label>
+        <input type="text" id="f-host" placeholder="192.168.1.10 or server.local" />
+      </div>
+      <div class="form-group">
+        <label>Port</label>
+        <input type="number" id="f-port" placeholder="auto" min="1" max="65535" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Protocol *</label>
+        <select id="f-proto" onchange="autoPort()">
+          <option value="RDP">RDP (Remote Desktop)</option>
+          <option value="SSH">SSH (Secure Shell)</option>
+          <option value="VNC">VNC (Virtual Network)</option>
+          <option value="TeamViewer">TeamViewer</option>
+          <option value="WinRM">WinRM (PowerShell)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="f-user" placeholder="administrator" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Domain / Workgroup</label>
+        <input type="text" id="f-domain" placeholder="WORKGROUP" />
+      </div>
+      <div class="form-group">
+        <label>Credentials Link</label>
+        <input type="text" id="f-credlink" placeholder="Link to password manager entry" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Tags (comma separated)</label>
+      <input type="text" id="f-tags" placeholder="production, server, windows" />
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="f-notes" placeholder="Connection notes, special instructions, client context…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveConnection()">Save Connection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="overlay hidden" id="confirm-overlay" onclick="handleOverlayClick(event,'confirm-overlay')">
+  <div class="modal confirm-modal" onclick="event.stopPropagation()">
+    <h2>Delete Connection</h2>
+    <p style="color:var(--muted);font-size:.9rem">Are you sure you want to delete <strong id="confirm-name"></strong>? This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import / Export Modal -->
+<div class="overlay hidden" id="io-overlay" onclick="handleOverlayClick(event,'io-overlay')">
+  <div class="modal io-modal" onclick="event.stopPropagation()">
+    <h2>Import / Export Connections</h2>
+
+    <div class="form-group">
+      <label>Export</label>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:8px">Download all connections as a JSON file (no credentials, just metadata).</p>
+      <button class="btn btn-ghost" onclick="exportConnections()">⬆ Export to JSON</button>
+    </div>
+
+    <hr style="border-color:var(--border)"/>
+
+    <div class="form-group">
+      <label>Import from JSON</label>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:8px">Paste exported JSON below. Duplicates (same ID) will be skipped.</p>
+      <textarea id="import-json" style="min-height:120px;font-family:monospace;font-size:.78rem" placeholder='[{"id":"...","name":"...","host":"...",...}]'></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeIO()">Close</button>
+      <button class="btn btn-primary" onclick="importConnections()">⬇ Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DATA LAYER
+═══════════════════════════════════════════════════════════════ */
+const STORAGE_KEY  = 'tes_ram_connections';
+const HISTORY_KEY  = 'tes_ram_history';
+
+const DEFAULT_PORTS = { RDP: 3389, SSH: 22, VNC: 5900, TeamViewer: 5938, WinRM: 5985 };
+
+// ── Demo data ────────────────────────────────────────────────
+const DEMO_CONNECTIONS = [
+  {
+    id: 'demo-001',
+    name: 'Main File Server',
+    host: '192.168.1.10',
+    port: 3389,
+    proto: 'RDP',
+    username: 'administrator',
+    domain: 'TES',
+    credlink: '',
+    tags: ['production', 'windows', 'server'],
+    notes: 'Primary file server. Hosts shared drives and backup jobs. Reboot window: Sundays 2–4 AM.',
+    created: Date.now() - 86400000 * 30,
+    lastUsed: Date.now() - 3600000
+  },
+  {
+    id: 'demo-002',
+    name: 'Core Router',
+    host: '192.168.1.1',
+    port: 22,
+    proto: 'SSH',
+    username: 'admin',
+    domain: '',
+    credlink: '',
+    tags: ['network', 'cisco', 'critical'],
+    notes: 'Main gateway router. Cisco IOS. Config backup weekly. Contact ISP before rebooting.',
+    created: Date.now() - 86400000 * 60,
+    lastUsed: Date.now() - 86400000 * 2
+  },
+  {
+    id: 'demo-003',
+    name: 'Perimeter Firewall',
+    host: '10.0.0.1',
+    port: 22,
+    proto: 'SSH',
+    username: 'admin',
+    domain: '',
+    credlink: '',
+    tags: ['security', 'firewall', 'critical'],
+    notes: 'pfSense firewall. Web UI on port 443. SSH for emergency access only. Rule changes require change ticket.',
+    created: Date.now() - 86400000 * 45,
+    lastUsed: Date.now() - 86400000 * 7
+  },
+  {
+    id: 'demo-004',
+    name: 'Irvin\'s Workstation',
+    host: '192.168.1.50',
+    port: 3389,
+    proto: 'RDP',
+    username: 'irvin',
+    domain: 'TES',
+    credlink: '',
+    tags: ['workstation', 'windows', 'local'],
+    notes: 'Primary workstation. Wake-on-LAN MAC: AA:BB:CC:DD:EE:FF. Dual monitor setup.',
+    created: Date.now() - 86400000 * 10,
+    lastUsed: Date.now() - 1800000
+  },
+  {
+    id: 'demo-005',
+    name: 'Client Site — VNC',
+    host: 'client-pc.example.com',
+    port: 5900,
+    proto: 'VNC',
+    username: '',
+    domain: '',
+    credlink: '',
+    tags: ['client', 'remote', 'vnc'],
+    notes: 'Client site PC for remote support sessions. VNC password changes quarterly. Schedule with client first.',
+    created: Date.now() - 86400000 * 5,
+    lastUsed: null
+  }
+];
+
+const DEMO_HISTORY = [
+  { id: 'h1', connId: 'demo-001', name: 'Main File Server',     proto: 'RDP', at: Date.now() - 3600000,           result: 'ok'     },
+  { id: 'h2', connId: 'demo-004', name: 'Irvin\'s Workstation', proto: 'RDP', at: Date.now() - 1800000,           result: 'ok'     },
+  { id: 'h3', connId: 'demo-002', name: 'Core Router',          proto: 'SSH', at: Date.now() - 86400000 * 2,      result: 'closed' },
+  { id: 'h4', connId: 'demo-003', name: 'Perimeter Firewall',   proto: 'SSH', at: Date.now() - 86400000 * 7,      result: 'ok'     },
+  { id: 'h5', connId: 'demo-001', name: 'Main File Server',     proto: 'RDP', at: Date.now() - 86400000 * 14,     result: 'fail'   },
+];
+
+function loadConnections() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  // First run — seed demo data
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_CONNECTIONS));
+  return DEMO_CONNECTIONS;
+}
+
+function saveConnections(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(DEMO_HISTORY));
+  return DEMO_HISTORY;
+}
+
+function saveHistory(list) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+}
+
+function addHistory(conn, result = 'ok') {
+  const hist = loadHistory();
+  hist.unshift({ id: 'h' + Date.now(), connId: conn.id, name: conn.name, proto: conn.proto, at: Date.now(), result });
+  if (hist.length > 200) hist.splice(200);
+  saveHistory(hist);
+  updateBadges();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════ */
+let currentView  = 'all';   // 'all' | 'history'
+let currentProto = 'all';
+let cardView     = 'grid';  // 'grid' | 'list'
+let selectedId   = null;
+let confirmCb    = null;
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════════════════ */
+function renderAll() {
+  updateStats();
+  if (currentView === 'history') renderHistory();
+  else renderConnections();
+}
+
+function updateStats() {
+  const conns = loadConnections();
+  const hist  = loadHistory();
+  document.getElementById('stat-total').textContent = conns.length;
+  document.getElementById('stat-rdp').textContent   = conns.filter(c => c.proto === 'RDP').length;
+  document.getElementById('stat-ssh').textContent   = conns.filter(c => c.proto === 'SSH').length;
+  document.getElementById('stat-vnc').textContent   = conns.filter(c => c.proto === 'VNC').length;
+  document.getElementById('stat-other').textContent = conns.filter(c => !['RDP','SSH','VNC'].includes(c.proto)).length;
+  document.getElementById('stat-hist').textContent  = hist.length;
+  updateBadges();
+}
+
+function updateBadges() {
+  const conns = loadConnections();
+  const hist  = loadHistory();
+  document.getElementById('badge-all').textContent     = conns.length;
+  document.getElementById('badge-history').textContent = hist.length;
+}
+
+function renderConnections() {
+  const conns = loadConnections();
+  const q     = document.getElementById('search-input').value.toLowerCase();
+  const area  = document.getElementById('content-area');
+
+  let filtered = conns.filter(c => {
+    if (currentProto !== 'all' && c.proto !== currentProto) return false;
+    if (!q) return true;
+    return (
+      c.name.toLowerCase().includes(q) ||
+      c.host.toLowerCase().includes(q) ||
+      (c.username || '').toLowerCase().includes(q) ||
+      (c.tags || []).join(' ').toLowerCase().includes(q) ||
+      (c.notes || '').toLowerCase().includes(q) ||
+      c.proto.toLowerCase().includes(q)
+    );
+  });
+
+  if (filtered.length === 0) {
+    area.innerHTML = `<div class="empty"><div class="empty-icon">🔌</div><p>No connections found.</p><button class="btn btn-primary btn-sm" onclick="openAddModal()">+ New Connection</button></div>`;
+    return;
+  }
+
+  if (cardView === 'grid') {
+    area.innerHTML = `<div class="cards-grid">${filtered.map(cardHTML).join('')}</div>`;
+  } else {
+    area.innerHTML = `<div class="conn-list">${filtered.map(rowHTML).join('')}</div>`;
+  }
+}
+
+function renderHistory() {
+  const hist = loadHistory();
+  const q    = document.getElementById('search-input').value.toLowerCase();
+  const area = document.getElementById('content-area');
+
+  let filtered = hist.filter(h => !q || h.name.toLowerCase().includes(q) || h.proto.toLowerCase().includes(q));
+
+  if (filtered.length === 0) {
+    area.innerHTML = `<div class="empty"><div class="empty-icon">🕐</div><p>No connection history yet.</p></div>`;
+    return;
+  }
+
+  area.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong>${filtered.length} history entries</strong>
+      <button class="btn btn-ghost btn-sm" onclick="clearHistory()">🗑 Clear History</button>
+    </div>
+    <div class="history-list">
+      ${filtered.map(h => `
+        <div class="history-item">
+          <div class="history-time">${fmtDate(h.at)}</div>
+          <div class="history-name">${esc(h.name)}</div>
+          <span class="proto-badge proto-${h.proto.toLowerCase()}">${esc(h.proto)}</span>
+          <span class="history-result result-${h.result}">${h.result}</span>
+          <button class="btn btn-ghost btn-sm" onclick="reconnect('${h.connId}')" title="Re-launch">↩</button>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function cardHTML(c) {
+  const tags = (c.tags||[]).map(t => `<span style="font-size:.7rem;background:var(--surface3);padding:2px 7px;border-radius:99px;color:var(--muted)">${esc(t)}</span>`).join('');
+  const lastUsed = c.lastUsed ? `Last: ${fmtRel(c.lastUsed)}` : 'Never used';
+  return `
+    <div class="conn-card${selectedId===c.id?' selected':''}" onclick="selectConn('${c.id}')">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${esc(c.name)}</div>
+          <div class="card-host">${esc(c.host)}:${c.port}</div>
+        </div>
+        <span class="proto-badge proto-${c.proto.toLowerCase()}">${esc(c.proto)}</span>
+      </div>
+      ${tags ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${tags}</div>` : ''}
+      ${c.notes ? `<div style="font-size:.78rem;color:var(--muted);margin-bottom:6px;line-height:1.4;max-height:42px;overflow:hidden">${esc(c.notes)}</div>` : ''}
+      <div class="card-meta">
+        <span>${lastUsed}</span>
+        ${c.username ? `<span>👤 ${esc(c.username)}${c.domain?'@'+esc(c.domain):''}</span>` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();launchConn('${c.id}')">▶ Launch</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEditModal('${c.id}')">✏ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();copyLaunchCmd('${c.id}')" title="Copy launch command">📋</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="event.stopPropagation();askDelete('${c.id}')" title="Delete">🗑</button>
+      </div>
+    </div>`;
+}
+
+function rowHTML(c) {
+  return `
+    <div class="conn-row${selectedId===c.id?' selected':''}" onclick="selectConn('${c.id}')">
+      <span class="status-dot status-unknown"></span>
+      <span class="proto-badge proto-${c.proto.toLowerCase()}">${esc(c.proto)}</span>
+      <span class="conn-row-name">${esc(c.name)}</span>
+      <span class="conn-row-host">${esc(c.host)}:${c.port}</span>
+      <div class="conn-row-actions">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();launchConn('${c.id}')">▶ Launch</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEditModal('${c.id}')">✏</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="event.stopPropagation();askDelete('${c.id}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DETAIL PANEL
+═══════════════════════════════════════════════════════════════ */
+function selectConn(id) {
+  selectedId = id;
+  renderAll();
+
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (!c) return;
+
+  document.getElementById('dp-name').textContent = c.name;
+  const cmd = buildLaunchCmd(c);
+
+  document.getElementById('dp-body').innerHTML = `
+    <div class="detail-field">
+      <div class="detail-label">Protocol</div>
+      <span class="proto-badge proto-${c.proto.toLowerCase()}" style="align-self:flex-start">${esc(c.proto)}</span>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Host</div>
+      <div class="detail-value">${esc(c.host)}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Port</div>
+      <div class="detail-value">${c.port}</div>
+    </div>
+    ${c.username ? `
+    <div class="detail-field">
+      <div class="detail-label">Username</div>
+      <div class="detail-value">${esc(c.username)}${c.domain ? '@' + esc(c.domain) : ''}</div>
+    </div>` : ''}
+    ${c.credlink ? `
+    <div class="detail-field">
+      <div class="detail-label">Credentials Link</div>
+      <div class="detail-value" style="cursor:pointer;color:var(--accent)" onclick="window.open(${JSON.stringify(c.credlink)},'_blank')">${esc(c.credlink)}</div>
+    </div>` : ''}
+    <div class="detail-field">
+      <div class="detail-label">Launch Command</div>
+      <div class="detail-value mono" style="font-size:.75rem">${esc(cmd)}</div>
+      <div class="copy-hint">Click to copy</div>
+    </div>
+    ${(c.tags||[]).length ? `
+    <div class="detail-field">
+      <div class="detail-label">Tags</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${(c.tags||[]).map(t=>`<span style="font-size:.75rem;background:var(--surface3);padding:3px 9px;border-radius:99px;color:var(--muted)">${esc(t)}</span>`).join('')}</div>
+    </div>` : ''}
+    <div class="detail-field">
+      <div class="detail-label">Notes</div>
+      <textarea class="detail-value notes-field" id="dp-notes-ta" onchange="saveNotes('${id}',this.value)">${esc(c.notes||'')}</textarea>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Last Used</div>
+      <div class="detail-value">${c.lastUsed ? fmtDate(c.lastUsed) : 'Never'}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Created</div>
+      <div class="detail-value">${fmtDate(c.created)}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" style="flex:1" onclick="launchConn('${id}')">▶ Launch</button>
+      <button class="btn btn-ghost" onclick="openEditModal('${id}')">✏ Edit</button>
+      <button class="btn btn-ghost" onclick="copyLaunchCmd('${id}')">📋 Copy</button>
+    </div>
+  `;
+
+  // Clicking launch cmd copies it
+  const cmdEl = document.querySelector('#dp-body .detail-value.mono');
+  if (cmdEl) cmdEl.onclick = () => copyText(cmd, 'Launch command copied');
+
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() {
+  selectedId = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  renderAll();
+}
+
+function saveNotes(id, val) {
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (c) { c.notes = val; saveConnections(conns); toast('Notes saved', 'success'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAUNCH LOGIC
+═══════════════════════════════════════════════════════════════ */
+function buildLaunchCmd(c) {
+  switch (c.proto) {
+    case 'RDP':
+      return `mstsc /v:${c.host}:${c.port}${c.username?' /u:'+c.username:''}`;
+    case 'SSH':
+      return `ssh ${c.username?c.username+'@':''}${c.host} -p ${c.port}`;
+    case 'VNC':
+      return `vncviewer ${c.host}:${c.port}`;
+    case 'TeamViewer':
+      return `teamviewer --id ${c.host}`;
+    case 'WinRM':
+      return `winrm quickconfig; Enter-PSSession -ComputerName ${c.host} -Port ${c.port}`;
+    default:
+      return `${c.host}:${c.port}`;
+  }
+}
+
+function buildURI(c) {
+  switch (c.proto) {
+    case 'RDP': return `rdp://full%20address=s:${c.host}:${c.port}&username:s:${encodeURIComponent(c.username||'')}`;
+    case 'SSH': return `ssh://${c.username?c.username+'@':''}${c.host}:${c.port}`;
+    case 'VNC': return `vnc://${c.host}:${c.port}`;
+    default:    return null;
+  }
+}
+
+function launchConn(id) {
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (!c) return;
+
+  // Update lastUsed
+  c.lastUsed = Date.now();
+  saveConnections(conns);
+  addHistory(c, 'ok');
+  renderAll();
+
+  // Try URI protocol handler
+  const uri = buildURI(c);
+  if (uri) {
+    const a = document.createElement('a');
+    a.href = uri;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast(`Launching ${c.name} via ${c.proto}…`, 'success');
+  } else {
+    // Fallback: copy command
+    const cmd = buildLaunchCmd(c);
+    copyText(cmd, `Command copied — paste in terminal to connect`);
+  }
+}
+
+function reconnect(connId) {
+  launchConn(connId);
+}
+
+function copyLaunchCmd(id) {
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (!c) return;
+  copyText(buildLaunchCmd(c), 'Launch command copied!');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADD / EDIT MODAL
+═══════════════════════════════════════════════════════════════ */
+function openAddModal() {
+  document.getElementById('modal-title').textContent = 'New Connection';
+  document.getElementById('edit-id').value = '';
+  ['name','host','user','domain','credlink','tags','notes'].forEach(f => document.getElementById('f-'+f).value = '');
+  document.getElementById('f-proto').value = 'RDP';
+  document.getElementById('f-port').value  = 3389;
+  document.getElementById('add-modal-overlay').classList.remove('hidden');
+}
+
+function openEditModal(id) {
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modal-title').textContent = 'Edit Connection';
+  document.getElementById('edit-id').value   = c.id;
+  document.getElementById('f-name').value    = c.name;
+  document.getElementById('f-host').value    = c.host;
+  document.getElementById('f-port').value    = c.port;
+  document.getElementById('f-proto').value   = c.proto;
+  document.getElementById('f-user').value    = c.username || '';
+  document.getElementById('f-domain').value  = c.domain   || '';
+  document.getElementById('f-credlink').value= c.credlink || '';
+  document.getElementById('f-tags').value    = (c.tags||[]).join(', ');
+  document.getElementById('f-notes').value   = c.notes || '';
+  document.getElementById('add-modal-overlay').classList.remove('hidden');
+}
+
+function closeAddModal() {
+  document.getElementById('add-modal-overlay').classList.add('hidden');
+}
+
+function autoPort() {
+  const proto = document.getElementById('f-proto').value;
+  document.getElementById('f-port').value = DEFAULT_PORTS[proto] || '';
+}
+
+function saveConnection() {
+  const name = document.getElementById('f-name').value.trim();
+  const host = document.getElementById('f-host').value.trim();
+  const proto = document.getElementById('f-proto').value;
+  if (!name || !host) { toast('Name and Host are required', 'error'); return; }
+
+  const id = document.getElementById('edit-id').value || ('c' + Date.now());
+  const isEdit = !!document.getElementById('edit-id').value;
+
+  const conn = {
+    id,
+    name,
+    host,
+    port: parseInt(document.getElementById('f-port').value) || DEFAULT_PORTS[proto],
+    proto,
+    username: document.getElementById('f-user').value.trim(),
+    domain:   document.getElementById('f-domain').value.trim(),
+    credlink: document.getElementById('f-credlink').value.trim(),
+    tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    notes: document.getElementById('f-notes').value.trim(),
+    created: Date.now(),
+    lastUsed: null
+  };
+
+  const conns = loadConnections();
+  if (isEdit) {
+    const idx = conns.findIndex(x => x.id === id);
+    if (idx >= 0) { conn.created = conns[idx].created; conn.lastUsed = conns[idx].lastUsed; conns[idx] = conn; }
+    toast(`${name} updated`, 'success');
+  } else {
+    conns.push(conn);
+    toast(`${name} added`, 'success');
+  }
+
+  saveConnections(conns);
+  closeAddModal();
+  renderAll();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DELETE
+═══════════════════════════════════════════════════════════════ */
+function askDelete(id) {
+  const conns = loadConnections();
+  const c = conns.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('confirm-name').textContent = c.name;
+  confirmCb = () => doDelete(id);
+  document.getElementById('confirm-ok-btn').onclick = confirmCb;
+  document.getElementById('confirm-overlay').classList.remove('hidden');
+}
+
+function doDelete(id) {
+  const conns = loadConnections().filter(x => x.id !== id);
+  saveConnections(conns);
+  if (selectedId === id) closeDetail();
+  closeConfirm();
+  toast('Connection deleted', 'success');
+  renderAll();
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.add('hidden');
+  confirmCb = null;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IMPORT / EXPORT
+═══════════════════════════════════════════════════════════════ */
+function openImportExport() {
+  document.getElementById('import-json').value = '';
+  document.getElementById('io-overlay').classList.remove('hidden');
+}
+function closeIO() {
+  document.getElementById('io-overlay').classList.add('hidden');
+}
+
+function exportConnections() {
+  const conns = loadConnections();
+  const json  = JSON.stringify(conns, null, 2);
+  const blob  = new Blob([json], { type: 'application/json' });
+  const url   = URL.createObjectURL(blob);
+  const a     = document.createElement('a');
+  a.href      = url;
+  a.download  = `tes-remote-connections-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Export downloaded', 'success');
+}
+
+function importConnections() {
+  const raw = document.getElementById('import-json').value.trim();
+  if (!raw) { toast('Paste JSON first', 'error'); return; }
+  let incoming;
+  try { incoming = JSON.parse(raw); } catch(e) { toast('Invalid JSON', 'error'); return; }
+  if (!Array.isArray(incoming)) { toast('Expected a JSON array', 'error'); return; }
+
+  const conns = loadConnections();
+  const existing = new Set(conns.map(c => c.id));
+  let added = 0;
+  incoming.forEach(c => {
+    if (!c.id || !c.name || !c.host) return;
+    if (existing.has(c.id)) return; // skip dup
+    conns.push(c);
+    added++;
+  });
+  saveConnections(conns);
+  closeIO();
+  renderAll();
+  toast(`Imported ${added} connection(s)`, 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════════════════════════ */
+function clearHistory() {
+  saveHistory([]);
+  renderAll();
+  toast('History cleared', 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEW CONTROLS
+═══════════════════════════════════════════════════════════════ */
+function setView(v, btn) {
+  currentView = v;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  // Show/hide stats bar and proto pills for history view
+  document.getElementById('stats-bar').style.display = v === 'history' ? 'none' : 'flex';
+  document.getElementById('proto-pills').style.opacity = v === 'history' ? '.4' : '1';
+  document.getElementById('proto-pills').style.pointerEvents = v === 'history' ? 'none' : '';
+  renderAll();
+}
+
+function setProto(p, btn) {
+  currentProto = p;
+  document.querySelectorAll('.pill').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function setCardView(v) {
+  cardView = v;
+  document.getElementById('vbtn-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('vbtn-list').classList.toggle('active', v === 'list');
+  renderAll();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════════ */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function fmtRel(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000)   return 'just now';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if (diff < 86400000)return Math.floor(diff/3600000) + 'h ago';
+  return Math.floor(diff/86400000) + 'd ago';
+}
+
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `${type==='success'?'✅':type==='error'?'❌':'ℹ️'} ${esc(msg)}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function copyText(text, msg) {
+  navigator.clipboard.writeText(text).then(() => toast(msg || 'Copied!', 'success')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast(msg || 'Copied!', 'success');
+  });
+}
+
+function handleOverlayClick(ev, id) {
+  if (ev.target.id === id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeAddModal();
+    closeConfirm();
+    closeIO();
+    closeDetail();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+    e.preventDefault();
+    openAddModal();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+renderAll();
+</script>
+</body>
+</html>

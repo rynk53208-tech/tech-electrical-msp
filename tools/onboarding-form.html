@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusIT - Client Onboarding Form</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --bg-light: #f8fafc;
+      --bg-lighter: #f1f5f9;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --error: #ef4444;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --radius: 0.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-lighter) 100%);
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding: var(--space-lg);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, #1a2744 100%);
+      color: white;
+      padding: var(--space-lg);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      font-size: 28px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .form-wrapper {
+      padding: var(--space-lg);
+    }
+
+    .section {
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-number {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+      font-size: 14px;
+    }
+
+    label .required {
+      color: var(--error);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .checkbox-group,
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .checkbox-item,
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .checkbox-item label,
+    .radio-item label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-weight: 400;
+    }
+
+    .form-hint {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 0.3rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--border);
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-submit {
+      background: var(--accent);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-submit:hover {
+      background: var(--accent-light);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-reset {
+      background: var(--bg-lighter);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-reset:hover {
+      background: var(--border);
+    }
+
+    .success-message {
+      display: none;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: var(--space-md);
+      border-radius: var(--radius);
+      margin-bottom: var(--space-lg);
+      text-align: center;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-reset {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">⬡</span>
+        <span>NexusIT</span>
+      </div>
+      <h1>Client Onboarding</h1>
+      <p>Let's get your organization set up for success</p>
+    </div>
+
+    <div class="form-wrapper">
+      <div class="success-message" id="successMsg">
+        ✓ Your onboarding request has been submitted. We'll be in touch shortly!
+      </div>
+
+      <form id="onboardingForm">
+        <!-- Section 1: Contact Information -->
+        <div class="section">
+          <div class="section-title">
+            <span class="section-number">1</span>
+            Primary Contact Information
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name <span class="required">*</span></label>
+              <input type="text" name="firstName" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="required">*</span></label>
+              <input type="text" name="lastName" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>Phone <span class="required">*</span></label>
+              <input type="tel" name="phone" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Title/Role <span class="required">*</span></label>
+            <input type="text" name="title" placeholder="e.g., CEO, Operations Manager, IT Director" required>
+          </div>
+        </div>
+
+        <!-- Section 2: Company Information -->
+        <div class="section">
+          <div class="section-title">
+            <span class="section-number">2</span>
+            Company Information
+          </div>
+
+          <div class="form-group">
+            <label>Company Name <span class="required">*</span></label>
+            <input type="text" name="companyName" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Industry <span class="required">*</span></label>
+              <select name="industry" required>
+                <option value="">-- Select Industry --</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="finance">Finance / Banking</option>
+                <option value="retail">Retail</option>
+                <option value="manufacturing">Manufacturing</option>
+                <option value="professional">Professional Services</option>
+                <option value="education">Education</option>
+                <option value="government">Government</option>
+                <option value="nonprofit">Non-Profit</option>
+                <option value="technology">Technology</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Number of Employees <span class="required">*</span></label>
+              <select name="employeeCount" required>
+                <option value="">-- Select Range --</option>
+                <option value="1-10">1-10</option>
+                <option value="11-25">11-25</option>
+                <option value="26-50">26-50</option>
+                <option value="51-100">51-100</option>
+                <option value="101-250">101-250</option>
+                <option value="251-500">251-500</option>
+                <option value="500+">500+</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>City <span class="required">*</span></label>
+              <input type="text" name="city" required>
+            </div>
+            <div class="form-group">
+              <label>State/Province <span class="required">*</span></label>
+              <input type="text" name="state" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Website/URL</label>
+            <input type="text" name="website" placeholder="https://example.com">
+          </div>
+        </div>
+
+        <!-- Section 3: Current IT Environment -->
+        <div class="section">
+          <div class="section-title">
+            <span class="section-number">3</span>
+            Current IT Environment
+          </div>
+
+          <div class="form-group">
+            <label>Approximate Number of Computers/Devices <span class="required">*</span></label>
+            <input type="number" name="deviceCount" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label>Current IT Setup <span class="required">*</span></label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" name="currentSetup" value="in-house">
+                <label>In-house IT staff</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="currentSetup" value="partial-msp">
+                <label>Partial MSP/outsourced</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="currentSetup" value="no-dedicated">
+                <label>No dedicated IT support</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="currentSetup" value="other-msp">
+                <label>Other MSP provider</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Primary IT Challenges <span class="required">*</span></label>
+            <textarea name="challenges" placeholder="Describe your main IT concerns (security, downtime, growth, support capacity, etc.)" required></textarea>
+          </div>
+        </div>
+
+        <!-- Section 4: Services & Timeline -->
+        <div class="section">
+          <div class="section-title">
+            <span class="section-number">4</span>
+            Services & Timeline
+          </div>
+
+          <div class="form-group">
+            <label>Services Interested In <span class="required">*</span></label>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="managed-services">
+                <label>Managed IT Services (monitoring, support)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="cybersecurity">
+                <label>Cybersecurity & Compliance</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="backup-disaster">
+                <label>Backup & Disaster Recovery</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="cloud-migration">
+                <label>Cloud Migration & Management</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="network-design">
+                <label>Network Design & Optimization</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="help-desk">
+                <label>24/7 Help Desk Support</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" name="services" value="custom-solutions">
+                <label>Custom Solutions & Integration</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Desired Start Date <span class="required">*</span></label>
+              <input type="date" name="startDate" required>
+            </div>
+            <div class="form-group">
+              <label>Budget Range (Monthly)</label>
+              <select name="budgetRange">
+                <option value="">-- Select Range --</option>
+                <option value="under-500">Under $500</option>
+                <option value="500-1000">$500 - $1,000</option>
+                <option value="1000-2500">$1,000 - $2,500</option>
+                <option value="2500-5000">$2,500 - $5,000</option>
+                <option value="5000-plus">$5,000+</option>
+                <option value="tbd">TBD / Flexible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Additional Info -->
+        <div class="section">
+          <div class="section-title">
+            <span class="section-number">5</span>
+            Additional Information
+          </div>
+
+          <div class="form-group">
+            <label>How did you hear about us?</label>
+            <select name="referralSource">
+              <option value="">-- Select Source --</option>
+              <option value="website">Website</option>
+              <option value="referral">Referral / Recommendation</option>
+              <option value="social">Social Media</option>
+              <option value="search">Search Engine</option>
+              <option value="event">Event / Webinar</option>
+              <option value="contact">Direct Contact</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Additional Comments</label>
+            <textarea name="comments" placeholder="Anything else we should know?"></textarea>
+          </div>
+
+          <div class="checkbox-item">
+            <input type="checkbox" name="agreement" id="agreement" required>
+            <label for="agreement">I agree to be contacted about my onboarding <span class="required">*</span></label>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="reset" class="btn-reset">Clear Form</button>
+          <button type="submit" class="btn-submit">Submit Onboarding Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('onboardingForm');
+    const successMsg = document.getElementById('successMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Collect form data
+      const formData = new FormData(form);
+      const data = {
+        timestamp: new Date().toISOString(),
+        ...Object.fromEntries(formData)
+      };
+
+      // Prepare service list (checkboxes)
+      const services = [];
+      document.querySelectorAll('input[name="services"]:checked').forEach(cb => {
+        services.push(cb.value);
+      });
+      data.services = services.join(', ');
+
+      // Prepare setup list
+      const setups = [];
+      document.querySelectorAll('input[name="currentSetup"]:checked').forEach(cb => {
+        setups.push(cb.value);
+      });
+      data.currentSetup = setups.join(', ');
+
+      console.log('Form Submission:', data);
+
+      // Here you would typically send to backend/API
+      // For now, show success message
+      successMsg.classList.add('show');
+      form.style.opacity = '0.6';
+      form.style.pointerEvents = 'none';
+
+      // Reset after 3 seconds
+      setTimeout(() => {
+        form.reset();
+        form.style.opacity = '1';
+        form.style.pointerEvents = 'auto';
+        successMsg.classList.remove('show');
+        window.scrollTo(0, 0);
+      }, 3000);
+    });
+  </script>
+</body>
+</html>

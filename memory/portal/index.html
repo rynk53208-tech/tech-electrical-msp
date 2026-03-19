@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal | Tech & Electrical Services</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.75rem;
+        }
+        .logo h1 {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .logo p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #667eea;
+            background: rgba(255,255,255,0.15);
+        }
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        select option { background: #302b63; color: #fff; }
+        .login-btn {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.75rem;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        .login-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .login-btn:active { transform: translateY(0); }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.8rem;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+        .demo-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .demo-btn {
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .demo-btn:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.4);
+            color: #fff;
+        }
+        .demo-btn .role {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.15rem;
+        }
+        .footer-note {
+            text-align: center;
+            color: rgba(255,255,255,0.35);
+            font-size: 0.75rem;
+            margin-top: 1.75rem;
+        }
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            <h1>Tech & Electrical Services</h1>
+            <p>Client Portal — Secure Login</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="you@company.com" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label>Sign in as</label>
+                <select id="role">
+                    <option value="client">Client</option>
+                    <option value="admin">Admin / Staff</option>
+                </select>
+            </div>
+            <p class="error-msg" id="errorMsg">Invalid credentials. Please try again.</p>
+            <button type="submit" class="login-btn">Sign In →</button>
+        </form>
+
+        <div class="divider">or jump to demo</div>
+
+        <div class="demo-links">
+            <a href="client-dashboard.html" class="demo-btn">
+                <span class="role">👤 Client View</span>
+                Barney's Tire Shop
+            </a>
+            <a href="admin-dashboard.html" class="demo-btn">
+                <span class="role">🛠️ Admin View</span>
+                Tech &amp; Electrical
+            </a>
+        </div>
+
+        <div class="footer-note">
+            &copy; 2026 Tech &amp; Electrical Services LLC · All rights reserved
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('role').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Demo credentials
+            const creds = {
+                admin: { email: 'admin@techelectrical.com', password: 'admin123' },
+                client: { email: 'client@example.com', password: 'client123' }
+            };
+
+            if (email === creds[role].email && password === creds[role].password) {
+                const dest = role === 'admin' ? 'admin-dashboard.html' : 'client-dashboard.html';
+                sessionStorage.setItem('portalRole', role);
+                sessionStorage.setItem('portalUser', email);
+                window.location.href = dest;
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

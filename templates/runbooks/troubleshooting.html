@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Common Issues Guide - Troubleshooting Runbook</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.25; padding: 20px; }
+    h1 { font-size: 1.6em; margin-bottom: 0.5em; }
+    h2 { font-size: 1.2em; color: #333; margin-top: 1em; }
+    ol { margin: 0.5em 0 1em 1.25em; }
+    section { border-left: 3px solid #4a90e2; padding-left: 12px; margin: 12px 0; }
+    .note { font-size: 0.95em; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Common Issues Guide — Troubleshooting Runbook</h1>
+  <p class="note">Format: simple, scannable steps for field techs. Each issue includes a quick checklist, common causes, resolution steps, and escalation guidance.</p>
+
+  <section>
+    <h2>1) Slow network diagnosis</h2>
+    <ol>
+      <li>Check physical Layer: link lights, cables, Wi‑Fi signal strength.</li>
+      <li>Verify IP connectivity: ping default gateway and 8.8.8.8.</li>
+      <li>Test bandwidth: speedtest to local ISP gateway.</li>
+      <li>Examine device rate limits, QoS, and VPN tunnels for congestion.</li>
+      <li>Check for background updates or large transfers.</li>
+    </ol>
+    <p>Common causes: network congestion, faulty cabling, bad Wi‑Fi, router/switch issues, ISP outage.</p>
+    <p>Resolution: reseat cables, reconnect Wi‑Fi, reboot router, check for RPM/firmware updates, run traceroute, contact ISP if needed.</p>
+    <p>When to escalate: persistent degradation beyond 30 min, suspected ISP outage, or hardware fault on core device.</p>
+  </section>
+
+  <section>
+    <h2>2) Printer not connecting</h2>
+    <ol>
+      <li>Confirm printer is powered on and on the network.</li>
+      <li>Ping printer IP or hostname; verify driver configuration on client.</li>
+      <li>Check print queue for stuck jobs; clear or cancel if needed.</li>
+      <li>Reinstall/update printer driver; verify share/ACLs if networked.</li>
+      <li>Test from another device to isolate client issue.</li>
+    </ol>
+    <p>Common causes: offline printer, wrong IP, driver mismatch, driver cache corruption, firewall blocks.</p>
+    <p>Resolution: set static IP if DHCP churns, update drivers, restart printer spooler, reboot client, check firewall rules.</p>
+    <p>When to escalate: printer hardware fault, ongoing network ACL issues, or multiple users affected.</p>
+  </section>
+
+  <section>
+    <h2>3) VPN won’t connect</h2>
+    <ol>
+      <li>Validate credentials and VPN service status.</li>
+      <li>Check network reachability to VPN gateway (ping, traceroute).</li>
+      <li>Verify client config (server address, port, protocol, TLS/ certs).</li>
+      <li>Review logs for failure codes; reset or reissue tokens/certs if needed.</li>
+      <li>Test fallback: connect from another network or device.</li>
+    </ol>
+    <p>Common causes: expired certs, token, license issues, firewall blocking, DNS split tunneling.</p>
+    <p>Resolution: renew certs/token, adjust firewall, reset VPN service, reinstall client, update to latest client.</p>
+    <p>When to escalate: repeated failures after config verified, or gateway unreachable from multiple networks.</p>
+  </section>
+
+  <section>
+    <h2>4) Email not working</h2>
+    <ol>
+      <li>Check service status and account credentials.</li>
+      <li>Ping mail server and verify DNS MX records.</li>
+      <li>Test sending/receiving from another client or webmail.</li>
+      <li>Check for large mailboxes, phishing rules, or transport rules.</li>
+      <li>Review spam/junk routing and autopurge settings.</li>
+    </ol>
+    <p>Common causes: credential issues, DNS problems, server outages, large attachments, misconfigured rules.</p>
+    <p>Resolution: reset password, reconfigure account, fix DNS, clear local cache, check quotas.</p>
+    <p>When to escalate: provider outage, domain-wide DNS changes, or security/compliance blocks.</p>
+  </section>
+
+  <section>
+    <h2>5) Computer running slow</h2>
+    <ol>
+      <li>Open Task Manager/Activity Monitor; check CPU/memory/disk usage.</li>
+      <li>Identify startup programs; disable unnecessary items.</li>
+      <li>Run disk cleanup and check for malware; scan with updated AV.</li>
+      <li>Check for drive health (S.M.A.R.T.), fragmentation, and updates.</li>
+      <li>Ensure latest OS and driver updates; reboot.</li>
+    </ol>
+    <p>Common causes: background processes, malware, full disk, aging hardware, overheating.</p>
+    <p>Resolution: end resource hogs, upgrade hardware if needed, refresh OS, clean temp files.</p>
+    <p>When to escalate: persistent slowness after cleanup, suspected malware, or hardware failure symptoms.</p>
+  </section>
+
+  <section>
+    <h2>6) Can't access shared drive</h2>
+    <ol>
+      <li>Verify network connectivity to file server.</li>
+      <li>Confirm credentials and mount path; check permissions.</li>
+      <li>Test with IP address; map drive again; check for DNS issues.</li>
+      <li>Check server availability and share permissions.</li>
+      <li>Review VPN if remote access is required.</li>
+    </ol>
+    <p>Common causes: permissions, offline server, DNS resolution, expired credentials, network segmentation.</p>
+    <p>Resolution: re-map drive, update credentials, verify share permissions, restart client services, check firewall.</p>
+    <p>When to escalate: server-side outage, ACL misconfig, or widespread access failures.</p>
+  </section>
+</body>
+</html>

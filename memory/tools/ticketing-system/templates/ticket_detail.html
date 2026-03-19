@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}{{ ticket.ticket_id }} — TES LLC{% endblock %}
+{% block breadcrumb %}
+<span class="breadcrumb">
+  <a href="{{ url_for('dashboard') }}">Dashboard</a> › 
+  <span>{{ ticket.ticket_id }}</span>
+</span>
+{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+
+  <!-- Left: Main Ticket Info -->
+  <div class="detail-main">
+    <div class="detail-header">
+      <div class="detail-id-row">
+        <span class="detail-ticket-id">{{ ticket.ticket_id }}</span>
+        <span class="badge priority-badge pri-{{ ticket.priority | lower }}">{{ ticket.priority }}</span>
+        <span class="badge status-badge stat-{{ ticket.status | lower | replace(' ', '-') }}">{{ ticket.status }}</span>
+        {% set sla = ticket.sla_status() %}
+        {% if sla == 'breached' %}
+          <span class="sla-badge sla-breached">🔴 SLA Breached</span>
+        {% elif sla == 'warning' %}
+          <span class="sla-badge sla-warning">🟡 SLA At Risk</span>
+        {% else %}
+          <span class="sla-badge sla-ok">🟢 SLA OK</span>
+        {% endif %}
+      </div>
+      <h1 class="detail-title">{{ ticket.title }}</h1>
+      <div class="detail-meta">
+        <span>📁 {{ ticket.category }}</span>
+        <span>👤 {{ ticket.client_name }} &lt;{{ ticket.client_email }}&gt;</span>
+        <span>🕐 Created {{ ticket.created_at.strftime('%B %d, %Y at %H:%M') if ticket.created_at else '—' }} UTC</span>
+      </div>
+    </div>
+
+    <div class="detail-description">
+      <h3>Description</h3>
+      <p>{{ ticket.description }}</p>
+    </div>
+
+    <!-- SLA Info -->
+    <div class="sla-info-box">
+      <div class="sla-info-title">SLA Targets</div>
+      <div class="sla-info-grid">
+        <div class="sla-item">
+          <div class="sla-label">Response Due</div>
+          <div class="sla-value {{ 'breached' if ticket.sla_response_breached() else '' }}">
+            {{ ticket.sla_response_due.strftime('%m/%d %H:%M') if ticket.sla_response_due else '—' }} UTC
+          </div>
+        </div>
+        <div class="sla-item">
+          <div class="sla-label">Resolution Due</div>
+          <div class="sla-value {{ 'breached' if ticket.sla_resolve_breached() else '' }}">
+            {{ ticket.sla_resolve_due.strftime('%m/%d %H:%M') if ticket.sla_resolve_due else '—' }} UTC
+          </div>
+        </div>
+        {% if ticket.resolved_at %}
+        <div class="sla-item">
+          <div class="sla-label">Resolved At</div>
+          <div class="sla-value resolved-time">
+            {{ ticket.resolved_at.strftime('%m/%d %H:%M') }} UTC
+          </div>
+        </div>
+        {% endif %}
+        <div class="sla-item">
+          <div class="sla-label">Last Updated</div>
+          <div class="sla-value">
+            {{ ticket.updated_at.strftime('%m/%d %H:%M') if ticket.updated_at else '—' }} UTC
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline / Activity Log -->
+    <div class="timeline-section">
+      <h3>Activity Timeline</h3>
+      <div class="timeline">
+        {% for act in activities %}
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-action">{{ act.action }}</span>
+              <span class="timeline-actor">by {{ act.actor }}</span>
+              <span class="timeline-time">{{ act.created_at.strftime('%m/%d/%Y %H:%M') if act.created_at else '' }} UTC</span>
+            </div>
+            {% if act.note %}
+            <div class="timeline-note">{{ act.note }}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        {% if not activities %}
+        <div class="timeline-empty">No activity yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Add Note -->
+    <div class="add-note-section">
+      <h3>Add Note</h3>
+      <form method="POST" action="{{ url_for('add_note', ticket_id=ticket.ticket_id) }}">
+        <textarea name="note" class="form-textarea" rows="3" placeholder="Add an internal note or update..."></textarea>
+        <div class="form-row note-actions">
+          <select name="actor" class="form-select select-sm">
+            {% for m in team_members %}
+            <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">Add Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right: Actions Sidebar -->
+  <div class="detail-sidebar">
+
+    <div class="action-card">
+      <div class="action-card-title">Update Status</div>
+      <form method="POST" action="{{ url_for('update_ticket', ticket_id=ticket.ticket_id) }}">
+        <select name="status" class="form-select">
+          {% for s in statuses %}
+          <option value="{{ s }}" {% if ticket.status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <input type="hidden" name="actor" value="Technician"/>
+        <button type="submit" class="btn btn-primary btn-sm mt-sm">Update Status</button>
+      </form>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">Assign To</div>
+      <form method="POST" action="{{ url_for('update_ticket', ticket_id=ticket.ticket_id) }}">
+        <select name="assigned_to" class="form-select">
+          {% for m in team_members %}
+          <option value="{{ m }}" {% if ticket.assigned_to == m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+        <input type="hidden" name="actor" value="Dispatcher"/>
+        <button type="submit" class="btn btn-primary btn-sm mt-sm">Reassign</button>
+      </form>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">Change Priority</div>
+      <form method="POST" action="{{ url_for('update_ticket', ticket_id=ticket.ticket_id) }}">
+        <select name="priority" class="form-select">
+          {% for p in priorities %}
+          <option value="{{ p }}" {% if ticket.priority == p %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+        <input type="hidden" name="actor" value="Dispatcher"/>
+        <button type="submit" class="btn btn-warning btn-sm mt-sm">Update Priority</button>
+      </form>
+    </div>
+
+    <div class="action-card info-card">
+      <div class="action-card-title">Ticket Info</div>
+      <div class="info-row"><span>Category</span><span class="badge category-badge cat-{{ ticket.category | lower | replace(' ', '-') }}">{{ ticket.category }}</span></div>
+      <div class="info-row"><span>Assigned</span><strong>{{ ticket.assigned_to }}</strong></div>
+      <div class="info-row"><span>Activities</span><strong>{{ activities | length }}</strong></div>
+    </div>
+
+    <div class="action-card danger-card">
+      <div class="action-card-title">Danger Zone</div>
+      <form method="POST" action="{{ url_for('delete_ticket', ticket_id=ticket.ticket_id) }}"
+            onsubmit="return confirm('Delete this ticket permanently?')">
+        <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete Ticket</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

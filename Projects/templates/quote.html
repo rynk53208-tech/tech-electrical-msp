@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote/Proposal - Tech & Electrical Services LLC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+        .company-info h1 {
+            color: #2196F3;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: #e3f2fd;
+            border: 2px dashed #2196F3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        .company-info p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .quote-header {
+            text-align: right;
+        }
+        .quote-header h2 {
+            color: #2196F3;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .detail-label {
+            min-width: 100px;
+            font-weight: 600;
+            color: #333;
+        }
+        .detail-value {
+            min-width: 150px;
+            text-align: left;
+            color: #666;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        .section-title {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            font-weight: 600;
+            color: #2196F3;
+            border-left: 4px solid #2196F3;
+            margin-bottom: 15px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .info-block h3 {
+            font-size: 13px;
+            color: #2196F3;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-block p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .executive-summary {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196F3;
+        }
+        .executive-summary h4 {
+            color: #2196F3;
+            margin-bottom: 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .executive-summary p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .line-items table {
+            background: white;
+        }
+        thead {
+            background: #e3f2fd;
+            border-bottom: 2px solid #2196F3;
+        }
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2196F3;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 13px;
+        }
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .qty-col {
+            width: 80px;
+        }
+        .rate-col {
+            width: 100px;
+        }
+        .amount-col {
+            width: 120px;
+        }
+        .totals {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .totals-row {
+            display: grid;
+            grid-template-columns: 1fr 200px;
+            gap: 20px;
+            padding: 12px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .totals-row:last-child {
+            border-bottom: 2px solid #2196F3;
+        }
+        .totals-label {
+            text-align: right;
+            font-weight: 600;
+        }
+        .totals-value {
+            text-align: right;
+            font-weight: 600;
+            color: #333;
+        }
+        .total-quote {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+        .total-quote-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .total-quote-amount {
+            font-size: 28px;
+            color: #2196F3;
+            font-weight: 700;
+        }
+        .scope-of-work {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .scope-of-work h4 {
+            color: #2196F3;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .scope-of-work ul {
+            list-style-position: inside;
+            margin-left: 0;
+        }
+        .scope-of-work li {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 6px;
+        }
+        .timeline {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .timeline h4 {
+            color: #2196F3;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .timeline-item {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .timeline-item strong {
+            color: #333;
+        }
+        .payment-terms {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .payment-terms h4 {
+            color: #2196F3;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .payment-terms p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .cta-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #2196F3;
+        }
+        .cta-section h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .cta-section p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+        .btn-secondary {
+            background: white;
+            color: #2196F3;
+            border: 2px solid #2196F3;
+        }
+        .btn-secondary:hover {
+            background: #e3f2fd;
+        }
+        .validity {
+            margin-top: 20px;
+            padding: 12px;
+            background: #fff9c4;
+            border-left: 4px solid #fbc02d;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e8e8e8;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="company-info">
+                <div class="logo-placeholder">Logo</div>
+                <h1>Tech & Electrical Services LLC</h1>
+                <p>
+                    Temecula, CA<br>
+                    Phone: (951) 555-0123<br>
+                    Email: quotes@techelectricalservices.com<br>
+                    License: #[LICENSE_NUMBER]
+                </p>
+            </div>
+            <div class="quote-header">
+                <h2>QUOTE / PROPOSAL</h2>
+                <div class="detail-row">
+                    <span class="detail-label">Quote #:</span>
+                    <span class="detail-value">[QUOTE-2026-0001]</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value">[DATE]</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Valid Until:</span>
+                    <span class="detail-value">[EXPIRY_DATE]</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="info-grid">
+            <div class="info-block">
+                <h3>For</h3>
+                <p>
+                    [CLIENT_NAME]<br>
+                    [COMPANY_NAME]<br>
+                    [ADDRESS]<br>
+                    [CITY, STATE ZIP]<br>
+                    [PHONE]<br>
+                    [EMAIL]
+                </p>
+            </div>
+            <div class="info-block">
+                <h3>Project Location</h3>
+                <p>
+                    [PROJECT_LOCATION]<br>
+                    [ADDRESS]<br>
+                    [CITY, STATE ZIP]<br>
+                    Contact: [NAME] ([PHONE])
+                </p>
+            </div>
+        </section>
+
+        <section class="executive-summary">
+            <h4>Project Overview</h4>
+            <p>
+                [PROJECT_SUMMARY - Brief description of the proposed solution, key deliverables, and business benefits]
+            </p>
+        </section>
+
+        <section class="line-items">
+            <div class="section-title">Proposed Services & Pricing</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Service / Item</th>
+                        <th class="qty-col text-center">Qty</th>
+                        <th class="rate-col text-right">Unit Price</th>
+                        <th class="amount-col text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[SERVICE 1 - e.g., Network Security Audit]</td>
+                        <td class="text-center">[1]</td>
+                        <td class="text-right">$[PRICE]</td>
+                        <td class="text-right"><strong>$[AMOUNT]</strong></td>
+                    </tr>
+                    <tr>
+                        <td>[SERVICE 2 - e.g., Implementation & Setup]</td>
+                        <td class="text-center">[1]</td>
+                        <td class="text-right">$[PRICE]</td>
+                        <td class="text-right"><strong>$[AMOUNT]</strong></td>
+                    </tr>
+                    <tr>
+                        <td>[SERVICE 3 - e.g., Training & Documentation]</td>
+                        <td class="text-center">[1]</td>
+                        <td class="text-right">$[PRICE]</td>
+                        <td class="text-right"><strong>$[AMOUNT]</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="totals">
+            <div class="totals-row">
+                <div class="totals-label">Subtotal:</div>
+                <div class="totals-value">$[SUBTOTAL]</div>
+            </div>
+            <div class="totals-row">
+                <div class="totals-label">Discount / Promotion:</div>
+                <div class="totals-value">-$[DISCOUNT]</div>
+            </div>
+            <div class="totals-row">
+                <div class="totals-label">Tax:</div>
+                <div class="totals-value">$[TAX]</div>
+            </div>
+            <div class="totals-row">
+                <div class="totals-label">Total Quote:</div>
+                <div class="totals-value">$[TOTAL]</div>
+            </div>
+        </section>
+
+        <div class="total-quote">
+            <div class="total-quote-label">Total Proposed Investment</div>
+            <div class="total-quote-amount">$[TOTAL]</div>
+        </div>
+
+        <section class="scope-of-work">
+            <h4>Scope of Work Includes</h4>
+            <ul>
+                <li>[Detail what's included in this quote - e.g., site assessment]</li>
+                <li>[e.g., design and planning]</li>
+                <li>[e.g., implementation and testing]</li>
+                <li>[e.g., documentation and handoff]</li>
+                <li>[e.g., 30 days of post-implementation support]</li>
+            </ul>
+        </section>
+
+        <section class="timeline">
+            <h4>Project Timeline</h4>
+            <div class="timeline-item"><strong>Phase 1:</strong> [Duration] - [Description]</div>
+            <div class="timeline-item"><strong>Phase 2:</strong> [Duration] - [Description]</div>
+            <div class="timeline-item"><strong>Phase 3:</strong> [Duration] - [Description]</div>
+            <div class="timeline-item"><strong>Completion:</strong> [TARGET_DATE]</div>
+        </section>
+
+        <section class="payment-terms">
+            <h4>Payment Terms</h4>
+            <p><strong>Deposit Required:</strong> [%] upon acceptance of quote</p>
+            <p><strong>Final Payment:</strong> Due upon project completion</p>
+            <p><strong>Payment Methods:</strong> Check, Bank Transfer, Credit Card, PayPal</p>
+            <p><strong>Timeline:</strong> Work will begin upon receipt of signed agreement and deposit</p>
+        </section>
+
+        <div class="validity">
+            <strong>⏰ Quote Validity:</strong> This quote is valid until [EXPIRY_DATE]. Prices and terms are subject to change if accepted after this date.
+        </div>
+
+        <section class="cta-section">
+            <h3>Ready to Get Started?</h3>
+            <p>
+                Contact us to accept this quote, discuss modifications, or answer any questions you may have.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary">Accept This Quote</button>
+                <button class="btn btn-secondary">Request Changes</button>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px;">
+                <strong>Contact:</strong> [NAME] | Phone: (951) 555-0123 | Email: quotes@techelectricalservices.com
+            </p>
+        </section>
+
+        <footer>
+            Tech & Electrical Services LLC | © 2026 | All rights reserved | Contact: quotes@techelectricalservices.com
+        </footer>
+    </div>
+</body>
+</html>

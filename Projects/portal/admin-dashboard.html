@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Tech Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .header-nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .header-nav a:hover {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            color: #1a1a2e;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .stat-card-label {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .stat-card-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-card-change.positive {
+            color: #22c55e;
+        }
+
+        .stat-card-change.negative {
+            color: #ef4444;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .quick-actions h3 {
+            font-size: 1rem;
+            color: #1a1a2e;
+            margin-bottom: 1rem;
+        }
+
+        .actions-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            background: #fff;
+            color: #1a1a2e;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            background: #5a6fd6;
+            border-color: #5a6fd6;
+        }
+
+        /* Recent Tickets Table */
+        .tickets-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .tickets-section h3 {
+            font-size: 1rem;
+            color: #1a1a2e;
+            margin-bottom: 1rem;
+        }
+
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tickets-table th,
+        .tickets-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tickets-table th {
+            color: #666;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .tickets-table td {
+            color: #1a1a2e;
+            font-size: 0.9rem;
+        }
+
+        .tickets-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.open {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-badge.in-progress {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.resolved {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .priority-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .priority-badge.high {
+            color: #ef4444;
+        }
+
+        .priority-badge.medium {
+            color: #f59e0b;
+        }
+
+        .priority-badge.low {
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-placeholder">T</div>
+            <span>TechServices</span>
+        </div>
+        <nav class="header-nav">
+            <a href="#">Dashboard</a>
+            <a href="#">Clients</a>
+            <a href="#">Tickets</a>
+            <a href="#">Settings</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <h1 class="page-title">Dashboard Overview</h1>
+
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-label">Active Clients</div>
+                <div class="stat-card-value">24</div>
+                <div class="stat-card-change positive">↑ 2 this month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Open Tickets</div>
+                <div class="stat-card-value">12</div>
+                <div class="stat-card-change negative">↓ 3 from yesterday</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Monthly Revenue</div>
+                <div class="stat-card-value">$8,450</div>
+                <div class="stat-card-change positive">↑ 15% vs last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Resolved This Week</div>
+                <div class="stat-card-value">18</div>
+                <div class="stat-card-change positive">↑ 7 from last week</div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <button class="action-btn primary">+ New Ticket</button>
+                <button class="action-btn">Add Client</button>
+                <button class="action-btn">Create Invoice</button>
+                <button class="action-btn">View Schedule</button>
+            </div>
+        </section>
+
+        <!-- Recent Tickets Table -->
+        <section class="tickets-section">
+            <h3>Recent Tickets</h3>
+            <table class="tickets-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Issue</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#TK-142</td>
+                        <td>Acme Corp</td>
+                        <td>Network downtime</td>
+                        <td><span class="priority-badge high">High</span></td>
+                        <td><span class="status-badge in-progress">In Progress</span></td>
+                        <td>Today</td>
+                    </tr>
+                    <tr>
+                        <td>#TK-141</td>
+                        <td>Smith Office</td>
+                        <td>Printer not working</td>
+                        <td><span class="priority-badge medium">Medium</span></td>
+                        <td><span class="status-badge open">Open</span></td>
+                        <td>Today</td>
+                    </tr>
+                    <tr>
+                        <td>#TK-140</td>
+                        <td>DataFlow Inc</td>
+                        <td>SSL certificate renewal</td>
+                        <td><span class="priority-badge low">Low</span></td>
+                        <td><span class="status-badge resolved">Resolved</span></td>
+                        <td>Yesterday</td>
+                    </tr>
+                    <tr>
+                        <td>#TK-139</td>
+                        <td>Local Library</td>
+                        <td>Security scan update</td>
+                        <td><span class="priority-badge medium">Medium</span></td>
+                        <td><span class="status-badge resolved">Resolved</span></td>
+                        <td>Yesterday</td>
+                    </tr>
+                    <tr>
+                        <td>#TK-138</td>
+                        <td>Tech Startup</td>
+                        <td>Server migration</td>
+                        <td><span class="priority-badge high">High</span></td>
+                        <td><span class="status-badge resolved">Resolved</span></td>
+                        <td>2 days ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Tickets | Tech & Electrical Services Admin</title>
+  <link rel="stylesheet" href="portal.css">
+  <style>
+    .sidebar { background: #0f172a; }
+    .sidebar-header { border-bottom-color: rgba(255,255,255,0.06); }
+    .sidebar-logo { background: linear-gradient(135deg,#ef4444,#dc2626); }
+    .nav-item.active { background: linear-gradient(90deg,rgba(239,68,68,0.22),rgba(239,68,68,0.08)); }
+    .nav-item.active::before { background: #ef4444; }
+
+    .ticket-row { cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ── ADMIN SIDEBAR ──────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div class="sidebar-brand">
+        <h2>Tech &amp; Electrical</h2>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Overview</span>
+      <a href="admin-dashboard.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="admin-tickets.html" class="nav-item active">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+        All Tickets
+        <span class="nav-badge">5</span>
+      </a>
+      <a href="reporting.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Reports
+      </a>
+      <span class="nav-section-label">Clients</span>
+      <a href="admin-clients.html" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Clients <span class="nav-badge info">24</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Contracts
+      </a>
+      <span class="nav-section-label">Finance</span>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Invoices <span class="nav-badge warn">2</span>
+      </a>
+      <span class="nav-section-label">System</span>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626)">IA</div>
+        <div class="user-info">
+          <div class="user-name">Irvin Avitia</div>
+          <div class="user-role">Admin · Owner</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN AREA ───────────────────────────── -->
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <a href="admin-dashboard.html">Admin</a>
+          <span>›</span>
+          <span class="current">All Tickets</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openCreateModal()">+ New Ticket</button>
+        <a href="index.html" class="btn btn-secondary btn-sm">Sign Out</a>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">All Tickets</div>
+          <div class="page-subtitle" id="ticketCount">Showing 12 tickets across all clients</div>
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="btn btn-secondary" onclick="exportCSV()">⬇️ Export CSV</button>
+          <button class="btn btn-primary" onclick="openCreateModal()">+ New Ticket</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="card" style="padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+          <div class="search-bar" style="flex:1;min-width:220px">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" id="searchInput" placeholder="Search tickets, clients, IDs..." oninput="applyFilters()">
+          </div>
+
+          <select class="form-control" style="width:auto;padding:0.45rem 2rem 0.45rem 0.75rem" id="filterStatus" onchange="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+
+          <select class="form-control" style="width:auto;padding:0.45rem 2rem 0.45rem 0.75rem" id="filterPriority" onchange="applyFilters()">
+            <option value="">All Priorities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+
+          <select class="form-control" style="width:auto;padding:0.45rem 2rem 0.45rem 0.75rem" id="filterClient" onchange="applyFilters()">
+            <option value="">All Clients</option>
+            <option>Barney's Tire Shop</option>
+            <option>Acme Corp</option>
+            <option>DataFlow Inc</option>
+            <option>Smith Office</option>
+            <option>Local Library</option>
+            <option>Tech Startup</option>
+          </select>
+
+          <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear</button>
+        </div>
+      </div>
+
+      <!-- Ticket Table -->
+      <div class="card">
+        <div class="table-wrapper" style="border:none;border-radius:0">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" onchange="toggleAll(this)" title="Select All" style="cursor:pointer">
+                </th>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Subject</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned</th>
+                <th>Opened</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ticketBody">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Ticket Detail Modal -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <div>
+        <div style="font-size:0.75rem;color:var(--text-muted)" id="modalId">—</div>
+        <div class="modal-title" id="modalTitle">—</div>
+      </div>
+      <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.25rem" id="modalBadges"></div>
+
+    <div class="form-row" style="margin-bottom:1rem">
+      <div>
+        <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase">Status</label>
+        <select class="form-control" style="margin-top:0.25rem" id="modalStatus">
+          <option value="open">Open</option>
+          <option value="in-progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase">Assigned To</label>
+        <select class="form-control" style="margin-top:0.25rem">
+          <option>Irvin A.</option>
+          <option>Unassigned</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.5rem;text-transform:uppercase">Description</div>
+      <div id="modalDesc" style="font-size:0.88rem;background:var(--surface-2);padding:0.85rem;border-radius:var(--radius-sm);border:1px solid var(--border-light);color:var(--text-secondary)">—</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase">Add Internal Note</div>
+      <textarea class="form-control" rows="3" placeholder="Add a note visible to admin/tech staff only..."></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
+      <button class="btn btn-danger btn-sm" onclick="closeDetailModal()">Mark Closed</button>
+      <button class="btn btn-primary" onclick="saveTicketChanges()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Ticket Modal -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">+ Create Ticket</div>
+      <button class="modal-close" onclick="closeCreateModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Client</label>
+      <select class="form-control">
+        <option>Barney's Tire Shop</option>
+        <option>Acme Corp</option>
+        <option>DataFlow Inc</option>
+        <option>Smith Office</option>
+        <option>Local Library</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Category</label>
+        <select class="form-control">
+          <option>🌐 Network</option>
+          <option>🖥️ Hardware</option>
+          <option>💾 Software</option>
+          <option>🔐 Security</option>
+          <option>🖧 Server</option>
+          <option>⚡ Electrical</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select class="form-control">
+          <option>🔴 Critical</option>
+          <option>🟠 High</option>
+          <option selected>🔵 Medium</option>
+          <option>🟢 Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" class="form-control" placeholder="Brief description">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" rows="3" placeholder="Details..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="createTicketFromModal()">Create Ticket</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const tickets = [
+  { id:'TK-148', client:"Barney's Tire Shop", subject:'Network outage — POS down', category:'🌐 Network', priority:'critical', status:'open', assigned:'Irvin A.', opened:'Just now', desc:'All POS terminals went offline. Network switch may have failed again.' },
+  { id:'TK-147', client:'Acme Corp', subject:'Email relay configuration', category:'📧 Email', priority:'high', status:'in-progress', assigned:'Irvin A.', opened:'1h ago', desc:'Email relay is rejecting outbound messages from the new mail server.' },
+  { id:'TK-146', client:'Smith Office', subject:'Printer not working', category:'🖨️ Printing', priority:'medium', status:'open', assigned:'Irvin A.', opened:'3h ago', desc:'HP LaserJet in main office not printing. Appears stuck in queue.' },
+  { id:'TK-145', client:'Local Library', subject:'Security scan update', category:'🔐 Security', priority:'medium', status:'in-progress', assigned:'Irvin A.', opened:'5h ago', desc:'Monthly security scan needs to be run and report generated.' },
+  { id:'TK-144', client:'DataFlow Inc', subject:'SSL certificate renewal', category:'🔐 Security', priority:'low', status:'resolved', assigned:'Irvin A.', opened:'1d ago', desc:'SSL cert for company website expires in 7 days. Needs renewing.' },
+  { id:'TK-143', client:'Tech Startup', subject:'Server migration complete', category:'🖧 Server', priority:'high', status:'resolved', assigned:'Irvin A.', opened:'2d ago', desc:'Migrated workloads from on-prem to cloud.' },
+  { id:'TK-142', client:"Barney's Tire Shop", subject:'Server maintenance & backup setup', category:'🖧 Server', priority:'high', status:'in-progress', assigned:'Irvin A.', opened:'3d ago', desc:'Server room setup and backup scheduling.' },
+  { id:'TK-141', client:'Smith Office', subject:'Email not syncing on mobile', category:'📧 Email', priority:'medium', status:'resolved', assigned:'Irvin A.', opened:'4d ago', desc:'Office 365 not syncing on 2 iPhones.' },
+  { id:'TK-140', client:'DataFlow Inc', subject:'SSL certificate renewal', category:'🔐 Security', priority:'low', status:'resolved', assigned:'Irvin A.', opened:'5d ago', desc:'SSL cert renewed for website.' },
+  { id:'TK-139', client:'Local Library', subject:'Firewall rule update', category:'🔐 Security', priority:'medium', status:'resolved', assigned:'Irvin A.', opened:'6d ago', desc:'Updated firewall rules to allow new printer.' },
+  { id:'TK-138', client:'Tech Startup', subject:'Workstation setup x3', category:'🖥️ Hardware', priority:'medium', status:'closed', assigned:'Irvin A.', opened:'7d ago', desc:'Set up 3 new developer workstations.' },
+  { id:'TK-137', client:'Acme Corp', subject:'VPN access for remote staff', category:'🌐 Network', priority:'medium', status:'closed', assigned:'Irvin A.', opened:'8d ago', desc:'Configured VPN for 5 remote employees.' },
+];
+
+const badgeClass = { open:'badge-open', 'in-progress':'badge-progress', resolved:'badge-resolved', closed:'badge-closed', critical:'badge-critical' };
+const badgeLabel = { open:'Open', 'in-progress':'In Progress', resolved:'Resolved', closed:'Closed' };
+const priorityLabel = { critical:'🔴 Critical', high:'🟠 High', medium:'🔵 Medium', low:'🟢 Low' };
+
+let filtered = [...tickets];
+
+function renderTickets() {
+  const tbody = document.getElementById('ticketBody');
+  document.getElementById('ticketCount').textContent = `Showing ${filtered.length} of ${tickets.length} tickets`;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">🎫</div><div class="empty-title">No tickets found</div><div class="empty-sub">Adjust your filters.</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(t => `
+    <tr class="ticket-row" onclick="openDetail('${t.id}')">
+      <td onclick="event.stopPropagation()"><input type="checkbox" class="row-check"></td>
+      <td style="font-family:monospace;font-size:0.78rem;color:var(--primary);font-weight:600">#${t.id}</td>
+      <td style="font-size:0.82rem;font-weight:500">${t.client}</td>
+      <td style="font-size:0.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.subject}</td>
+      <td style="font-size:0.78rem;color:var(--text-secondary)">${t.category}</td>
+      <td style="font-size:0.8rem">${priorityLabel[t.priority]}</td>
+      <td><span class="badge ${t.status === 'critical' ? 'badge-critical' : badgeClass[t.status]}" style="font-size:0.65rem">${badgeLabel[t.status]}</span></td>
+      <td style="font-size:0.78rem;color:var(--text-muted)">${t.assigned}</td>
+      <td style="font-size:0.75rem;color:var(--text-muted)">${t.opened}</td>
+      <td onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" onclick="openDetail('${t.id}')">Edit</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('filterStatus').value;
+  const priority = document.getElementById('filterPriority').value;
+  const client = document.getElementById('filterClient').value;
+
+  filtered = tickets.filter(t => {
+    const matchSearch = !search || t.id.toLowerCase().includes(search) || t.client.toLowerCase().includes(search) || t.subject.toLowerCase().includes(search);
+    const matchStatus = !status || t.status === status;
+    const matchPriority = !priority || t.priority === priority;
+    const matchClient = !client || t.client === client;
+    return matchSearch && matchStatus && matchPriority && matchClient;
+  });
+  renderTickets();
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterPriority').value = '';
+  document.getElementById('filterClient').value = '';
+  filtered = [...tickets];
+  renderTickets();
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+}
+
+function openDetail(id) {
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('modalId').textContent = '#' + t.id;
+  document.getElementById('modalTitle').textContent = t.subject;
+  document.getElementById('modalDesc').textContent = t.desc;
+  document.getElementById('modalStatus').value = t.status;
+  document.getElementById('modalBadges').innerHTML = `
+    <span class="badge ${badgeClass[t.status]}">${badgeLabel[t.status]}</span>
+    <span style="font-size:0.8rem;color:var(--text-muted)">${priorityLabel[t.priority]}</span>
+    <span style="font-size:0.8rem;color:var(--text-muted)">${t.client}</span>
+    <span style="font-size:0.8rem;color:var(--text-muted)">${t.category}</span>
+    <span style="font-size:0.8rem;color:var(--text-muted)">Opened ${t.opened}</span>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+function saveTicketChanges() {
+  closeDetailModal();
+  showToast('✅ Ticket updated successfully!');
+}
+
+function openCreateModal() {
+  document.getElementById('createModal').classList.add('open');
+}
+
+function closeCreateModal() {
+  document.getElementById('createModal').classList.remove('open');
+}
+
+function createTicketFromModal() {
+  closeCreateModal();
+  showToast('✅ Ticket #TK-149 created!');
+}
+
+document.getElementById('detailModal').addEventListener('click', function(e) { if(e.target===this) closeDetailModal(); });
+document.getElementById('createModal').addEventListener('click', function(e) { if(e.target===this) closeCreateModal(); });
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#1a1a2e;color:#fff;padding:1rem 1.5rem;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:9999;font-size:0.9rem;animation:fadeIn 0.25s ease';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function exportCSV() {
+  const rows = [['ID','Client','Subject','Category','Priority','Status','Assigned','Opened']];
+  filtered.forEach(t => rows.push([t.id, t.client, t.subject, t.category, t.priority, t.status, t.assigned, t.opened]));
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'tickets-export.csv';
+  a.click();
+}
+
+renderTickets();
+</script>
+</body>
+</html>

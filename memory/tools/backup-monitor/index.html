@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backup Monitor — Tech & Electrical Services LLC</title>
+  <style>
+    /* ─── Design System ─────────────────────────────────────────────── */
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #21262d;
+      --border:    #30363d;
+      --cyan:      #00d4ff;
+      --amber:     #f59e0b;
+      --green:     #3fb950;
+      --red:       #f85149;
+      --yellow:    #e3b341;
+      --muted:     #8b949e;
+      --text:      #e6edf3;
+      --radius:    10px;
+      --font:      'Segoe UI', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { font-size: 24px; }
+    .brand-name { font-size: 18px; font-weight: 700; color: var(--cyan); }
+    .brand-sub  { font-size: 12px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 4px;
+      padding: 0 24px;
+    }
+    nav button {
+      background: none;
+      border: none;
+      padding: 12px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: .15s;
+      font-family: var(--font);
+    }
+    nav button:hover { color: var(--text); }
+    nav button.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+    main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+    /* ─── Buttons ────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius);
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; transition: .15s;
+    }
+    .btn-primary  { background: var(--cyan); color: #000; }
+    .btn-primary:hover { background: #00b8d9; }
+    .btn-secondary{ background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger   { background: var(--red); color: #fff; }
+    .btn-danger:hover { opacity: .85; }
+    .btn-sm       { padding: 5px 10px; font-size: 12px; }
+
+    /* ─── Cards ──────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .card-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── Status Badge ───────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .badge-success { background: rgba(63,185,80,.15); color: var(--green); }
+    .badge-failed  { background: rgba(248,81,73,.15);  color: var(--red); }
+    .badge-warning { background: rgba(227,179,65,.15); color: var(--yellow); }
+    .badge-nobackup{ background: rgba(139,148,158,.15);color: var(--muted); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+    /* ─── Stat Cards (Dashboard) ─────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .stat-value { font-size: 32px; font-weight: 700; margin: 6px 0; line-height: 1; }
+    .stat-sub   { font-size: 12px; color: var(--muted); }
+    .stat-green { color: var(--green); }
+    .stat-red   { color: var(--red); }
+    .stat-yellow{ color: var(--yellow); }
+    .stat-cyan  { color: var(--cyan); }
+
+    /* ─── Table ──────────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th {
+      padding: 10px 12px; text-align: left;
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted); font-weight: 600;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(48,54,61,.5);
+      transition: background .1s;
+      cursor: default;
+    }
+    tbody tr:hover { background: var(--surface2); }
+    td { padding: 12px; vertical-align: middle; }
+    td .client-name { font-weight: 600; color: var(--text); }
+    td .client-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── Health bar ─────────────────────────────────────────────────── */
+    .health-bar-wrap { width: 90px; background: var(--surface2); border-radius: 20px; height: 6px; }
+    .health-bar      { height: 6px; border-radius: 20px; transition: width .4s; }
+
+    /* ─── Progress / Size pill ───────────────────────────────────────── */
+    .size-pill {
+      background: var(--surface2); border-radius: 4px;
+      padding: 3px 8px; font-size: 12px;
+      font-family: 'Courier New', monospace; color: var(--cyan);
+    }
+
+    /* ─── Days ago label ─────────────────────────────────────────────── */
+    .days-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .days-ok    { color: var(--green); }
+    .days-warn  { color: var(--yellow); }
+    .days-crit  { color: var(--red); }
+
+    /* ─── Alert threshold pill ───────────────────────────────────────── */
+    .threshold { font-size: 11px; color: var(--muted); }
+
+    /* ─── Client Detail Panel ────────────────────────────────────────── */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 700px) { .detail-grid { grid-template-columns: 1fr; } }
+
+    .detail-item { display: flex; flex-direction: column; gap: 4px; }
+    .detail-key  { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .detail-val  { font-size: 14px; color: var(--text); }
+
+    .timeline { list-style: none; }
+    .timeline li {
+      display: flex; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(48,54,61,.5);
+      font-size: 13px;
+    }
+    .timeline li:last-child { border-bottom: none; }
+    .tl-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+    .tl-body { flex: 1; }
+    .tl-ts { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── Modal ──────────────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto;
+      margin: 16px;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: var(--text); }
+
+    /* ─── Form ───────────────────────────────────────────────────────── */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    input, select, textarea {
+      width: 100%; padding: 9px 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px;
+      transition: border-color .15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--cyan);
+    }
+    select option { background: var(--surface2); }
+
+    /* ─── Toast ──────────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 20px; right: 20px; z-index: 999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--cyan);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      animation: slideIn .25s ease;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.error { border-left-color: var(--red); }
+    .toast.success { border-left-color: var(--green); }
+    @keyframes slideIn { from { opacity:0; transform: translateX(40px); } to { opacity:1; transform: translateX(0); } }
+
+    /* ─── Backup trigger animation ───────────────────────────────────── */
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Alert banner ───────────────────────────────────────────────── */
+    .alert-banner {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(248,81,73,.1); border: 1px solid rgba(248,81,73,.3);
+      border-radius: var(--radius); padding: 12px 16px;
+      margin-bottom: 16px; font-size: 13px; color: var(--red);
+    }
+
+    /* ─── View panels ────────────────────────────────────────────────── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ─── Search input ───────────────────────────────────────────────── */
+    .search-wrap { position: relative; width: 220px; }
+    .search-wrap input { padding-left: 32px; }
+    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+
+    /* ─── Export button spinner ──────────────────────────────────────── */
+    .section-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .section-title { font-size: 18px; font-weight: 700; }
+
+    /* ─── Restore checklist ──────────────────────────────────────────── */
+    .restore-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3);
+      color: var(--green); border-radius: 20px;
+      font-size: 11px; padding: 2px 8px;
+    }
+    .restore-chip.stale {
+      background: rgba(227,179,65,.1); border-color: rgba(227,179,65,.3);
+      color: var(--yellow);
+    }
+    .restore-chip.none {
+      background: rgba(139,148,158,.1); border-color: rgba(139,148,158,.3);
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────────────────────────────── -->
+<header>
+  <div class="brand">
+    <span class="brand-icon">🛡️</span>
+    <div>
+      <div class="brand-name">Backup Monitor</div>
+      <div class="brand-sub">Tech &amp; Electrical Services LLC</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary btn-sm" id="refreshBtn">🔄 Refresh All</button>
+    <button class="btn btn-primary btn-sm" id="exportBtn">📊 Export Report</button>
+  </div>
+</header>
+
+<!-- ─── Nav ─────────────────────────────────────────────────────────── -->
+<nav>
+  <button class="active" data-view="dashboard">📊 Dashboard</button>
+  <button data-view="clients">💼 Clients</button>
+  <button data-view="alerts">🔔 Alerts</button>
+  <button data-view="history">📜 History</button>
+</nav>
+
+<!-- ─── Main ─────────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- ══ DASHBOARD ══════════════════════════════════════════════════════ -->
+  <div class="view active" id="view-dashboard">
+    <div class="section-row">
+      <div class="section-title">Backup Health Dashboard</div>
+      <span id="last-refresh-label" style="font-size:12px;color:var(--muted);"></span>
+    </div>
+
+    <!-- stat cards -->
+    <div class="stats-grid" id="stat-cards"></div>
+
+    <!-- alert banners -->
+    <div id="alert-banners"></div>
+
+    <!-- client health table -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Client Backup Status</div>
+          <div class="card-subtitle">All managed clients · live from localStorage</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="addClientBtn">➕ Add Client</button>
+      </div>
+      <div class="table-wrap">
+        <table id="dashboardTable">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Status</th>
+              <th>Last Backup</th>
+              <th>Size</th>
+              <th>Test Restore</th>
+              <th>Health</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dashboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CLIENTS ════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-clients">
+    <div class="section-row">
+      <div class="section-title">Client Management</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="clientSearch" placeholder="Search clients…" />
+        </div>
+        <button class="btn btn-primary btn-sm" id="addClientBtn2">➕ Add Client</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table id="clientsTable">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Backup Type</th>
+              <th>Status</th>
+              <th>Last Backup</th>
+              <th>Size</th>
+              <th>Threshold</th>
+              <th>Test Restore</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clientsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ALERTS ═════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-alerts">
+    <div class="section-row">
+      <div class="section-title">Active Alerts</div>
+    </div>
+    <div id="alertsContent"></div>
+  </div>
+
+  <!-- ══ HISTORY ════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-history">
+    <div class="section-row">
+      <div class="section-title">Backup History</div>
+      <select id="historyFilter" style="width:200px;">
+        <option value="">All Clients</option>
+      </select>
+    </div>
+    <div class="card">
+      <ul class="timeline" id="historyList"></ul>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── Toast container ─────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ─── ADD / EDIT CLIENT MODAL ─────────────────────────────────────── -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="clientModalTitle">Add Client</span>
+      <button class="modal-close" id="closeClientModal">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Client Name *</label>
+      <input type="text" id="f-name" placeholder="e.g. Barney's Tire Shop" />
+    </div>
+    <div class="form-group">
+      <label>Industry</label>
+      <input type="text" id="f-industry" placeholder="e.g. Automotive, Dental, Legal" />
+    </div>
+    <div class="form-group">
+      <label>Backup Type</label>
+      <select id="f-type">
+        <option>Cloud (Azure Backup)</option>
+        <option>Cloud (AWS S3)</option>
+        <option>Cloud (Backblaze B2)</option>
+        <option>On-Site NAS</option>
+        <option>Hybrid (Cloud + NAS)</option>
+        <option>External Drive</option>
+        <option>None Configured</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Backup Status</label>
+      <select id="f-status">
+        <option value="success">✅ Success</option>
+        <option value="warning">⚠️ Warning</option>
+        <option value="failed">❌ Failed</option>
+        <option value="nobackup">⛔ No Backup</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Last Backup (date &amp; time)</label>
+      <input type="datetime-local" id="f-lastBackup" />
+    </div>
+    <div class="form-group">
+      <label>Backup Size (GB)</label>
+      <input type="number" id="f-size" placeholder="e.g. 48.2" min="0" step="0.1" />
+    </div>
+    <div class="form-group">
+      <label>Alert Threshold (days)</label>
+      <input type="number" id="f-threshold" placeholder="e.g. 2" min="1" step="1" value="2" />
+    </div>
+    <div class="form-group">
+      <label>Last Test Restore</label>
+      <input type="date" id="f-restore" />
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="f-notes" rows="3" placeholder="Any relevant notes…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-secondary" id="cancelClientModal">Cancel</button>
+      <button class="btn btn-primary" id="saveClientBtn">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CLIENT DETAIL MODAL ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <span class="modal-title" id="detailTitle">Client Detail</span>
+      <button class="modal-close" id="closeDetailModal">✕</button>
+    </div>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ─── BACKUP TRIGGER MODAL ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="triggerModal">
+  <div class="modal" style="max-width:420px; text-align:center;">
+    <div class="modal-header" style="justify-content:center;">
+      <span class="modal-title">Manual Backup Trigger</span>
+    </div>
+    <div id="triggerContent" style="padding-bottom:12px;"></div>
+    <button class="btn btn-secondary" id="closeTriggerModal" style="margin-top:8px;">Close</button>
+  </div>
+</div>
+
+<script>
+/* ═════════════════════════════════════════════════════════════════════
+   BACKUP MONITOR — Core Application
+   Tech & Electrical Services LLC
+   ═════════════════════════════════════════════════════════════════════ */
+
+const STORAGE_KEY   = 'bkmon_clients';
+const HISTORY_KEY   = 'bkmon_history';
+
+/* ── Demo seed data ─────────────────────────────────────────────────── */
+const DEMO_CLIENTS = [
+  {
+    id: 'c1',
+    name: "Barney's Tire Shop",
+    industry: 'Automotive',
+    type: 'Hybrid (Cloud + NAS)',
+    status: 'success',
+    lastBackup: '2026-03-19T02:15:00',
+    size: 48.2,
+    threshold: 2,
+    lastRestore: '2026-02-28',
+    notes: 'POS data + QuickBooks. NAS on-site, mirrored to Azure. Daily 2 AM job. Barney needs monthly restore test reports.'
+  },
+  {
+    id: 'c2',
+    name: 'Desert Dental Group',
+    industry: 'Healthcare / Dental',
+    type: 'Cloud (Azure Backup)',
+    status: 'warning',
+    lastBackup: '2026-03-17T04:00:00',
+    size: 124.7,
+    threshold: 1,
+    lastRestore: '2025-12-15',
+    notes: 'HIPAA-regulated. Dental imaging files (Dentrix). Last backup was 48h+ ago — restore test overdue per HIPAA policy. Alert Dr. Salinas.'
+  },
+  {
+    id: 'c3',
+    name: 'High Desert Realty',
+    industry: 'Real Estate',
+    type: 'Cloud (Backblaze B2)',
+    status: 'failed',
+    lastBackup: '2026-03-12T22:45:00',
+    size: 31.5,
+    threshold: 2,
+    lastRestore: null,
+    notes: 'Backup job has been failing since 3/12. Credentials may have rotated. No test restore on record. CRITICAL — escalate.'
+  }
+];
+
+const DEMO_HISTORY = [
+  { clientId:'c1', clientName:"Barney's Tire Shop", status:'success', ts:'2026-03-19T02:15:00', size:48.2, note:'Scheduled nightly — OK' },
+  { clientId:'c1', clientName:"Barney's Tire Shop", status:'success', ts:'2026-03-18T02:15:00', size:47.9, note:'Scheduled nightly — OK' },
+  { clientId:'c1', clientName:"Barney's Tire Shop", status:'success', ts:'2026-03-17T02:15:00', size:47.8, note:'Scheduled nightly — OK' },
+  { clientId:'c2', clientName:'Desert Dental Group', status:'success', ts:'2026-03-17T04:00:00', size:124.7, note:'Scheduled nightly — OK' },
+  { clientId:'c2', clientName:'Desert Dental Group', status:'warning', ts:'2026-03-18T04:00:00', size:0, note:'Partial — imaging volume timed out (>30min), files may be incomplete' },
+  { clientId:'c2', clientName:'Desert Dental Group', status:'warning', ts:'2026-03-19T04:00:00', size:0, note:'Skipped — network unreachable at scheduled time' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'success', ts:'2026-03-12T22:45:00', size:31.5, note:'Scheduled nightly — OK' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-13T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-14T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-15T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-16T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-17T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+  { clientId:'c3', clientName:'High Desert Realty', status:'failed', ts:'2026-03-18T22:45:00', size:0, note:'Auth error: Backblaze credentials rejected' },
+];
+
+/* ── State ──────────────────────────────────────────────────────────── */
+let clients = [];
+let history = [];
+let editingId = null;
+let currentView = 'dashboard';
+
+/* ── Init ───────────────────────────────────────────────────────────── */
+function init() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  const storedH = localStorage.getItem(HISTORY_KEY);
+  clients = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEMO_CLIENTS));
+  history = storedH ? JSON.parse(storedH) : JSON.parse(JSON.stringify(DEMO_HISTORY));
+  save();
+  render();
+  document.getElementById('last-refresh-label').textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+/* ── Helpers ────────────────────────────────────────────────────────── */
+function daysAgo(dateStr) {
+  if (!dateStr) return null;
+  const diff = (new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24);
+  return Math.floor(diff);
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return d.toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function fmtDateShort(dateStr) {
+  if (!dateStr) return 'Never';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function statusBadge(status) {
+  const map = {
+    success: ['badge-success','✅','Success'],
+    failed:  ['badge-failed','❌','Failed'],
+    warning: ['badge-warning','⚠️','Warning'],
+    nobackup:['badge-nobackup','⛔','No Backup'],
+  };
+  const [cls, ico, lbl] = map[status] || map['nobackup'];
+  return `<span class="badge ${cls}"><span class="dot"></span>${lbl}</span>`;
+}
+
+function healthScore(client) {
+  /* 0–100 */
+  if (client.status === 'nobackup') return 0;
+  if (client.status === 'failed')   return 10;
+  if (client.status === 'warning')  return 45;
+  const days = daysAgo(client.lastBackup);
+  if (days === null) return 0;
+  if (days > client.threshold * 2) return 25;
+  if (days > client.threshold)     return 55;
+  const restoreDays = daysAgo(client.lastRestore);
+  const restoreScore = restoreDays === null ? 0 : restoreDays > 90 ? 5 : 15;
+  return Math.min(100, 85 + restoreScore);
+}
+
+function healthBar(score) {
+  let color = score >= 80 ? 'var(--green)' : score >= 50 ? 'var(--yellow)' : 'var(--red)';
+  return `<div style="display:flex;align-items:center;gap:8px;">
+    <div class="health-bar-wrap"><div class="health-bar" style="width:${score}%;background:${color};"></div></div>
+    <span style="font-size:12px;color:${color};">${score}%</span>
+  </div>`;
+}
+
+function restoreChip(dateStr) {
+  if (!dateStr) return `<span class="restore-chip none">❌ None on record</span>`;
+  const days = daysAgo(dateStr);
+  if (days > 90) return `<span class="restore-chip stale">⚠️ ${fmtDateShort(dateStr)}</span>`;
+  return `<span class="restore-chip">✅ ${fmtDateShort(dateStr)}</span>`;
+}
+
+function daysLabel(days, threshold) {
+  if (days === null) return '<span class="days-label">—</span>';
+  let cls = days <= threshold ? 'days-ok' : days <= threshold * 2 ? 'days-warn' : 'days-crit';
+  return `<span class="days-label ${cls}">${days}d ago</span>`;
+}
+
+function uid() { return 'c' + Date.now(); }
+
+/* ── Toast ──────────────────────────────────────────────────────────── */
+function toast(msg, type='') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/* ── Render router ──────────────────────────────────────────────────── */
+function render() {
+  renderDashboard();
+  renderClients();
+  renderAlerts();
+  renderHistory();
+}
+
+/* ── DASHBOARD ──────────────────────────────────────────────────────── */
+function renderDashboard() {
+  /* stat cards */
+  const total    = clients.length;
+  const success  = clients.filter(c=>c.status==='success').length;
+  const failed   = clients.filter(c=>c.status==='failed').length;
+  const warning  = clients.filter(c=>c.status==='warning').length;
+  const nobackup = clients.filter(c=>c.status==='nobackup').length;
+  const overdue  = clients.filter(c=>{ const d=daysAgo(c.lastBackup); return d!==null && d>c.threshold; }).length;
+  const totalGB  = clients.reduce((s,c)=>s+Number(c.size||0),0);
+
+  document.getElementById('stat-cards').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value stat-cyan">${total}</div><div class="stat-sub">managed by this MSP</div></div>
+    <div class="stat-card"><div class="stat-label">Healthy</div><div class="stat-value stat-green">${success}</div><div class="stat-sub">last backup OK</div></div>
+    <div class="stat-card"><div class="stat-label">Warning</div><div class="stat-value stat-yellow">${warning}</div><div class="stat-sub">needs attention</div></div>
+    <div class="stat-card"><div class="stat-label">Failed</div><div class="stat-value stat-red">${failed}</div><div class="stat-sub">backup failed</div></div>
+    <div class="stat-card"><div class="stat-label">No Backup</div><div class="stat-value" style="color:var(--muted);">${nobackup}</div><div class="stat-sub">not configured</div></div>
+    <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value stat-yellow">${overdue}</div><div class="stat-sub">past threshold</div></div>
+    <div class="stat-card"><div class="stat-label">Total Protected</div><div class="stat-value stat-cyan" style="font-size:22px;">${totalGB.toFixed(1)} GB</div><div class="stat-sub">across all clients</div></div>
+  `;
+
+  /* alert banners */
+  const banners = clients
+    .filter(c=>c.status==='failed'||c.status==='nobackup')
+    .map(c=>`<div class="alert-banner">🚨 <strong>${c.name}</strong> — ${c.status==='failed'?'Backup FAILED! Immediate action required.':'No backup configured.'}</div>`)
+    .join('');
+  document.getElementById('alert-banners').innerHTML = banners;
+
+  /* table */
+  const tbody = document.getElementById('dashboardBody');
+  tbody.innerHTML = clients.map(c => {
+    const days = daysAgo(c.lastBackup);
+    const score = healthScore(c);
+    return `<tr>
+      <td><div class="client-name">${c.name}</div><div class="client-meta">${c.industry||'—'} · ${c.type}</div></td>
+      <td>${statusBadge(c.status)}</td>
+      <td>
+        <div style="font-size:13px;">${fmtDate(c.lastBackup)}</div>
+        ${daysLabel(days, c.threshold)}
+      </td>
+      <td>${c.size ? `<span class="size-pill">${Number(c.size).toFixed(1)} GB</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${restoreChip(c.lastRestore)}</td>
+      <td>${healthBar(score)}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-secondary btn-sm" onclick="showDetail('${c.id}')">👁 View</button>
+        <button class="btn btn-primary btn-sm" onclick="triggerBackup('${c.id}')" style="margin-left:4px;">▶ Run</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── CLIENTS VIEW ───────────────────────────────────────────────────── */
+function renderClients(filter='') {
+  const list = filter
+    ? clients.filter(c=>c.name.toLowerCase().includes(filter.toLowerCase())||
+                        (c.industry||'').toLowerCase().includes(filter.toLowerCase()))
+    : clients;
+
+  const tbody = document.getElementById('clientsBody');
+  tbody.innerHTML = list.map(c => {
+    const days = daysAgo(c.lastBackup);
+    const score = healthScore(c);
+    return `<tr>
+      <td><div class="client-name">${c.name}</div><div class="client-meta">${c.industry||'—'}</div></td>
+      <td style="font-size:13px;">${c.type}</td>
+      <td>${statusBadge(c.status)}</td>
+      <td>
+        <div style="font-size:13px;">${fmtDate(c.lastBackup)}</div>
+        ${daysLabel(days, c.threshold)}
+      </td>
+      <td>${c.size ? `<span class="size-pill">${Number(c.size).toFixed(1)} GB</span>` : '—'}</td>
+      <td><span class="threshold">Alert &gt; ${c.threshold}d</span></td>
+      <td>${restoreChip(c.lastRestore)}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-secondary btn-sm" onclick="editClient('${c.id}')">✏️</button>
+        <button class="btn btn-primary btn-sm" onclick="triggerBackup('${c.id}')" style="margin-left:4px;">▶</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')" style="margin-left:4px;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:32px;">No clients found.</td></tr>`;
+  }
+}
+
+/* ── ALERTS VIEW ────────────────────────────────────────────────────── */
+function renderAlerts() {
+  const alerts = [];
+  clients.forEach(c => {
+    if (c.status === 'failed') alerts.push({ level:'critical', client:c, msg:`Backup FAILED. Last successful: ${fmtDate(c.lastBackup)}` });
+    if (c.status === 'nobackup') alerts.push({ level:'critical', client:c, msg:'No backup configured. Data at risk.' });
+    if (c.status === 'warning') alerts.push({ level:'warning', client:c, msg:`Backup completed with warnings. Review logs.` });
+    const days = daysAgo(c.lastBackup);
+    if (days !== null && days > c.threshold && c.status !== 'failed') {
+      alerts.push({ level:'warning', client:c, msg:`Backup overdue by ${days - c.threshold} day(s). Threshold: ${c.threshold}d.` });
+    }
+    const restoreDays = daysAgo(c.lastRestore);
+    if (restoreDays === null) alerts.push({ level:'info', client:c, msg:'No test restore on record. Schedule restore verification.' });
+    else if (restoreDays > 90) alerts.push({ level:'warning', client:c, msg:`Test restore is ${restoreDays} days old. Recommend quarterly verification.` });
+  });
+
+  const el = document.getElementById('alertsContent');
+  if (!alerts.length) {
+    el.innerHTML = `<div class="card" style="text-align:center;padding:48px;color:var(--green);font-size:24px;">✅<br><span style="font-size:16px;display:block;margin-top:8px;color:var(--text);">All clear — no active alerts.</span></div>`;
+    return;
+  }
+
+  const colorMap = { critical:'var(--red)', warning:'var(--yellow)', info:'var(--cyan)' };
+  const icoMap   = { critical:'🚨', warning:'⚠️', info:'ℹ️' };
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px;">` +
+    alerts.map(a => `
+      <div class="card" style="border-left:4px solid ${colorMap[a.level]};">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="font-size:20px;">${icoMap[a.level]}</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:14px;color:${colorMap[a.level]};">${a.client.name}</div>
+            <div style="font-size:13px;margin-top:4px;">${a.msg}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">${a.client.industry||''} · ${a.client.type}</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showDetail('${a.client.id}')">View</button>
+        </div>
+      </div>
+    `).join('') + `</div>`;
+}
+
+/* ── HISTORY VIEW ───────────────────────────────────────────────────── */
+function renderHistory(filterClientId='') {
+  const filtered = filterClientId ? history.filter(h=>h.clientId===filterClientId) : history;
+  const sorted   = [...filtered].sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+
+  const icoMap = { success:'✅', failed:'❌', warning:'⚠️', manual:'▶️' };
+  const ul = document.getElementById('historyList');
+  ul.innerHTML = sorted.map(h=>`
+    <li>
+      <span class="tl-icon">${icoMap[h.status]||'🔵'}</span>
+      <div class="tl-body">
+        <div><strong>${h.clientName}</strong> — ${h.note||'Backup event'}</div>
+        <div class="tl-ts">${fmtDate(h.ts)} ${h.size ? `· ${Number(h.size).toFixed(1)} GB` : ''}</div>
+      </div>
+    </li>
+  `).join('') || `<li><td style="color:var(--muted)">No history recorded yet.</td></li>`;
+
+  /* populate filter dropdown */
+  const sel = document.getElementById('historyFilter');
+  const existing = Array.from(sel.options).map(o=>o.value);
+  clients.forEach(c=>{
+    if (!existing.includes(c.id)) {
+      const opt = document.createElement('option');
+      opt.value = c.id; opt.textContent = c.name;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+/* ── CLIENT DETAIL MODAL ────────────────────────────────────────────── */
+function showDetail(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  const days = daysAgo(c.lastBackup);
+  const score = healthScore(c);
+  const clientHistory = history.filter(h=>h.clientId===id).sort((a,b)=>new Date(b.ts)-new Date(a.ts)).slice(0,5);
+  const icoMap = { success:'✅', failed:'❌', warning:'⚠️', manual:'▶️' };
+
+  document.getElementById('detailTitle').textContent = c.name;
+  document.getElementById('detailContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      ${statusBadge(c.status)}
+      ${healthBar(score)}
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-key">Industry</div><div class="detail-val">${c.industry||'—'}</div></div>
+      <div class="detail-item"><div class="detail-key">Backup Type</div><div class="detail-val">${c.type}</div></div>
+      <div class="detail-item"><div class="detail-key">Last Backup</div><div class="detail-val">${fmtDate(c.lastBackup)} ${daysLabel(days,c.threshold)}</div></div>
+      <div class="detail-item"><div class="detail-key">Backup Size</div><div class="detail-val">${c.size ? Number(c.size).toFixed(1)+' GB' : '—'}</div></div>
+      <div class="detail-item"><div class="detail-key">Alert Threshold</div><div class="detail-val">${c.threshold} day(s)</div></div>
+      <div class="detail-item"><div class="detail-key">Last Test Restore</div><div class="detail-val">${restoreChip(c.lastRestore)}</div></div>
+    </div>
+    ${c.notes ? `<div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--muted);">${c.notes}</div>` : ''}
+    <div style="margin-top:20px;font-weight:700;font-size:14px;margin-bottom:8px;">Recent Backup History</div>
+    <ul class="timeline">${clientHistory.map(h=>`
+      <li>
+        <span class="tl-icon">${icoMap[h.status]||'🔵'}</span>
+        <div class="tl-body">
+          <div>${h.note||'Backup event'}</div>
+          <div class="tl-ts">${fmtDate(h.ts)} ${h.size ? `· ${Number(h.size).toFixed(1)} GB` : ''}</div>
+        </div>
+      </li>
+    `).join('')||'<li style="color:var(--muted);font-size:13px;">No history recorded.</li>'}
+    </ul>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-secondary" onclick="editClient('${c.id}');closeModal('detailModal');">✏️ Edit</button>
+      <button class="btn btn-primary" onclick="triggerBackup('${c.id}');closeModal('detailModal');">▶ Manual Backup</button>
+    </div>
+  `;
+  openModal('detailModal');
+}
+
+/* ── BACKUP TRIGGER (simulated) ─────────────────────────────────────── */
+function triggerBackup(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+
+  const el = document.getElementById('triggerContent');
+  el.innerHTML = `<div style="font-size:36px;margin:16px 0;" id="triggerIcon"><span class="spin">🔄</span></div>
+    <div style="font-weight:700;">${c.name}</div>
+    <div style="color:var(--muted);font-size:13px;margin-top:8px;">Connecting to backup agent…</div>`;
+  openModal('triggerModal');
+
+  const steps = [
+    'Authenticating with backup service…',
+    'Scanning changed files…',
+    `Uploading to ${c.type}…`,
+    'Verifying integrity…',
+    'Finalizing…'
+  ];
+  let step = 0;
+  const interval = setInterval(()=>{
+    step++;
+    if (step < steps.length) {
+      el.innerHTML = `<div style="font-size:36px;margin:16px 0;"><span class="spin">🔄</span></div>
+        <div style="font-weight:700;">${c.name}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:8px;">${steps[step]}</div>`;
+    } else {
+      clearInterval(interval);
+
+      /* simulate success */
+      const newSize = Number(c.size||30) + Math.random() * 0.5;
+      const now = new Date().toISOString().slice(0,16);
+      c.status = 'success';
+      c.lastBackup = now;
+      c.size = parseFloat(newSize.toFixed(1));
+
+      history.unshift({
+        clientId: c.id,
+        clientName: c.name,
+        status: 'manual',
+        ts: new Date().toISOString(),
+        size: c.size,
+        note: 'Manual backup triggered via Backup Monitor dashboard'
+      });
+
+      save();
+      render();
+      toast(`✅ Backup complete for ${c.name}`, 'success');
+
+      el.innerHTML = `<div style="font-size:48px;margin:16px 0;">✅</div>
+        <div style="font-weight:700;">${c.name}</div>
+        <div style="color:var(--green);font-size:14px;margin-top:8px;">Backup completed successfully</div>
+        <div style="color:var(--muted);font-size:12px;margin-top:4px;">${newSize.toFixed(1)} GB · ${new Date().toLocaleTimeString()}</div>`;
+    }
+  }, 900);
+}
+
+/* ── ADD / EDIT CLIENT ──────────────────────────────────────────────── */
+function openAddClient() {
+  editingId = null;
+  document.getElementById('clientModalTitle').textContent = 'Add Client';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-industry').value = '';
+  document.getElementById('f-type').value = 'Cloud (Azure Backup)';
+  document.getElementById('f-status').value = 'success';
+  document.getElementById('f-lastBackup').value = '';
+  document.getElementById('f-size').value = '';
+  document.getElementById('f-threshold').value = '2';
+  document.getElementById('f-restore').value = '';
+  document.getElementById('f-notes').value = '';
+  openModal('clientModal');
+}
+
+function editClient(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  editingId = id;
+  document.getElementById('clientModalTitle').textContent = 'Edit Client';
+  document.getElementById('f-name').value = c.name;
+  document.getElementById('f-industry').value = c.industry||'';
+  document.getElementById('f-type').value = c.type;
+  document.getElementById('f-status').value = c.status;
+  document.getElementById('f-lastBackup').value = c.lastBackup ? c.lastBackup.slice(0,16) : '';
+  document.getElementById('f-size').value = c.size||'';
+  document.getElementById('f-threshold').value = c.threshold||2;
+  document.getElementById('f-restore').value = c.lastRestore||'';
+  document.getElementById('f-notes').value = c.notes||'';
+  openModal('clientModal');
+}
+
+function saveClient() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { toast('Client name is required', 'error'); return; }
+  const data = {
+    name,
+    industry:    document.getElementById('f-industry').value.trim(),
+    type:        document.getElementById('f-type').value,
+    status:      document.getElementById('f-status').value,
+    lastBackup:  document.getElementById('f-lastBackup').value || null,
+    size:        parseFloat(document.getElementById('f-size').value)||0,
+    threshold:   parseInt(document.getElementById('f-threshold').value)||2,
+    lastRestore: document.getElementById('f-restore').value || null,
+    notes:       document.getElementById('f-notes').value.trim(),
+  };
+  if (editingId) {
+    const idx = clients.findIndex(c=>c.id===editingId);
+    clients[idx] = { ...clients[idx], ...data };
+    toast(`Updated ${name}`, 'success');
+  } else {
+    data.id = uid();
+    clients.push(data);
+    history.unshift({ clientId:data.id, clientName:name, status:'success', ts:new Date().toISOString(), size:data.size, note:'Client added to Backup Monitor' });
+    toast(`Added ${name}`, 'success');
+  }
+  save();
+  render();
+  closeModal('clientModal');
+}
+
+function deleteClient(id) {
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  if (!confirm(`Delete ${c.name}? This cannot be undone.`)) return;
+  clients = clients.filter(x=>x.id!==id);
+  save();
+  render();
+  toast(`Deleted ${c.name}`, 'error');
+}
+
+/* ── EXPORT REPORT ──────────────────────────────────────────────────── */
+function exportReport() {
+  const now = new Date();
+  const lines = [
+    '================================================================',
+    '       BACKUP STATUS REPORT — Tech & Electrical Services LLC',
+    '================================================================',
+    `Generated: ${now.toLocaleString()}`,
+    '',
+    `Total Clients: ${clients.length}`,
+    `Healthy: ${clients.filter(c=>c.status==='success').length}`,
+    `Warning: ${clients.filter(c=>c.status==='warning').length}`,
+    `Failed:  ${clients.filter(c=>c.status==='failed').length}`,
+    `No Backup: ${clients.filter(c=>c.status==='nobackup').length}`,
+    '',
+    '----------------------------------------------------------------',
+    'CLIENT DETAILS',
+    '----------------------------------------------------------------',
+    ''
+  ];
+  clients.forEach(c=>{
+    const days = daysAgo(c.lastBackup);
+    const score = healthScore(c);
+    const statusMap = { success:'SUCCESS', failed:'FAILED', warning:'WARNING', nobackup:'NO BACKUP' };
+    lines.push(`Client:      ${c.name}`);
+    lines.push(`Industry:    ${c.industry||'—'}`);
+    lines.push(`Backup Type: ${c.type}`);
+    lines.push(`Status:      ${statusMap[c.status]||c.status}`);
+    lines.push(`Last Backup: ${fmtDate(c.lastBackup)} (${days !== null ? days+'d ago' : 'unknown'})`);
+    lines.push(`Size:        ${c.size ? Number(c.size).toFixed(1)+' GB' : '—'}`);
+    lines.push(`Threshold:   ${c.threshold} day(s)`);
+    lines.push(`Test Restore:${fmtDateShort(c.lastRestore)}`);
+    lines.push(`Health Score:${score}%`);
+    if (c.notes) lines.push(`Notes:       ${c.notes}`);
+    lines.push('');
+  });
+  lines.push('----------------------------------------------------------------');
+  lines.push('ACTIVE ALERTS');
+  lines.push('----------------------------------------------------------------');
+  let alertCount = 0;
+  clients.forEach(c=>{
+    if (c.status==='failed')   { lines.push(`🚨 ${c.name}: Backup FAILED`); alertCount++; }
+    if (c.status==='nobackup') { lines.push(`🚨 ${c.name}: No backup configured`); alertCount++; }
+    if (c.status==='warning')  { lines.push(`⚠️  ${c.name}: Backup warning`); alertCount++; }
+    const d = daysAgo(c.lastBackup);
+    if (d !== null && d > c.threshold && c.status !== 'failed') { lines.push(`⚠️  ${c.name}: Overdue by ${d - c.threshold}d`); alertCount++; }
+  });
+  if (!alertCount) lines.push('No active alerts.');
+  lines.push('');
+  lines.push('================================================================');
+  lines.push('               END OF REPORT');
+  lines.push('================================================================');
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `backup-report-${now.toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📊 Report exported!', 'success');
+}
+
+/* ── Modal helpers ──────────────────────────────────────────────────── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ── View switch ────────────────────────────────────────────────────── */
+function switchView(name) {
+  currentView = name;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view===name);
+  });
+}
+
+/* ── Event wiring ───────────────────────────────────────────────────── */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click', ()=> switchView(b.dataset.view));
+});
+
+document.getElementById('addClientBtn').addEventListener('click', openAddClient);
+document.getElementById('addClientBtn2').addEventListener('click', openAddClient);
+document.getElementById('saveClientBtn').addEventListener('click', saveClient);
+document.getElementById('cancelClientModal').addEventListener('click', ()=>closeModal('clientModal'));
+document.getElementById('closeClientModal').addEventListener('click', ()=>closeModal('clientModal'));
+document.getElementById('closeDetailModal').addEventListener('click', ()=>closeModal('detailModal'));
+document.getElementById('closeTriggerModal').addEventListener('click', ()=>closeModal('triggerModal'));
+
+document.getElementById('exportBtn').addEventListener('click', exportReport);
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  render();
+  document.getElementById('last-refresh-label').textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
+  toast('🔄 Dashboard refreshed');
+});
+
+document.getElementById('clientSearch').addEventListener('input', e=>{
+  renderClients(e.target.value);
+});
+
+document.getElementById('historyFilter').addEventListener('change', e=>{
+  renderHistory(e.target.value);
+});
+
+/* close modals on overlay click */
+['clientModal','detailModal','triggerModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', e=>{
+    if (e.target === document.getElementById(id)) closeModal(id);
+  });
+});
+
+/* ── Boot ───────────────────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>

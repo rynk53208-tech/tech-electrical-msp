@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Notice – Immediate Payment Required</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, #7f0000 0%, #4a0000 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #d32f2f;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .body-section {
+            padding: 30px 20px;
+        }
+        .body-section p {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .invoice-details {
+            background-color: #ffebee;
+            border-left: 4px solid #c62828;
+            border-right: 4px solid #c62828;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .invoice-details p {
+            margin: 8px 0;
+            font-size: 13px;
+            color: #333;
+        }
+        .invoice-details strong {
+            color: #c62828;
+        }
+        .alert-box {
+            background-color: #ffcdd2;
+            border: 3px solid #b71c1c;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .alert-box strong {
+            color: #b71c1c;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .timeline {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            border-left: 4px solid #666;
+        }
+        .timeline p {
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        .cta-button {
+            display: inline-block;
+            width: 90%;
+            background-color: #b71c1c;
+            color: white !important;
+            padding: 16px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            margin: 25px auto;
+            font-size: 16px;
+            text-align: center;
+            border: 2px solid #7f0000;
+        }
+        .cta-button:hover {
+            background-color: #7f0000;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-top: 3px solid #d32f2f;
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+        .legal-notice {
+            font-size: 11px;
+            color: #999;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ FINAL NOTICE ⚠️</h1>
+            <p>IMMEDIATE PAYMENT REQUIRED – LAST NOTICE BEFORE COLLECTIONS</p>
+        </div>
+
+        <div class="body-section">
+            <p>{{CLIENT_NAME}},</p>
+
+            <p>This is our <strong>FINAL NOTICE</strong> regarding invoice {{INVOICE_NUMBER}}. You have received multiple requests for payment, which have gone unanswered.</p>
+
+            <p><strong>Payment must be received within 48 hours or we will be forced to take legal action.</strong></p>
+
+            <div class="invoice-details">
+                <p><strong>Invoice Number:</strong> {{INVOICE_NUMBER}}</p>
+                <p><strong>Original Amount:</strong> {{AMOUNT}}</p>
+                <p><strong>Late Fees & Interest:</strong> {{LATE_FEES}}</p>
+                <p><strong>TOTAL AMOUNT DUE:</strong> <strong style="font-size: 16px;">{{TOTAL_AMOUNT}}</strong></p>
+                <p><strong>Original Due Date:</strong> {{DUE_DATE}}</p>
+                <p><strong>Days Overdue:</strong> {{DAYS_OVERDUE}}</p>
+            </div>
+
+            <div class="alert-box">
+                <strong>WHAT HAPPENS NEXT IF WE DO NOT RECEIVE PAYMENT:</strong>
+                <p style="margin: 8px 0;">✗ Your account will be referred to our collections agency within 48 hours</p>
+                <p style="margin: 8px 0;">✗ You will incur additional legal and collection fees</p>
+                <p style="margin: 8px 0;">✗ A negative judgment will be filed against you</p>
+                <p style="margin: 8px 0;">✗ This will appear on your credit report for 7 years</p>
+                <p style="margin: 8px 0;">✗ Future business relationships and financing will be affected</p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{PAYMENT_LINK}}" class="cta-button">⚡ PAY NOW – 48 HOURS REMAINING ⚡</a>
+            </div>
+
+            <div class="timeline">
+                <p><strong>Timeline:</strong></p>
+                <p><strong>24 Hours:</strong> Last opportunity to contact us to arrange payment</p>
+                <p><strong>48 Hours:</strong> Referral to collections department and legal action begins</p>
+            </div>
+
+            <p><strong>If you have already sent payment,</strong> please email {{CONTACT_EMAIL}} immediately with your payment confirmation and transaction ID.</p>
+
+            <p><strong>If there is a legitimate dispute,</strong> you must contact us immediately. Ignoring this notice will not resolve the issue.</p>
+
+            <p><strong>Payment Methods:</strong></p>
+            <ul>
+                <li>Online: {{PAYMENT_LINK}}</li>
+                <li>Phone: {{CONTACT_PHONE}}</li>
+                <li>Email: {{CONTACT_EMAIL}}</li>
+            </ul>
+
+            <div class="signature">
+                <p style="margin: 0;"><strong>{{COMPANY_NAME}} – Accounts Department</strong></p>
+                <p style="margin: 5px 0 0 0;">{{CONTACT_PHONE}}</p>
+                <p style="margin: 2px 0 0 0;">{{CONTACT_EMAIL}}</p>
+                <p class="legal-notice">This is a final demand for payment. If you do not respond within 48 hours, legal action will be pursued.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">DO NOT IGNORE THIS NOTICE. ACTION REQUIRED WITHIN 48 HOURS.</p>
+        </div>
+    </div>
+</body>
+</html>
