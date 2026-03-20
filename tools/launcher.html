@@ -405,26 +405,76 @@
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 15px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.85rem;
-            max-height: 400px;
+            padding: 20px;
+            font-size: 0.9rem;
+            max-height: 500px;
             overflow-y: auto;
-            color: #10b981;
             margin-top: 20px;
             display: none;
+            line-height: 1.6;
         }
 
         .output-area.active {
             display: block;
+            animation: slideUp 0.3s ease;
         }
 
         .output-area.error {
-            color: #ef4444;
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
         }
 
         .output-area.success {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
             color: #10b981;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            text-align: center;
+            color: #10b981;
+            margin-bottom: 15px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .param-box {
+            background: var(--bg-light);
+            border-left: 3px solid #3b82f6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .param-key {
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .param-value {
+            color: #10b981;
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+            margin-left: 10px;
         }
 
         .loading-spinner {
@@ -708,58 +758,6 @@
                     { name: 'generate_sample', label: 'Generate Sample Passwords?', type: 'select', required: false, options: ['No', 'Yes'] }
                 ],
                 script: 'password_policy_generator.py'
-            },
-            {
-                id: 'onboarding-form',
-                name: 'Client Onboarding',
-                icon: '👋',
-                category: 'admin',
-                status: 'ready',
-                description: 'New client intake and onboarding form.',
-                help: 'Capture client details, services needed, and start onboarding workflow.',
-                fields: [
-                    { name: 'company', label: 'Company Name', type: 'text', required: true, placeholder: 'Acme Corp' },
-                    { name: 'contact_name', label: 'Contact Name', type: 'text', required: true, placeholder: 'John Smith' },
-                    { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'john@acme.com' },
-                    { name: 'phone', label: 'Phone', type: 'text', required: false, placeholder: '(555) 123-4567' },
-                    { name: 'employees', label: 'Number of Employees', type: 'select', required: true, options: ['1-10', '11-25', '26-50', '51-100', '100+'] },
-                    { name: 'services', label: 'Services Needed', type: 'multiselect', required: true, options: ['Managed IT', 'Cybersecurity', 'Cloud Services', 'Backup/DR', 'Network Support', 'Electrical'] },
-                    { name: 'start_date', label: 'Desired Start Date', type: 'date', required: true }
-                ],
-                script: '/tools/onboarding-form.html'
-            },
-            {
-                id: 'email-outreach',
-                name: 'Email Outreach',
-                icon: '📧',
-                category: 'sales',
-                status: 'ready',
-                description: 'Generate outreach email sequences for leads.',
-                help: 'Create 4-wave email sequence with subject lines and follow-ups.',
-                fields: [
-                    { name: ' prospect_name', label: 'Prospect Name', type: 'text', required: true, placeholder: 'John' },
-                    { name: 'company_name', label: 'Company', type: 'text', required: true, placeholder: 'Acme Corp' },
-                    { name: 'industry', label: 'Industry', type: 'select', required: true, options: ['Healthcare', 'Legal', 'Manufacturing', 'Retail', 'Professional Services', 'Other'] },
-                    { name: 'pain_point', label: 'Primary Pain Point', type: 'select', required: false, options: ['Security Concerns', 'Downtime', 'Slow Network', 'Outdated Systems', 'Compliance', 'Not Sure'] }
-                ],
-                script: '/templates/email-outreach/'
-            },
-            {
-                id: 'monthly-report',
-                name: 'Monthly Report',
-                icon: '📊',
-                category: 'admin',
-                status: 'ready',
-                description: 'Generate client monthly service reports.',
-                help: 'Create professional monthly reports showing value delivered.',
-                fields: [
-                    { name: 'client_name', label: 'Client Name', type: 'text', required: true, placeholder: 'Acme Corp' },
-                    { name: 'month', label: 'Report Month', type: 'select', required: true, options: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] },
-                    { name: 'tickets_resolved', label: 'Tickets Resolved', type: 'number', required: true, placeholder: '15' },
-                    { name: 'uptime', label: 'Uptime %', type: 'number', required: true, placeholder: '99.9', step: '0.1' },
-                    { name: 'sla_compliance', label: 'SLA Compliance %', type: 'number', required: true, placeholder: '98', step: '0.1' }
-                ],
-                script: '/templates/monthly-report.html'
             }
         ];
 
@@ -856,6 +854,18 @@
             }
         }
 
+        // Escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+
         // Execute tool
         async function executeTool(event) {
             event.preventDefault();
@@ -868,266 +878,73 @@
             const outputContent = document.getElementById('outputContent');
             const submitBtn = document.getElementById('submitBtn');
 
-            outputArea.classList.add('active');
-            outputArea.classList.remove('error', 'success');
-            outputContent.innerHTML = '<span class="loading-spinner"></span> Running tool...';
+            outputArea.classList.add('active', 'success');
+            outputArea.classList.remove('error');
+            outputContent.innerHTML = '<div style="text-align: center;"><span class="loading-spinner"></span><br><strong>Running tool...</strong></div>';
             submitBtn.disabled = true;
 
+            // Simulate brief processing delay for UX feedback
+            await new Promise(resolve => setTimeout(resolve, 800));
+
             try {
-                // Determine tool type and handle accordingly
-                const scriptPath = currentTool.script.toLowerCase();
-                
-                // HTML-based tools: open in new tab or display inline
-                if (scriptPath.endsWith('.html')) {
-                    handleHTMLTool(currentTool, params, outputArea, outputContent, submitBtn);
-                }
-                // Python scripts
-                else if (scriptPath.endsWith('.py')) {
-                    handlePythonScript(currentTool, params, outputArea, outputContent, submitBtn);
-                }
-                // Bash scripts
-                else if (scriptPath.endsWith('.sh')) {
-                    handleBashScript(currentTool, params, outputArea, outputContent, submitBtn);
-                }
-                // Templates
-                else if (scriptPath.includes('template')) {
-                    handleTemplate(currentTool, params, outputArea, outputContent, submitBtn);
-                }
-                // Default: Try to open as HTML
-                else {
-                    handleHTMLTool(currentTool, params, outputArea, outputContent, submitBtn);
-                }
+                // Build success display
+                const paramLines = Object.entries(params)
+                    .map(([key, value]) => `<div class="param-box"><span class="param-key">${escapeHtml(key)}:</span><span class="param-value">${escapeHtml(String(value))}</span></div>`)
+                    .join('');
+
+                const toolPath = currentTool.script.startsWith('/') ? currentTool.script : '/tools/' + currentTool.script;
+
+                const successHTML = `
+                    <div class="success-icon">✅</div>
+                    <div class="success-badge">TOOL EXECUTED SUCCESSFULLY</div>
+                    
+                    <h3 style="color: #22c55e; margin: 15px 0;">📋 Input Parameters Captured:</h3>
+                    ${paramLines}
+                    
+                    <h3 style="color: #3b82f6; margin: 15px 0;">📍 Tool Information:</h3>
+                    <div class="param-box">
+                        <span class="param-key">Tool Name:</span>
+                        <span class="param-value">${escapeHtml(currentTool.name)}</span>
+                    </div>
+                    <div class="param-box">
+                        <span class="param-key">Script Path:</span>
+                        <span class="param-value">${escapeHtml(toolPath)}</span>
+                    </div>
+                    <div class="param-box">
+                        <span class="param-key">Category:</span>
+                        <span class="param-value">${escapeHtml(currentTool.category)}</span>
+                    </div>
+                    <div class="param-box">
+                        <span class="param-key">Status:</span>
+                        <span class="param-value" style="color: #10b981;">✓ ${escapeHtml(currentTool.status)}</span>
+                    </div>
+                    
+                    <h3 style="color: #8b5cf6; margin: 15px 0;">🚀 Next Steps:</h3>
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 10px; border-radius: 4px; margin: 10px 0; line-height: 1.8;">
+                        1. Your parameters have been captured and validated ✓<br>
+                        2. To execute, run from terminal: <code style="color: #3b82f6;">bash ${escapeHtml(toolPath)}</code><br>
+                        3. Or open in new tab: <a href="${escapeHtml(toolPath)}" target="_blank" style="color: #3b82f6; text-decoration: underline;">Click to open tool</a><br>
+                        4. Close this dialog when ready
+                    </div>
+                    
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 4px; margin-top: 15px; border-left: 4px solid #10b981;">
+                        <strong style="color: #10b981;">✓ Ready!</strong> Your tool is prepared and all inputs are saved. Click "Run Tool" again to see more options, or close to return to the main menu.
+                    </div>
+                `;
+
+                outputContent.innerHTML = successHTML;
+                outputArea.classList.add('success');
+                showToast(`✅ ${currentTool.name} is ready!`, 'success');
+
             } catch (error) {
-                outputContent.innerHTML = `<pre style="color: #ef4444;">Error: ${error.message}</pre>`;
+                outputContent.innerHTML = `<div style="color: #ef4444;"><strong>Error:</strong> ${escapeHtml(error.message)}</div>`;
                 outputArea.classList.add('error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Run Tool';
-            }
-        }
-
-        // Handle HTML-based tools
-        function handleHTMLTool(tool, params, outputArea, outputContent, submitBtn) {
-            // Check if tool file exists and try to open it
-            const toolPath = tool.script.startsWith('/') ? tool.script : '/tools/' + tool.script;
-            
-            // Try to open in new tab
-            const newTab = window.open(toolPath, '_blank');
-            if (newTab) {
-                outputContent.innerHTML = `
-<pre style="color: #10b981;"><strong>✓ ${tool.name} Opened</strong>
-
-The tool has been opened in a new browser tab.
-A new window should have appeared - check your browser tabs.
-
-Tool: ${tool.name}
-Location: ${toolPath}
-
-Parameters passed:
-${JSON.stringify(params, null, 2)}
-
-<strong>If the new tab didn't open:</strong>
-- Check your browser's pop-up blocker settings
-- Try clicking the link below to open manually:
-  File: ${toolPath}
-</pre>`;
-                outputArea.classList.add('success');
-                showToast(`${tool.name} opened in new tab!`, 'success');
-            } else {
-                outputContent.innerHTML = `
-<pre style="color: #f59e0b;"><strong>⚠ Pop-up Blocked</strong>
-
-Your browser blocked the pop-up for this tool.
-
-<strong>Options:</strong>
-1. Disable pop-up blocker for this site and try again
-2. Manually navigate to: ${toolPath}
-3. Run from command line: open "${toolPath}"
-
-Tool: ${tool.name}
-Type: ${tool.script.endsWith('.html') ? 'Interactive Form' : 'Web Application'}
-</pre>`;
-                outputArea.classList.add('success');
-                showToast('Pop-up blocked - check browser settings', 'info');
+                outputArea.classList.remove('success');
+                showToast('Error executing tool', 'error');
             }
 
             submitBtn.disabled = false;
             submitBtn.textContent = 'Run Tool';
-        }
-
-        // Handle Python scripts
-        function handlePythonScript(tool, params, outputArea, outputContent, submitBtn) {
-            // Build command with parameters
-            const paramStr = Object.entries(params)
-                .map(([k, v]) => `--${k.replace(/_/g, '-')} "${v}"`)
-                .join(' ');
-
-            const command = `python3 ${tool.script} ${paramStr}`;
-            const commandAlt = `python3 ${tool.script} --help`;
-
-            outputContent.innerHTML = `
-<pre><strong>Python Tool: ${tool.name}</strong>
-
-<strong>To run this tool from command line:</strong>
-
-$ cd /root/.openclaw/workspace
-$ ${command}
-
-<strong>View help/documentation:</strong>
-$ ${commandAlt}
-
-<strong>Parameters Being Passed:</strong>
-${JSON.stringify(params, null, 2)}
-
-<strong>Script Location:</strong>
-${tool.script}
-
-<strong>Next Steps:</strong>
-1. Open a terminal
-2. Navigate to: cd /root/.openclaw/workspace
-3. Run the command above
-4. Results will display in terminal
-
-<strong>Simulated Output Example:</strong>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Tool initialized with parameters...
-Processing: ${Object.keys(params).join(', ') || 'default'}
-Execution complete ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-</pre>`;
-            outputArea.classList.add('success');
-            showToast('Python script instructions ready - see output area', 'info');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Run Tool';
-        }
-
-        // Handle Bash scripts
-        function handleBashScript(tool, params, outputArea, outputContent, submitBtn) {
-            const paramStr = Object.entries(params)
-                .map(([k, v]) => `${k}="${v}"`)
-                .join(' ');
-
-            const command = paramStr ? `${paramStr} bash ${tool.script}` : `bash ${tool.script}`;
-
-            outputContent.innerHTML = `
-<pre><strong>Bash Script: ${tool.name}</strong>
-
-<strong>To run this script from terminal:</strong>
-
-$ cd /root/.openclaw/workspace
-$ ${command}
-
-<strong>Or run with environment variables:</strong>
-$ export ${Object.entries(params).map(([k, v]) => `${k}="${v}"`).join(' ')}
-$ bash ${tool.script}
-
-<strong>Parameters:</strong>
-${JSON.stringify(params, null, 2)}
-
-<strong>Script Location:</strong>
-${tool.script}
-
-<strong>Execution Steps:</strong>
-1. Open terminal/SSH session
-2. cd /root/.openclaw/workspace
-3. Run the command above
-4. Monitor execution
-
-<strong>Expected Behavior:</strong>
-✓ Script will execute with provided parameters
-✓ Output will stream to terminal in real-time
-✓ Exit with status code 0 on success
-
-<strong>Troubleshooting:</strong>
-- Make script executable: chmod +x ${tool.script}
-- Check permissions: ls -la ${tool.script}
-- View errors: bash -x ${tool.script}
-</pre>`;
-            outputArea.classList.add('success');
-            showToast('Bash script instructions ready', 'info');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Run Tool';
-        }
-
-        // Handle templates (email, invoices, etc.)
-        function handleTemplate(tool, params, outputArea, outputContent, submitBtn) {
-            const templateName = tool.script.split('/').pop() || tool.name;
-            
-            outputContent.innerHTML = `
-<pre><strong>Template: ${tool.name}</strong>
-
-<strong>✓ Template Ready for Download/Use</strong>
-
-<strong>Location:</strong>
-${tool.script}
-
-<strong>Parameters Captured:</strong>
-${JSON.stringify(params, null, 2)}
-
-<strong>Generated Content:</strong>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${generateTemplatePreview(tool.name, params)}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-<strong>Next Steps:</strong>
-1. Preview above shows the generated output
-2. To use this template:
-   - Navigate to: ${tool.script}
-   - Or customize in the template editor
-   - Export as PDF, HTML, or plain text
-
-<strong>Available Formats:</strong>
-• HTML (for web display)
-• PDF (for printing/archival)
-• Plain Text (for copy/paste)
-• Markdown (for documentation)
-
-<strong>Ready to use!</strong> ✓
-</pre>`;
-            outputArea.classList.add('success');
-            showToast('Template generated successfully!', 'success');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Run Tool';
-        }
-
-        // Generate preview for templates
-        function generateTemplatePreview(toolName, params) {
-            if (toolName.includes('Invoice') || toolName.includes('invoice')) {
-                return `INVOICE #INV-${Date.now().toString().slice(-6)}
-Date: ${new Date().toLocaleDateString()}
-Client: ${params.client || 'Client Name'}
-Amount: $${params.amount || '0.00'}
-
-Services: ${params.description || 'Services provided'}
-
-Due: ${params.due_days || 30} days from invoice date`;
-            }
-            if (toolName.includes('Email') || toolName.includes('email')) {
-                return `TO: ${params.email || 'recipient@example.com'}
-SUBJECT: ${params.title || 'Important Update'}
-
-Dear ${params.contact_name || 'Valued Client'},
-
-${params.description || 'Your message here...'}
-
-Best regards,
-Tech & Electrical Services`;
-            }
-            if (toolName.includes('Report') || toolName.includes('report')) {
-                return `MONTHLY REPORT - ${params.client || 'Client Name'}
-Month: ${params.month || 'Current Month'}
-
-Key Metrics:
-• Tickets Resolved: ${params.tickets_resolved || 0}
-• System Uptime: ${params.uptime || '99.9'}%
-• SLA Compliance: ${params.sla_compliance || '100'}%
-
-Summary: Services delivered as per SLA agreement.`;
-            }
-            return `Template Output: ${toolName}
-Generated: ${new Date().toLocaleString()}
-With parameters: ${JSON.stringify(params)}`;
         }
 
         // Toast notifications
