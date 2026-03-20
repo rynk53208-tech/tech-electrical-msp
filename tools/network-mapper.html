@@ -434,17 +434,56 @@
             showStatus(`Scanning network ${subnet}...`, 'loading');
             
             try {
-                // Simulate network scan with realistic results
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                // Run ACTUAL network scan using the Python scanner
+                const { spawn } = await import('child_process');
                 
-                // Generate realistic scan results based on subnet
-                const demoData = generateScanData(subnet);
-                processNetworkData(demoData);
-                showStatus(`✓ Network scan complete! Found ${demoData.hosts.length} hosts.`, 'success');
+                // Call Python scanner - this is a REAL scan
+                const pythonProcess = new Promise((resolve, reject) => {
+                    const proc = spawn('python3', [
+                        '/root/.openclaw/workspace/tools/network-scanner.py',
+                        '--subnet', subnet,
+                        '--json'
+                    ], { timeout: 30000 });
+                    
+                    let output = '';
+                    let error = '';
+                    
+                    proc.stdout.on('data', (data) => { output += data; });
+                    proc.stderr.on('data', (data) => { error += data; });
+                    
+                    proc.on('close', (code) => {
+                        if (code === 0 && output) {
+                            try {
+                                const data = JSON.parse(output);
+                                resolve(data);
+                            } catch (e) {
+                                reject(new Error('Invalid JSON from scanner'));
+                            }
+                        } else {
+                            reject(new Error(error || 'Scan failed'));
+                        }
+                    });
+                    
+                    proc.on('error', (e) => reject(e));
+                });
+                
+                const data = await pythonProcess;
+                processNetworkData(data);
+                showStatus(`✓ Network scan complete! Found ${data.hosts?.length || 0} hosts.`, 'success');
             } catch (error) {
                 console.error('Scan error:', error);
-                showStatus(`Scan error: ${error.message}. Falling back to demo data...`, 'error');
-                setTimeout(() => loadDemo(), 2000);
+                showStatus(`Real scan unavailable: ${error.message}. To scan this network, run from terminal:`, 'error');
+                // Show the real command to run
+                document.getElementById('hostsList').innerHTML = `
+                    <div style="background: #1e293b; padding: 20px; border-radius: 8px; margin: 10px 0;">
+                        <h3 style="color: #ef4444;">⚠️ Real Scan Required</h3>
+                        <p>Run this command on this machine:</p>
+                        <code style="display: block; background: #0f172a; padding: 15px; border-radius: 4px; margin: 10px 0; color: #22c55e;">
+                            cd /root/.openclaw/workspace/tools && python3 network-scanner.py --subnet ${subnet}
+                        </code>
+                        <p>Then import the JSON output into this tool.</p>
+                    </div>
+                `;
             }
         }
 
