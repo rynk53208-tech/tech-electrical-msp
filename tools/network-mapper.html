@@ -8,7 +8,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); min-height: 100vh; padding: 20px; color: #e2e8f0; }
-        .container { max-width: 1400px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         h1 { text-align: center; margin-bottom: 30px; color: #38bdf8; }
         
         .controls { background: #1e293b; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
@@ -16,22 +16,16 @@
         .controls button { padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer; font-size: 16px; font-weight: bold; transition: transform 0.2s; }
         .controls button:hover { transform: scale(1.02); }
         .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
-        .btn-secondary { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .status { padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-weight: 500; }
         .status.loading { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
         .status.success { background: rgba(16, 185, 129, 0.2); color: #34d399; }
         .status.error { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-        .status.info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
         
         .content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .panel { background: #1e293b; border-radius: 10px; padding: 20px; }
         .panel h2 { color: #38bdf8; margin-bottom: 15px; font-size: 18px; }
-        
-        .instructions { background: #0f172a; padding: 25px; border-radius: 8px; border: 2px solid #3b82f6; }
-        .instructions h2 { color: #3b82f6; margin-bottom: 15px; }
-        .instructions pre { background: #1e293b; padding: 15px; border-radius: 4px; color: #22c55e; overflow-x: auto; margin: 10px 0; }
-        .instructions code { color: #22c55e; }
         
         .hosts-list { max-height: 500px; overflow-y: auto; }
         .host-item { background: #0f172a; padding: 12px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #3b82f6; }
@@ -43,6 +37,9 @@
         
         .empty-state { text-align: center; padding: 40px; color: #64748b; }
         
+        .progress-bar { height: 4px; background: #334155; border-radius: 2px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #3b82f6; transition: width 0.3s; width: 0%; }
+        
         @media (max-width: 768px) { .content { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -52,24 +49,23 @@
         
         <div class="controls">
             <input type="text" id="subnetInput" placeholder="Enter subnet (e.g., 192.168.4.0/24)" value="192.168.4.0/24">
-            <button class="btn-primary" onclick="showInstructions()">📋 Show Scan Commands</button>
-            <button class="btn-secondary" onclick="testScan()">🧪 Test Scan Output</button>
+            <button class="btn-primary" id="scanBtn" onclick="startScan()">🔍 Scan Network</button>
         </div>
         
-        <div id="status" class="status info">Ready. Enter a subnet and click a button.</div>
+        <div id="status" class="status info">Enter a subnet and click Scan Network</div>
         
         <div class="content">
             <div class="panel">
-                <h2>📋 Scan Instructions</h2>
-                <div id="instructions" class="instructions">
-                    <p>Click "Show Scan Commands" to see how to run a real network scan.</p>
+                <h2>📊 Scan Results</h2>
+                <div id="results">
+                    <div class="empty-state">Click "Scan Network" to discover devices</div>
                 </div>
             </div>
             
             <div class="panel">
-                <h2>📱 Hosts</h2>
+                <h2>📱 Hosts Found</h2>
                 <div id="hostsList" class="hosts-list">
-                    <div class="empty-state">No hosts scanned yet.</div>
+                    <div class="empty-state">No hosts found yet</div>
                 </div>
             </div>
         </div>
@@ -78,74 +74,106 @@
     <script>
         mermaid.initialize({ startOnLoad: false, theme: 'dark' });
         
+        let isScanning = false;
+        
         function showStatus(msg, type) {
             const status = document.getElementById('status');
             status.textContent = msg;
             status.className = 'status ' + type;
         }
         
-        function showInstructions() {
-            const subnet = document.getElementById('subnetInput').value.trim() || '192.168.4.0/24';
-            const instructions = document.getElementById('instructions');
+        async function startScan() {
+            if (isScanning) return;
             
-            instructions.innerHTML = `
-                <h2>🔍 Real Network Scan</h2>
-                <p>This tool requires the Python scanner to be run from terminal.</p>
-                
-                <h3 style="color: #22c55e; margin-top: 15px;">Command to run:</h3>
-                <pre>cd /root/.openclaw/workspace/tools
-python3 network-scanner.py --subnet ${subnet}</pre>
-                
-                <h3 style="color: #f59e0b; margin-top: 15px;">Quick test (no root):</h3>
-                <pre>cd /root/.openclaw/workspace/tools
-bash test-network-mapper.sh</pre>
-                
-                <h3 style="color: #60a5fa; margin-top: 15px;">Output:</h3>
-                <p>The scanner will find all devices and display IP, MAC, vendor, and open ports.</p>
-            `;
+            const subnet = document.getElementById('subnetInput').value.trim();
+            if (!subnet) {
+                showStatus('Please enter a subnet', 'error');
+                return;
+            }
             
-            showStatus('Scan instructions shown above.', 'info');
+            isScanning = true;
+            const btn = document.getElementById('scanBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Scanning...';
+            
+            showStatus(`Scanning ${subnet}... This may take up to 2 minutes.`, 'loading');
+            
+            try {
+                const response = await fetch('http://192.168.4.57:8888/api/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subnet })
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'Scan failed');
+                }
+                
+                const data = await response.json();
+                displayResults(data);
+                
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+                document.getElementById('results').innerHTML = '<div class="empty-state">Scan failed. Try a smaller subnet.</div>';
+            } finally {
+                isScanning = false;
+                btn.disabled = false;
+                btn.textContent = '🔍 Scan Network';
+            }
         }
         
-        function testScan() {
-            const subnet = document.getElementById('subnetInput').value.trim() || '192.168.4.0/24';
-            showStatus('Testing scanner...', 'loading');
+        function displayResults(data) {
+            const hosts = data.hosts || [];
+            showStatus(`✓ Scan complete! Found ${hosts.length} devices.`, 'success');
             
-            // Run actual Python scanner
-            const cmd = `cd /root/.openclaw/workspace/tools && python3 network-scanner.py --subnet ${subnet} --json 2>&1`;
-            
-            // Use fetch to call a backend - but since we don't have one, show command
-            document.getElementById('instructions').innerHTML = `
-                <h2>🧪 Test Output</h2>
-                <p>To get real scan results, run this in terminal:</p>
-                <pre>${cmd}</pre>
-                <p style="margin-top: 15px; color: #64748b;">Or open a terminal and paste the command above.</p>
-            `;
-            
-            // Show example of what real output looks like
-            const baseIP = subnet.replace(/\.\d+\/\d+$/, '');
-            const exampleHosts = [
-                { ip: baseIP + '.1', type: 'router', vendor: 'Netgear' },
-                { ip: baseIP + '.10', type: 'server', vendor: 'Dell' },
-                { ip: baseIP + '.20', type: 'workstation', vendor: 'HP' },
-                { ip: baseIP + '.21', type: 'workstation', vendor: 'Lenovo' },
-                { ip: baseIP + '.30', type: 'camera', vendor: 'Hikvision' }
-            ];
-            
-            let html = '<div class="hosts-list">';
-            exampleHosts.forEach(h => {
-                html += `<div class="host-item ${h.type}">
-                    <strong>${h.ip}</strong> - ${h.vendor} (${h.type})
-                </div>`;
+            // Display summary
+            const results = document.getElementById('results');
+            const byType = {};
+            hosts.forEach(h => {
+                const type = h.type || 'unknown';
+                byType[type] = (byType[type] || 0) + 1;
             });
-            html += '</div>';
             
-            document.getElementById('hostsList').innerHTML = html;
-            showStatus('Example output shown. Run real scanner for actual data.', 'success');
+            let summary = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px;">';
+            for (const [type, count] of Object.entries(byType)) {
+                const colors = { router: '#f472b6', server: '#ef4444', workstation: '#22c55e', camera: '#f59e0b', printer: '#8b5cf6', iot: '#a855f7', accesspoint: '#06b6d4' };
+                summary += `<div style="background: ${colors[type] || '#64748b'}22; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold;">${count}</div>
+                    <div style="font-size: 12px; text-transform: capitalize;">${type}s</div>
+                </div>`;
+            }
+            summary += '</div>';
+            results.innerHTML = summary;
+            
+            // Display hosts list
+            const hostsList = document.getElementById('hostsList');
+            if (hosts.length === 0) {
+                hostsList.innerHTML = '<div class="empty-state">No devices found</div>';
+            } else {
+                let html = '';
+                hosts.forEach(h => {
+                    html += `<div class="host-item ${h.type || ''}">
+                        <strong>${h.ip}</strong><br>
+                        <span style="color: #94a3b8;">${h.vendor || 'Unknown'}</span> - 
+                        <span style="text-transform: capitalize;">${h.type || 'device'}</span>
+                        ${h.ports && h.ports.length ? `<br><span style="color: #64748b; font-size: 12px;">Ports: ${h.ports.join(', ')}</span>` : ''}
+                    </div>`;
+                });
+                hostsList.innerHTML = html;
+            }
         }
         
-        // Show instructions on load
-        showInstructions();
+        // Check server status on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://192.168.4.57:8888/api/test', { method: 'POST' });
+                const data = await response.json();
+                showStatus('Server connected. Ready to scan!', 'success');
+            } catch(e) {
+                showStatus('Server not responding. Make sure tool-server.py is running.', 'error');
+            }
+        });
     </script>
 </body>
 </html>
