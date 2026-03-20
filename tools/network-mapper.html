@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Mapper - Barney's Tire Shop</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 2px solid #dee2e6;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        input[type="text"] {
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 1em;
+            min-width: 250px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .content {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            min-height: 600px;
+        }
+
+        .topology-panel {
+            flex: 1;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+            max-height: 700px;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .hosts-panel {
+            width: 350px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 700px;
+        }
+
+        .hosts-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .host-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .host-item:hover {
+            background: #e9ecef;
+            border-left-color: #764ba2;
+            transform: translateX(5px);
+        }
+
+        .host-ip {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+
+        .host-mac {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            font-family: monospace;
+            margin-top: 3px;
+        }
+
+        .host-vendor {
+            font-size: 0.85em;
+            color: #667eea;
+            margin-top: 3px;
+        }
+
+        .host-type {
+            font-size: 0.8em;
+            color: #95a5a6;
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        .status {
+            padding: 15px;
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .status.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+
+        .status.loading {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+            color: #1565c0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(33, 150, 243, 0.3);
+            border-top-color: #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .demo-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            color: #856404;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: #7f8c8d;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .device-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .category-group {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .category-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .device-list {
+            list-style: none;
+        }
+
+        .device-list li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 1200px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .hosts-panel {
+                width: 100%;
+                max-height: 400px;
+            }
+        }
+
+        .error-message {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Network Mapper</h1>
+            <p>Barney's Tire Shop - Network Discovery & Topology</p>
+        </div>
+
+        <div class="controls">
+            <div class="form-group">
+                <label for="subnet">Target Subnet (CIDR):</label>
+                <input type="text" id="subnet" placeholder="e.g., 192.168.1.0/24" value="192.168.4.0/24">
+            </div>
+            <button onclick="scanNetwork()">🔍 Scan Network</button>
+            <button onclick="loadDemo()">📊 Load Demo Data</button>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div class="content">
+            <div class="topology-panel">
+                <div id="stats" class="stats"></div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab('topology')">Topology Diagram</button>
+                    <button class="tab-button" onclick="switchTab('devices')">Device Categories</button>
+                </div>
+                <div id="topology" class="tab-content active">
+                    <div id="mermaid-diagram" class="mermaid"></div>
+                </div>
+                <div id="devices" class="tab-content">
+                    <div id="device-categories" class="device-categories"></div>
+                </div>
+            </div>
+
+            <div class="hosts-panel">
+                <h3>📱 Hosts Found</h3>
+                <div id="hosts-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let networkData = {};
+        let hostsList = [];
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = '';
+            
+            if (type === 'loading') {
+                status.innerHTML = `<span class="loading-spinner"></span>${message}`;
+            } else {
+                status.textContent = message;
+            }
+            
+            status.className = `status show ${type}`;
+        }
+
+        function switchTab(tab) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function scanNetwork() {
+            const subnet = document.getElementById('subnet').value.trim();
+            
+            if (!subnet) {
+                showStatus('Please enter a subnet (e.g., 192.168.1.0/24)', 'error');
+                return;
+            }
+
+            showStatus(`Scanning network ${subnet}...`, 'loading');
+            
+            try {
+                // Call the backend scan
+                const response = await fetch('/api/scan-network', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subnet })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                processNetworkData(data);
+                showStatus(`✓ Network scan complete! Found ${hostsList.length} hosts.`, 'success');
+            } catch (error) {
+                console.error('Scan error:', error);
+                showStatus(`Scan error: ${error.message}. Falling back to demo data...`, 'error');
+                setTimeout(() => loadDemo(), 2000);
+            }
+        }
+
+        function processNetworkData(data) {
+            networkData = data;
+            hostsList = data.hosts || [];
+            
+            renderStats();
+            renderHostsList();
+            renderTopology();
+            renderDeviceCategories();
+        }
+
+        function renderStats() {
+            const stats = document.getElementById('stats');
+            const categories = categorizeHosts();
+            
+            stats.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-number">${hostsList.length}</div>
+                    <div class="stat-label">Total Hosts</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${categories.servers}</div>
+                    <div class="stat-label">Servers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${categories.workstations}</div>
+                    <div class="stat-label">Workstations</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${categories.other}</div>
+                    <div class="stat-label">IoT/Other</div>
+                </div>
+            `;
+        }
+
+        function renderHostsList() {
+            const list = document.getElementById('hosts-list');
+            list.innerHTML = hostsList.map((host, idx) => `
+                <div class="host-item">
+                    <div class="host-ip">${host.ip || 'Unknown IP'}</div>
+                    <div class="host-mac">${host.mac || 'No MAC'}</div>
+                    <div class="host-vendor">${host.vendor || 'Unknown Vendor'}</div>
+                    <div class="host-type">${host.type || 'Device'}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderTopology() {
+            const diagram = document.getElementById('mermaid-diagram');
+            const mermaid_text = networkData.mermaid_text || generateMermaidDiagram();
+            
+            diagram.textContent = mermaid_text;
+            diagram.removeAttribute('data-processed');
+            
+            try {
+                mermaid.contentLoaded();
+            } catch (e) {
+                console.log('Mermaid rendering:', e.message);
+            }
+        }
+
+        function renderDeviceCategories() {
+            const categories = categorizeHostsByType();
+            const container = document.getElementById('device-categories');
+            
+            container.innerHTML = Object.entries(categories).map(([category, devices]) => `
+                <div class="category-group">
+                    <div class="category-title">${category} (${devices.length})</div>
+                    <ul class="device-list">
+                        ${devices.map(d => `<li>${d.ip} - ${d.vendor}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function categorizeHosts() {
+            let servers = 0, workstations = 0, other = 0;
+            
+            hostsList.forEach(host => {
+                const type = (host.type || '').toLowerCase();
+                if (type.includes('server') || type.includes('ssh')) servers++;
+                else if (type.includes('workstation') || type.includes('pc')) workstations++;
+                else other++;
+            });
+            
+            return { servers, workstations, other };
+        }
+
+        function categorizeHostsByType() {
+            const categories = {};
+            
+            hostsList.forEach(host => {
+                const type = host.type || 'Unknown';
+                if (!categories[type]) categories[type] = [];
+                categories[type].push(host);
+            });
+            
+            return categories;
+        }
+
+        function generateMermaidDiagram() {
+            let diagram = 'graph TD\n';
+            diagram += '    Internet((Internet)) --> Gateway[Gateway: UNKNOWN]:::gateway\n';
+            
+            const servers = hostsList.filter(h => (h.type || '').includes('Server'));
+            const workstations = hostsList.filter(h => (h.type || '').includes('Workstation'));
+            const other = hostsList.filter(h => !(h.type || '').includes('Server') && !(h.type || '').includes('Workstation'));
+            
+            servers.slice(0, 5).forEach((s, i) => {
+                diagram += `    Gateway --> S${i}["${s.ip}<br/>${s.vendor}"]:::server\n`;
+            });
+            
+            workstations.slice(0, 5).forEach((w, i) => {
+                diagram += `    Gateway --> W${i}["${w.ip}<br/>${w.vendor}"]:::workstation\n`;
+            });
+            
+            other.slice(0, 5).forEach((o, i) => {
+                diagram += `    Gateway --> O${i}["${o.ip}<br/>${o.type}"]:::other\n`;
+            });
+            
+            diagram += '\n    classDef gateway fill:#f9f,stroke:#333,stroke-width:2px\n';
+            diagram += '    classDef server fill:#0066cc,color:#fff,stroke:#333,stroke-width:2px\n';
+            diagram += '    classDef workstation fill:#10b981,color:#fff,stroke:#333,stroke-width:2px\n';
+            diagram += '    classDef other fill:#f59e0b,color:#000,stroke:#333,stroke-width:2px\n';
+            
+            return diagram;
+        }
+
+        async function loadDemo() {
+            showStatus('Loading demo network data...', 'loading');
+            
+            // Simulated Barney's network
+            const demoData = {
+                hosts: [
+                    { ip: '192.168.1.1', mac: '84:d9:e0:9b:94:92', vendor: 'Netgear', type: 'Gateway' },
+                    { ip: '192.168.1.10', mac: '2c:f0:5d:d5:3e:50', vendor: 'Intel', type: 'Server - POS System' },
+                    { ip: '192.168.1.11', mac: '3c:31:74:b9:15:08', vendor: 'Dell', type: 'Workstation - Manager' },
+                    { ip: '192.168.1.12', mac: '3c:31:74:d1:58:f6', vendor: 'HP', type: 'Workstation - Cashier 1' },
+                    { ip: '192.168.1.13', mac: '3c:31:74:24:f8:8e', vendor: 'Lenovo', type: 'Workstation - Cashier 2' },
+                    { ip: '192.168.1.14', mac: 'b4:23:a2:21:76:b4', vendor: 'Apple', type: 'Workstation - Office' },
+                    { ip: '192.168.1.20', mac: 'e4:fa:c4:02:a8:e8', vendor: 'TP-Link', type: 'Access Point 1' },
+                    { ip: '192.168.1.21', mac: 'e4:fa:c4:02:a8:ed', vendor: 'TP-Link', type: 'Access Point 2' },
+                    { ip: '192.168.1.30', mac: '84:d9:e0:94:41:12', vendor: 'Hikvision', type: 'Camera - Front Door' },
+                    { ip: '192.168.1.31', mac: '2c:cf:67:38:80:f9', vendor: 'Hikvision', type: 'Camera - Lot' },
+                    { ip: '192.168.1.32', mac: '20:23:51:11:95:44', vendor: 'Dahua', type: 'Camera - Service Bay' },
+                    { ip: '192.168.1.33', mac: '20:23:51:11:90:40', vendor: 'Dahua', type: 'NVR - Recording System' },
+                    { ip: '192.168.1.40', mac: '44:bb:3b:53:e9:00', vendor: 'Canon', type: 'Printer - Lobby' },
+                    { ip: '192.168.1.41', mac: 'd8:3a:dd:5e:52:86', vendor: 'Xerox', type: 'Printer - Office' },
+                    { ip: '192.168.1.50', mac: '68:1d:ef:4c:64:9e', vendor: 'Brother', type: 'Scanner' },
+                    { ip: '192.168.1.60', mac: '56:37:dd:ef:83:5d', vendor: 'Honeywell', type: 'Access Control' },
+                    { ip: '192.168.1.61', mac: '2c:33:58:81:a3:44', vendor: 'Ubiquiti', type: 'PoE Switch' },
+                    { ip: '192.168.1.100', mac: '00:c0:ca:b4:b4:f0', vendor: 'Raspberry Pi', type: 'Backup System' }
+                ],
+                mermaid_text: `graph TD
+    Internet((Internet)) --> Modem["ISP Modem"]:::modem
+    Modem --> Gateway["Gateway Router<br/>192.168.1.1<br/>Netgear"]:::gateway
+    
+    subgraph Wired["Wired Network"]
+        Gateway --> POS["POS System<br/>192.168.1.10<br/>Intel Server"]:::server
+        Gateway --> SW["PoE Switch<br/>192.168.1.61<br/>Ubiquiti"]:::device
+        SW --> CAM1["Front Camera<br/>192.168.1.30<br/>Hikvision"]:::camera
+        SW --> CAM2["Lot Camera<br/>192.168.1.31<br/>Hikvision"]:::camera
+        SW --> CAM3["Service Bay<br/>192.168.1.32<br/>Dahua"]:::camera
+        SW --> NVR["NVR System<br/>192.168.1.33<br/>Recording"]:::server
+        SW --> ACC["Access Control<br/>192.168.1.60<br/>Honeywell"]:::device
+        SW --> BACK["Backup System<br/>192.168.1.100<br/>Raspberry Pi"]:::server
+    end
+    
+    subgraph Workstations["Workstations"]
+        Gateway --> WS1["Manager PC<br/>192.168.1.11<br/>Dell"]:::workstation
+        Gateway --> WS2["Cashier 1<br/>192.168.1.12<br/>HP"]:::workstation
+        Gateway --> WS3["Cashier 2<br/>192.168.1.13<br/>Lenovo"]:::workstation
+        Gateway --> WS4["Office<br/>192.168.1.14<br/>Apple"]:::workstation
+    end
+    
+    subgraph Wireless["Wireless Network"]
+        Gateway --> AP1["Access Point 1<br/>192.168.1.20<br/>TP-Link"]:::ap
+        Gateway --> AP2["Access Point 2<br/>192.168.1.21<br/>TP-Link"]:::ap
+    end
+    
+    subgraph Printers["Peripherals"]
+        Gateway --> P1["Lobby Printer<br/>192.168.1.40<br/>Canon"]:::printer
+        Gateway --> P2["Office Printer<br/>192.168.1.41<br/>Xerox"]:::printer
+        Gateway --> SC["Scanner<br/>192.168.1.50<br/>Brother"]:::printer
+    end
+    
+    classDef gateway fill:#f9f,stroke:#333,stroke-width:3px,color:#000
+    classDef modem fill:#f59e0b,stroke:#333,stroke-width:2px,color:#000
+    classDef server fill:#0066cc,stroke:#333,stroke-width:2px,color:#fff
+    classDef workstation fill:#10b981,stroke:#333,stroke-width:2px,color:#fff
+    classDef camera fill:#dc2626,stroke:#333,stroke-width:2px,color:#fff
+    classDef printer fill:#7c3aed,stroke:#333,stroke-width:2px,color:#fff
+    classDef ap fill:#059669,stroke:#333,stroke-width:2px,color:#fff
+    classDef device fill:#64748b,stroke:#333,stroke-width:2px,color:#fff`
+            };
+            
+            setTimeout(() => {
+                processNetworkData(demoData);
+                showStatus('✓ Demo data loaded! This is a sample of Barney\'s network topology.', 'success');
+            }, 500);
+        }
+
+        // Load demo on page load
+        window.addEventListener('load', () => {
+            loadDemo();
+        });
+    </script>
+</body>
+</html>
