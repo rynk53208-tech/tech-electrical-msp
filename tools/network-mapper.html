@@ -369,7 +369,7 @@
                 <input type="text" id="subnet" placeholder="e.g., 192.168.1.0/24" value="192.168.4.0/24">
             </div>
             <button onclick="scanNetwork()">🔍 Scan Network</button>
-            <button onclick="loadDemo()">📊 Load Demo Data</button>
+            <button onclick="showScanInstructions()">🔍 Run Real Scan</button>
         </div>
 
         <div id="status" class="status"></div>
@@ -433,59 +433,26 @@
 
             showStatus(`Scanning network ${subnet}...`, 'loading');
             
-            try {
-                // Run ACTUAL network scan using the Python scanner
-                const { spawn } = await import('child_process');
-                
-                // Call Python scanner - this is a REAL scan
-                const pythonProcess = new Promise((resolve, reject) => {
-                    const proc = spawn('python3', [
-                        '/root/.openclaw/workspace/tools/network-scanner.py',
-                        '--subnet', subnet,
-                        '--json'
-                    ], { timeout: 30000 });
-                    
-                    let output = '';
-                    let error = '';
-                    
-                    proc.stdout.on('data', (data) => { output += data; });
-                    proc.stderr.on('data', (data) => { error += data; });
-                    
-                    proc.on('close', (code) => {
-                        if (code === 0 && output) {
-                            try {
-                                const data = JSON.parse(output);
-                                resolve(data);
-                            } catch (e) {
-                                reject(new Error('Invalid JSON from scanner'));
-                            }
-                        } else {
-                            reject(new Error(error || 'Scan failed'));
-                        }
-                    });
-                    
-                    proc.on('error', (e) => reject(e));
-                });
-                
-                const data = await pythonProcess;
-                processNetworkData(data);
-                showStatus(`✓ Network scan complete! Found ${data.hosts?.length || 0} hosts.`, 'success');
-            } catch (error) {
-                console.error('Scan error:', error);
-                showStatus(`Real scan unavailable: ${error.message}. To scan this network, run from terminal:`, 'error');
-                // Show the real command to run
-                document.getElementById('hostsList').innerHTML = `
-                    <div style="background: #1e293b; padding: 20px; border-radius: 8px; margin: 10px 0;">
-                        <h3 style="color: #ef4444;">⚠️ Real Scan Required</h3>
-                        <p>Run this command on this machine:</p>
-                        <code style="display: block; background: #0f172a; padding: 15px; border-radius: 4px; margin: 10px 0; color: #22c55e;">
-                            cd /root/.openclaw/workspace/tools && python3 network-scanner.py --subnet ${subnet}
-                        </code>
-                        <p>Then import the JSON output into this tool.</p>
-                    </div>
-                `;
-            }
-        }
+            // Browser cannot run Python scans directly
+            // Show the user how to run a real scan
+            showStatus('Preparing real scan instructions...', 'loading');
+            
+            document.getElementById('hostsList').innerHTML = `
+                <div style="background: #1e293b; padding: 25px; border-radius: 8px; margin: 10px 0; border: 2px solid #3b82f6;">
+                    <h2 style="color: #3b82f6; margin-bottom: 15px;">🔍 Real Network Scan Required</h2>
+                    <p style="margin-bottom: 10px;">This tool requires a Python backend to scan networks. Run this command:</p>
+                    <pre style="background: #0f172a; padding: 15px; border-radius: 4px; color: #22c55e; overflow-x: auto;">cd /root/.openclaw/workspace/tools
+python3 network-scanner.py --subnet ${subnet} --json</pre>
+                    <p style="margin-top: 15px; margin-bottom: 5px;">Or for a quick test:</p>
+                    <pre style="background: #0f172a; padding: 15px; border-radius: 4px; color: #22c55e; overflow-x: auto;">cd /root/.openclaw/workspace/tools
+bash test-network-mapper.sh</pre>
+                    <p style="margin-top: 15px; color: #94a3b8;">The scanner will find all devices on ${subnet} and output JSON.</p>
+                </div>
+            `;
+            
+            showStatus('Scan requires Python backend. See instructions above.', 'error');
+            renderStats();
+            renderDeviceCategories();
 
         function generateScanData(subnet) {
             // Parse subnet
@@ -708,9 +675,32 @@
             }, 500);
         }
 
-        // Load demo on page load
+        function showScanInstructions() {
+            const subnet = document.getElementById('subnetInput').value || '192.168.1.0/24';
+            showStatus('Ready for real scan. See instructions below.', 'info');
+            
+            document.getElementById('hostsList').innerHTML = `
+                <div style="background: #1e293b; padding: 25px; border-radius: 8px; margin: 10px 0; border: 2px solid #3b82f6;">
+                    <h2 style="color: #3b82f6; margin-bottom: 15px;">🔍 Network Scanner</h2>
+                    <p style="margin-bottom: 15px;">This tool requires the Python scanner to run real network scans.</p>
+                    
+                    <h3 style="color: #22c55e; margin-bottom: 10px;">Run this command:</h3>
+                    <pre style="background: #0f172a; padding: 15px; border-radius: 4px; color: #22c55e; overflow-x: auto; margin-bottom: 15px;">cd /root/.openclaw/workspace/tools
+python3 network-scanner.py --subnet ${subnet}</pre>
+                    
+                    <h3 style="color: #f59e0b; margin-bottom: 10px;">Quick Test:</h3>
+                    <pre style="background: #0f172a; padding: 15px; border-radius: 4px; color: #f59e0b; overflow-x: auto;">cd /root/.openclaw/workspace/tools
+bash test-network-mapper.sh</pre>
+                </div>
+            `;
+            
+            renderStats();
+            renderDeviceCategories();
+        }
+
+        // NO auto-load - show scan instructions
         window.addEventListener('load', () => {
-            loadDemo();
+            showScanInstructions();
         });
     </script>
 </body>
