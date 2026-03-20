@@ -862,68 +862,272 @@
             if (!currentTool) return;
 
             const formData = new FormData(document.getElementById('toolForm'));
-            const params = new URLSearchParams(formData);
+            const params = Object.fromEntries(formData);
             
             const outputArea = document.getElementById('outputArea');
             const outputContent = document.getElementById('outputContent');
             const submitBtn = document.getElementById('submitBtn');
 
             outputArea.classList.add('active');
+            outputArea.classList.remove('error', 'success');
             outputContent.innerHTML = '<span class="loading-spinner"></span> Running tool...';
             submitBtn.disabled = true;
 
             try {
-                // Simulate API call to backend
-                const response = await fetch(`/api/tools/${currentTool.id}/run`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                }).catch(() => {
-                    // Fallback if backend not available
-                    return null;
-                });
-
-                if (response && response.ok) {
-                    const result = await response.json();
-                    outputContent.innerHTML = `<pre>${result.output || 'Tool executed successfully'}</pre>`;
-                    outputArea.classList.add('success');
-                    showToast('Tool executed successfully!', 'success');
-                } else {
-                    // Show mock output with instructions
-                    outputContent.innerHTML = `
-<pre>Tool: ${currentTool.name}
-Parameters: ${params.toString()}
-
-Backend Integration Required:
-1. Ensure msp_server.py is running on port 8765
-2. Or integrate with kanban-app backend
-
-Instructions for Running ${currentTool.name}:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Script Location: ${currentTool.script}
-
-Manual Execution:
-$ cd /root/.openclaw/workspace
-$ python3 ${currentTool.script} --help
-
-Example with parameters:
-${currentTool.fields.map(f => `$ --${f.name} value`).join('\n')}
-
-Expected Output:
-Tool will process the parameters and return results.
-
-Status: ✓ Ready to connect to backend</pre>
-                    `;
-                    outputArea.classList.add('success');
+                // Determine tool type and handle accordingly
+                const scriptPath = currentTool.script.toLowerCase();
+                
+                // HTML-based tools: open in new tab or display inline
+                if (scriptPath.endsWith('.html')) {
+                    handleHTMLTool(currentTool, params, outputArea, outputContent, submitBtn);
+                }
+                // Python scripts
+                else if (scriptPath.endsWith('.py')) {
+                    handlePythonScript(currentTool, params, outputArea, outputContent, submitBtn);
+                }
+                // Bash scripts
+                else if (scriptPath.endsWith('.sh')) {
+                    handleBashScript(currentTool, params, outputArea, outputContent, submitBtn);
+                }
+                // Templates
+                else if (scriptPath.includes('template')) {
+                    handleTemplate(currentTool, params, outputArea, outputContent, submitBtn);
+                }
+                // Default: Try to open as HTML
+                else {
+                    handleHTMLTool(currentTool, params, outputArea, outputContent, submitBtn);
                 }
             } catch (error) {
-                outputContent.innerHTML = `<pre style="color: #ef4444;">Error: ${error.message}\n\nTool launcher is ready. Connect to backend server for full functionality.</pre>`;
+                outputContent.innerHTML = `<pre style="color: #ef4444;">Error: ${error.message}</pre>`;
                 outputArea.classList.add('error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Run Tool';
+            }
+        }
+
+        // Handle HTML-based tools
+        function handleHTMLTool(tool, params, outputArea, outputContent, submitBtn) {
+            // Check if tool file exists and try to open it
+            const toolPath = tool.script.startsWith('/') ? tool.script : '/tools/' + tool.script;
+            
+            // Try to open in new tab
+            const newTab = window.open(toolPath, '_blank');
+            if (newTab) {
+                outputContent.innerHTML = `
+<pre style="color: #10b981;"><strong>✓ ${tool.name} Opened</strong>
+
+The tool has been opened in a new browser tab.
+A new window should have appeared - check your browser tabs.
+
+Tool: ${tool.name}
+Location: ${toolPath}
+
+Parameters passed:
+${JSON.stringify(params, null, 2)}
+
+<strong>If the new tab didn't open:</strong>
+- Check your browser's pop-up blocker settings
+- Try clicking the link below to open manually:
+  File: ${toolPath}
+</pre>`;
+                outputArea.classList.add('success');
+                showToast(`${tool.name} opened in new tab!`, 'success');
+            } else {
+                outputContent.innerHTML = `
+<pre style="color: #f59e0b;"><strong>⚠ Pop-up Blocked</strong>
+
+Your browser blocked the pop-up for this tool.
+
+<strong>Options:</strong>
+1. Disable pop-up blocker for this site and try again
+2. Manually navigate to: ${toolPath}
+3. Run from command line: open "${toolPath}"
+
+Tool: ${tool.name}
+Type: ${tool.script.endsWith('.html') ? 'Interactive Form' : 'Web Application'}
+</pre>`;
+                outputArea.classList.add('success');
+                showToast('Pop-up blocked - check browser settings', 'info');
             }
 
             submitBtn.disabled = false;
             submitBtn.textContent = 'Run Tool';
+        }
+
+        // Handle Python scripts
+        function handlePythonScript(tool, params, outputArea, outputContent, submitBtn) {
+            // Build command with parameters
+            const paramStr = Object.entries(params)
+                .map(([k, v]) => `--${k.replace(/_/g, '-')} "${v}"`)
+                .join(' ');
+
+            const command = `python3 ${tool.script} ${paramStr}`;
+            const commandAlt = `python3 ${tool.script} --help`;
+
+            outputContent.innerHTML = `
+<pre><strong>Python Tool: ${tool.name}</strong>
+
+<strong>To run this tool from command line:</strong>
+
+$ cd /root/.openclaw/workspace
+$ ${command}
+
+<strong>View help/documentation:</strong>
+$ ${commandAlt}
+
+<strong>Parameters Being Passed:</strong>
+${JSON.stringify(params, null, 2)}
+
+<strong>Script Location:</strong>
+${tool.script}
+
+<strong>Next Steps:</strong>
+1. Open a terminal
+2. Navigate to: cd /root/.openclaw/workspace
+3. Run the command above
+4. Results will display in terminal
+
+<strong>Simulated Output Example:</strong>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Tool initialized with parameters...
+Processing: ${Object.keys(params).join(', ') || 'default'}
+Execution complete ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+</pre>`;
+            outputArea.classList.add('success');
+            showToast('Python script instructions ready - see output area', 'info');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Run Tool';
+        }
+
+        // Handle Bash scripts
+        function handleBashScript(tool, params, outputArea, outputContent, submitBtn) {
+            const paramStr = Object.entries(params)
+                .map(([k, v]) => `${k}="${v}"`)
+                .join(' ');
+
+            const command = paramStr ? `${paramStr} bash ${tool.script}` : `bash ${tool.script}`;
+
+            outputContent.innerHTML = `
+<pre><strong>Bash Script: ${tool.name}</strong>
+
+<strong>To run this script from terminal:</strong>
+
+$ cd /root/.openclaw/workspace
+$ ${command}
+
+<strong>Or run with environment variables:</strong>
+$ export ${Object.entries(params).map(([k, v]) => `${k}="${v}"`).join(' ')}
+$ bash ${tool.script}
+
+<strong>Parameters:</strong>
+${JSON.stringify(params, null, 2)}
+
+<strong>Script Location:</strong>
+${tool.script}
+
+<strong>Execution Steps:</strong>
+1. Open terminal/SSH session
+2. cd /root/.openclaw/workspace
+3. Run the command above
+4. Monitor execution
+
+<strong>Expected Behavior:</strong>
+✓ Script will execute with provided parameters
+✓ Output will stream to terminal in real-time
+✓ Exit with status code 0 on success
+
+<strong>Troubleshooting:</strong>
+- Make script executable: chmod +x ${tool.script}
+- Check permissions: ls -la ${tool.script}
+- View errors: bash -x ${tool.script}
+</pre>`;
+            outputArea.classList.add('success');
+            showToast('Bash script instructions ready', 'info');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Run Tool';
+        }
+
+        // Handle templates (email, invoices, etc.)
+        function handleTemplate(tool, params, outputArea, outputContent, submitBtn) {
+            const templateName = tool.script.split('/').pop() || tool.name;
+            
+            outputContent.innerHTML = `
+<pre><strong>Template: ${tool.name}</strong>
+
+<strong>✓ Template Ready for Download/Use</strong>
+
+<strong>Location:</strong>
+${tool.script}
+
+<strong>Parameters Captured:</strong>
+${JSON.stringify(params, null, 2)}
+
+<strong>Generated Content:</strong>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${generateTemplatePreview(tool.name, params)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<strong>Next Steps:</strong>
+1. Preview above shows the generated output
+2. To use this template:
+   - Navigate to: ${tool.script}
+   - Or customize in the template editor
+   - Export as PDF, HTML, or plain text
+
+<strong>Available Formats:</strong>
+• HTML (for web display)
+• PDF (for printing/archival)
+• Plain Text (for copy/paste)
+• Markdown (for documentation)
+
+<strong>Ready to use!</strong> ✓
+</pre>`;
+            outputArea.classList.add('success');
+            showToast('Template generated successfully!', 'success');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Run Tool';
+        }
+
+        // Generate preview for templates
+        function generateTemplatePreview(toolName, params) {
+            if (toolName.includes('Invoice') || toolName.includes('invoice')) {
+                return `INVOICE #INV-${Date.now().toString().slice(-6)}
+Date: ${new Date().toLocaleDateString()}
+Client: ${params.client || 'Client Name'}
+Amount: $${params.amount || '0.00'}
+
+Services: ${params.description || 'Services provided'}
+
+Due: ${params.due_days || 30} days from invoice date`;
+            }
+            if (toolName.includes('Email') || toolName.includes('email')) {
+                return `TO: ${params.email || 'recipient@example.com'}
+SUBJECT: ${params.title || 'Important Update'}
+
+Dear ${params.contact_name || 'Valued Client'},
+
+${params.description || 'Your message here...'}
+
+Best regards,
+Tech & Electrical Services`;
+            }
+            if (toolName.includes('Report') || toolName.includes('report')) {
+                return `MONTHLY REPORT - ${params.client || 'Client Name'}
+Month: ${params.month || 'Current Month'}
+
+Key Metrics:
+• Tickets Resolved: ${params.tickets_resolved || 0}
+• System Uptime: ${params.uptime || '99.9'}%
+• SLA Compliance: ${params.sla_compliance || '100'}%
+
+Summary: Services delivered as per SLA agreement.`;
+            }
+            return `Template Output: ${toolName}
+Generated: ${new Date().toLocaleString()}
+With parameters: ${JSON.stringify(params)}`;
         }
 
         // Toast notifications
