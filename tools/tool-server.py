@@ -12,7 +12,7 @@ import os
 from urllib.parse import urlparse, parse_qs
 import threading
 
-PORT = 8888
+PORT = 9000
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class ToolHandler(http.server.SimpleHTTPRequestHandler):

@@ -99,7 +99,7 @@
             showStatus(`Scanning ${subnet}... This may take up to 2 minutes.`, 'loading');
             
             try {
-                const response = await fetch('http://192.168.4.57:8888/api/scan', {
+                const response = await fetch('http://192.168.4.57:9000/api/scan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ subnet })
@@ -167,7 +167,7 @@
         // Check server status on load
         window.addEventListener('load', async () => {
             try {
-                const response = await fetch('http://192.168.4.57:8888/api/test', { method: 'POST' });
+                const response = await fetch('http://192.168.4.57:9000/api/test', { method: 'POST' });
                 const data = await response.json();
                 showStatus('Server connected. Ready to scan!', 'success');
             } catch(e) {
