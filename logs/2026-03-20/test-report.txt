@@ -7,7 +7,7 @@
    Total Tests: 4
    ✓ Passed:    4 (100%)
    ✗ Failed:    0
-   ⚠️  Warnings: 4
+   ⚠️  Warnings: 2
 
 📋 DETAILED RESULTS
 
@@ -30,19 +30,16 @@
 📄 /root/.openclaw/workspace/tools/network-mapper.html
    Status: ✓ PASS
    Checks:
-     fileSize: 26463
-     lines: 718
+     fileSize: 7665
+     lines: 152
      hasDoctype: true
      hasHtmlTag: true
      hasHeadTag: true
      hasBodyTag: true
      hasTitle: true
-     openTags: 100
-     closeTags: 57
+     openTags: 41
+     closeTags: 37
      hasScripts: true
-   ⚠️  Warnings:
-     - Tag mismatch detected: 100 opening, 57 closing
-     - Potential error logging found in scripts
 
 📄 /root/.openclaw/workspace/tools/network-scanner.py
    Status: ✓ PASS
@@ -73,11 +70,9 @@
    ⚠️  Warnings:
      - Tag mismatch detected: 191 opening, 159 closing
 
-⚠️  ALL WARNINGS (4)
+⚠️  ALL WARNINGS (2)
    1. Tag mismatch detected: 93 opening, 81 closing
-   2. Tag mismatch detected: 100 opening, 57 closing
-   3. Potential error logging found in scripts
-   4. Tag mismatch detected: 191 opening, 159 closing
+   2. Tag mismatch detected: 191 opening, 159 closing
 
 ======================================================================
 ✓ ALL TESTS PASSED
