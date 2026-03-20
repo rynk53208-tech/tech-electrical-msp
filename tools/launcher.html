@@ -648,13 +648,13 @@
                 icon: '🗺️',
                 category: 'network',
                 status: 'ready',
-                description: 'Scan and map network devices, IPs, and connectivity.',
-                help: 'Maps your network topology and generates a report.',
+                description: 'Scan and map network topology - for Barney\'s Tire Shop',
+                help: 'Visual network topology with device discovery, demo mode included',
                 fields: [
-                    { name: 'subnet', label: 'Network Subnet (e.g., 192.168.1.0/24)', type: 'text', required: true, placeholder: '192.168.1.0/24' },
-                    { name: 'timeout', label: 'Scan Timeout (seconds)', type: 'number', required: false, value: 10 }
+                    { name: 'subnet', label: 'Network Subnet (e.g., 192.168.4.0/24)', type: 'text', required: false, placeholder: '192.168.4.0/24' },
+                    { name: 'mode', label: 'Scan Mode', type: 'select', required: false, options: ['Demo Data', 'Real Scan'] }
                 ],
-                script: '/Projects/network-mapper/netmapper.py'
+                script: '/tools/network-mapper.html'
             },
             {
                 id: 'ssl-monitor',
