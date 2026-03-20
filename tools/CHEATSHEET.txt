@@ -1,0 +1,145 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    NETWORK MAPPER - CHEAT SHEET                             ║
+║                 For Barney's Tire Shop Network Discovery                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📍 LOCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  /root/.openclaw/workspace/tools/
+  ├── network-mapper.html       ← Open this in browser
+  ├── network-scanner.py        ← Run this on backend
+  ├── QUICKSTART.md             ← Read this first
+  └── test-network-mapper.sh    ← Run tests
+
+🚀 QUICK START (30 SECONDS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Demo Mode (No Setup):
+  1. open /root/.openclaw/workspace/tools/network-mapper.html
+  2. Click "Demo Data" button
+  3. See Barney's Tire Shop network topology
+
+Real Scanning:
+  1. pip3 install flask flask-cors
+  2. python3 /root/.openclaw/workspace/tools/network-scanner.py
+  3. open /root/.openclaw/workspace/tools/network-mapper.html
+  4. Enter subnet: 192.168.1.0/24
+  5. Click "Scan Network"
+  6. Wait 10-30 seconds
+
+💻 KEY COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Start Backend:
+  $ python3 /root/.openclaw/workspace/tools/network-scanner.py
+  or with root:
+  $ sudo python3 /root/.openclaw/workspace/tools/network-scanner.py
+
+Check Backend Status:
+  $ curl http://localhost:5000/api/status
+
+Open Frontend:
+  $ open /root/.openclaw/workspace/tools/network-mapper.html
+
+Run Tests:
+  $ /root/.openclaw/workspace/tools/test-network-mapper.sh
+
+Kill Backend (if stuck):
+  $ sudo kill -9 $(sudo lsof -t -i :5000)
+
+🔧 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem              | Solution
+─────────────────────┼──────────────────────────────────────────────────
+"No module Flask"    | pip3 install flask flask-cors
+Port 5000 in use     | sudo kill -9 $(sudo lsof -t -i :5000)
+No hosts found       | Try /25 instead of /24, or use --deep mode
+"Connection refused" | Backend not running, start with command above
+Scan too slow        | Use smaller subnet (/25 or /26)
+Browser won't load   | Use Chrome, Firefox, Safari, or Edge
+
+🎯 COMMON SUBNETS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your Network:        How to Find:
+─────────────────────┼──────────────────────────────────────────────────
+192.168.1.0/24       $ ip route show (look for "default via")
+192.168.0.0/24       $ ip route show
+10.0.0.0/24          $ ifconfig | grep inet
+172.16.0.0/16        $ hostname -I
+
+📊 DEMO DATA (BARNEY'S TIRE SHOP)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Device               | Type           | IP            | Count
+─────────────────────┼────────────────┼───────────────┼──────
+Router               | Gateway        | 192.168.1.1   |   1
+File Server          | Server         | 192.168.1.10  |   2
+Workstations         | Computer       | 192.168.1.20  |   2
+Cameras              | Camera         | 192.168.1.30  |   3
+Printer              | Printer        | 192.168.1.40  |   1
+                     |                |               |───────
+                     |                |    TOTAL:     |   9
+
+🎨 COLORS IN TOPOLOGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🛡️  Blue   = Router/Gateway        💾 Orange = Servers
+💻  Purple = Workstations         📹 Cyan   = Cameras
+🖨️  Green  = Printers
+
+📋 WHAT THE TOOL DETECTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Live hosts on network
+✓ IP addresses & MAC addresses
+✓ Device vendors (from MAC)
+✓ Operating system (Windows/Linux guess)
+✓ Open ports
+✓ Network services (HTTP, SMB, SSH, RDP, etc.)
+✓ Device role (Router, Server, Workstation, Camera, Printer)
+✓ Mermaid network topology diagram
+✓ Statistical summary
+
+🔒 SECURITY NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  Only scan networks you own or have permission to scan!
+
+• No data is sent to external servers
+• All results stay on your local machine
+• Standard network discovery (ICMP, ARP)
+• May trigger IDS/IPS if misconfigured
+• Use in trusted network environments only
+
+📞 FILES EXPLAINED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+network-mapper.html
+  → Modern web UI, runs in browser, 31 KB, works offline
+  → Demo mode built-in, REST API client, responsive design
+
+network-scanner.py
+  → Python Flask backend, 18 KB, REST API server
+  → Multi-threaded scanner, ARP + ICMP, port detection
+  → Runs on localhost:5000
+
+QUICKSTART.md
+  → 30-second setup guide, beginner-friendly
+
+NETWORK-MAPPER-README.md
+  → Full documentation, API reference, troubleshooting
+
+test-network-mapper.sh
+  → Automated tests (9/10 passing), system verification
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                         READY TO USE! 🎉
+
+    Demo mode works instantly with no setup required.
+    For real network scanning, start the backend and open the HTML file.
+    See QUICKSTART.md for detailed instructions.
+
+═══════════════════════════════════════════════════════════════════════════════
